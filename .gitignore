@@ -1,0 +1,9 @@
+# Client
+#
+client/node_modules/
+info.txt
+
+
+# Server
+#
+server/node_modules/
