@@ -23,6 +23,9 @@ import SupportAndHelp from './src/views/screens/SupportAndHelp';
 import { Provider } from 'react-redux';
 import Store from './src/redux/Store';
 import { AuthUserAction } from './src/redux/actions/AuthAction';
+import AuthWelcome from './src/views/screens/AuthWelcome';
+import AccountDisabled from './src/views/screens/AccountDisabled';
+import DeleteAccount from './src/views/screens/DeleteAccount';
 
 
 
@@ -46,7 +49,7 @@ function App() {
     return (
         <Provider store={Store}>
             <NavigationContainer>
-                <Stack.Navigator initialRouteName='Check'>
+                <Stack.Navigator initialRouteName='Splash'>
 
                     {
                         show ? (
@@ -56,6 +59,7 @@ function App() {
                             null
                     }
                     <Stack.Screen options={{ headerShown: false }} name="Check" component={Check} />
+                    <Stack.Screen options={{ headerShown: false }} name="AuthWelcome" component={AuthWelcome} />
                     <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
                     <Stack.Screen options={{ headerTitle: "" }} name="OTPVerification" component={OTPVerification} />
 
@@ -67,6 +71,8 @@ function App() {
                     <Stack.Screen options={{ headerShown: false }} name="ProfileTabs" component={ProfileTabs} />
                     <Stack.Screen options={{ headerShown: false }} name="Settings" component={Settings} />
                     <Stack.Screen options={{ headerShown: false }} name="Account" component={Account} />
+                    <Stack.Screen options={{ headerShown: false }} name="AccountDisabled" component={AccountDisabled} />
+                    <Stack.Screen options={{ headerShown: false }} name="DeleteAccount" component={DeleteAccount} />
                     <Stack.Screen options={{ headerShown: false }} name="NotificationSettings" component={NotificationSettings} />
                     <Stack.Screen options={{ headerShown: false }} name="SupportAndHelp" component={SupportAndHelp} />
 

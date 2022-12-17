@@ -32,7 +32,7 @@ router.post('/login', async (request, response) => {
             if (user) {
                 // Update Existing OTP
                 const _id = user.id;
-                await User.findByIdAndUpdate(_id, { otp: otp });
+                await User.findByIdAndUpdate(_id, { otp: otp, status: 'Active' });
 
                 response.status(200).json({
                     status: 200,
@@ -43,7 +43,7 @@ router.post('/login', async (request, response) => {
                 });
             } else {
                 // Save new User Phone
-                await User.create({ phone: request.body.phone, otp: otp });
+                await User.create({ phone: request.body.phone, otp: otp, status: 'Active' });
 
                 response.status(200).json({
                     status: 200,
@@ -56,11 +56,11 @@ router.post('/login', async (request, response) => {
         } else {
 
             const message = `Your account verification OTP  is 👇 \n\n${otp}\n\n\nIf you have not requested this email then, please ignore this email... \n\n\nRegard Yello`;
-            await sendEmail({
-                email: email,
-                subject: "Yello - OTP Verification",
-                message
-            });
+            // await sendEmail({
+            //     email: email,
+            //     subject: "Yello - OTP Verification",
+            //     message
+            // });
 
 
             // Email Registration
@@ -69,7 +69,7 @@ router.post('/login', async (request, response) => {
             if (user) {
                 // Update Existing OTP
                 const _id = user.id;
-                await User.findByIdAndUpdate(_id, { otp: otp });
+                await User.findByIdAndUpdate(_id, { otp: otp, status: 'Active' });
 
                 response.status(200).json({
                     status: 200,
@@ -80,7 +80,7 @@ router.post('/login', async (request, response) => {
                 });
             } else {
                 // Save new User Email
-                await User.create({ email: request.body.email, otp: otp });
+                await User.create({ email: request.body.email, otp: otp, status: 'Active' });
 
                 response.status(200).json({
                     status: 200,
@@ -120,7 +120,7 @@ router.post('/verify', async (request, response) => {
                 httpOnly: true
             });
 
-            const authuser = await User.findById(loginUser._id).select('-createAt -password -tokens -resetPasswordExpire -resetPasswordToken');
+            const authuser = await User.findById(loginUser._id).select('-createAt -password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user_id', "image username last_name first_name ").populate('followers.user_id', "image username last_name first_name ");
 
             response.status(200).json({
                 status: 202,
@@ -165,6 +165,63 @@ router.get("/logout", auth, async (request, response) => {
         response.status(200).json({
             status: 203,
             message: "Logout Successfully..."
+        });
+    }
+    catch (error) {
+        response.status(500).json({
+            status: 500,
+            success: false,
+            message: error.message
+        });
+    }
+})
+
+
+
+
+router.post("/disable/account", auth, async (request, response) => {
+    try {
+        console.log(request.user)
+        const _id = request.user.id;
+
+        await User.findByIdAndUpdate(_id, { status: "InActive" });
+
+        request.user.tokens = request.user.tokens.filter((currentElement) => {
+            return currentElement.token === request.token
+        });
+
+        response.clearCookie("token");
+        await request.user.save();
+        response.status(200).json({
+            status: 204,
+            message: "Account Disable Successfully..."
+        });
+    }
+    catch (error) {
+        response.status(500).json({
+            status: 500,
+            success: false,
+            message: error.message
+        });
+    }
+})
+
+
+router.delete("/delete/account", auth, async (request, response) => {
+    try {
+        const _id = request.user.id;
+        // request.user.tokens = request.user.tokens.filter((currentElement) => {
+        //     return currentElement.token === request.token
+        // });
+
+
+        // response.clearCookie("token");
+        // const user = await request.user.save();
+        await User.findByIdAndDelete(_id);
+
+        response.status(200).json({
+            status: 205,
+            message: "Account Delete Successfully..."
         });
     }
     catch (error) {

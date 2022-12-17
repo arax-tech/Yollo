@@ -14,6 +14,17 @@ import {
     AUTH_LOGOUT_SUCCESS,
     AUTH_LOGOUT_FAIL,
 
+    ACCOUNT_DISABLE_SUCCESS,
+    ACCOUNT_DISABLE_FAIL,
+
+    ACCOUNT_DELETE_SUCCESS,
+    ACCOUNT_DELETE_FAIL,
+
+    CREATE_TAG_REQUEST,
+    CREATE_TAG_SUCCESS,
+    CREATE_TAG_FAIL,
+    CREATE_TAG_RESET,
+
     UPDATE_PROFILE_REQUEST,
     UPDATE_PROFILE_SUCCESS,
     UPDATE_PROFILE_FAIL,
@@ -61,10 +72,13 @@ export const AuthReducer = (state = { user: {} }, action) => {
                 message: action.payload.message,
                 status: action.payload.status,
                 user: action.payload.user,
+                tags: action.payload.tags,
                 token: action.payload.token,
             };
 
         case AUTH_LOGOUT_SUCCESS:
+        case ACCOUNT_DISABLE_SUCCESS:
+        case ACCOUNT_DELETE_SUCCESS:
             return {
                 loading: false,
                 isAuthenticated: false,
@@ -94,6 +108,8 @@ export const AuthReducer = (state = { user: {} }, action) => {
                 errors: action.payload,
             };
         case AUTH_LOGOUT_FAIL:
+        case ACCOUNT_DISABLE_FAIL:
+        case ACCOUNT_DELETE_FAIL:
             return {
                 ...state,
                 loading: false,
@@ -119,6 +135,7 @@ export const updateProfileReducer = (state = {}, action) => {
         case UPDATE_PROFILE_REQUEST:
         case UPDATE_ACCOUNT_REQUEST:
         case UPDATE_NOTIFICATION_SETTING_REQUEST:
+        case CREATE_TAG_REQUEST:
             return {
                 ...state,
                 loading: true,
@@ -134,9 +151,21 @@ export const updateProfileReducer = (state = {}, action) => {
                 status: action.payload.status,
                 isUpdated: true,
             };
+
+        case CREATE_TAG_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                message: action.payload.message,
+                status: action.payload.status,
+                isCreated: true,
+            };
+
+
         case UPDATE_PROFILE_FAIL:
         case UPDATE_ACCOUNT_FAIL:
         case UPDATE_NOTIFICATION_SETTING_FAIL:
+        case CREATE_TAG_FAIL:
             return {
                 ...state,
                 loading: false,
@@ -150,6 +179,12 @@ export const updateProfileReducer = (state = {}, action) => {
             return {
                 ...state,
                 isUpdated: false,
+            };
+
+        case CREATE_TAG_RESET:
+            return {
+                ...state,
+                isCreated: false,
             };
         case CLEAR_ERRORS:
             return {

@@ -2,6 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { AuthReducer, updateProfileReducer } from './reducers/AuthReducer';
 import { supportReducer } from './reducers/SupportReducer';
+import { yelloReducer } from './reducers/YelloReducer';
 
 
 
@@ -9,6 +10,7 @@ const reducer = combineReducers({
     auth: AuthReducer,
     updateProfile: updateProfileReducer,
     support: supportReducer,
+    yello: yelloReducer,
 });
 
 let initialState = {};

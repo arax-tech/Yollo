@@ -104,7 +104,7 @@ const SupportAndHelp = ({ navigation }) => {
                         </View>
 
                         <View style={styles.inputGroup}>
-                            <TextInput style={[styles.formInput, { height: 120 }]} placeholder='Your Message' multiline={true} numberOfLines={4} value={data.message} onChangeText={(text) => InpChnage(text, 'message')} />
+                            <TextInput style={[styles.formInput, { height: 120, textAlignVertical: "top" }]} placeholder='Your Message' multiline={true} numberOfLines={4} value={data.message} onChangeText={(text) => InpChnage(text, 'message')} />
                         </View>
 
 

@@ -103,11 +103,17 @@ const Profile = ({ navigation }) => {
                         </View>
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                            <View style={{ flexDirection: 'column' }}>
-                                <Text style={[styles.text, { fontSize: 16, fontWeight: '900' }]}>1.2 M</Text>
+                            <TouchableOpacity style={{ flexDirection: 'column' }} onPress={() => navigation.navigate("ProfileTabs")}>
+                                <Text style={[styles.text, { fontSize: 16, fontWeight: '900' }]}>{user?.followers.length}</Text>
                                 <Text style={styles.text}>Followers</Text>
-                            </View>
-                            <Image style={{ width: 90 }} resizeMode='contain' source={require('../../assets/images/user/avatar.png')} />
+                            </TouchableOpacity>
+                            {
+                                user?.image ? (
+                                    <Image style={{ width: 102, height: 104, borderRadius: 7 }} resizeMode='contain' source={{ uri: user?.image.url }} />
+                                ) : (
+                                    <Image style={{ width: 120, height: 120, borderRadius: 7 }} resizeMode='contain' source={require('../../assets/images/profile-placeholder.png')} />
+                                )
+                            }
                             <View style={{ flexDirection: 'column' }}>
                                 <Text style={[styles.text, { fontSize: 16, fontWeight: '900' }]}>120K</Text>
                                 <Text style={styles.text}>Reactions</Text>

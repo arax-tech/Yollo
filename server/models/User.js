@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
     bio: { type: String },
     profile_visibility: { type: String },
     new_user: { type: Boolean, default: true, },
+    status: { type: String },
     image: {
         public_id: { type: String },
         url: { type: String }
@@ -32,6 +33,8 @@ const userSchema = new mongoose.Schema({
             name: { type: String },
         }
     ],
+    followers: [{ user_id: { type: mongoose.Schema.ObjectId, ref: "User", required: true } }],
+    following: [{ user_id: { type: mongoose.Schema.ObjectId, ref: "User", required: true } }],
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     tokens: [

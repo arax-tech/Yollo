@@ -17,6 +17,17 @@ import {
     AUTH_LOGOUT_SUCCESS,
     AUTH_LOGOUT_FAIL,
 
+    ACCOUNT_DISABLE_SUCCESS,
+    ACCOUNT_DISABLE_FAIL,
+
+
+    ACCOUNT_DELETE_SUCCESS,
+    ACCOUNT_DELETE_FAIL,
+
+    CREATE_TAG_REQUEST,
+    CREATE_TAG_SUCCESS,
+    CREATE_TAG_FAIL,
+
     UPDATE_PROFILE_REQUEST,
     UPDATE_PROFILE_SUCCESS,
     UPDATE_PROFILE_FAIL,
@@ -31,6 +42,7 @@ import {
 
 
     CLEAR_ERRORS,
+
 } from "../constants/AuthConstant";
 
 
@@ -105,6 +117,40 @@ export const AuthUserAction = () => async (dispatch) => {
 
 
 
+export const DisableAccountAction = () => async (dispatch) => {
+    try {
+
+        const { data } = await axios.post(`${APP_URL}/auth/disable/account`);
+        dispatch({
+            type: ACCOUNT_DISABLE_SUCCESS,
+            payload: data
+        })
+    } catch (error) {
+        dispatch({
+            type: ACCOUNT_DISABLE_FAIL,
+            payload: error.response.data
+        })
+    }
+}
+
+
+export const DeleteAccountAction = () => async (dispatch) => {
+    try {
+
+        const { data } = await axios.delete(`${APP_URL}/auth/delete/account`);
+        dispatch({
+            type: ACCOUNT_DELETE_SUCCESS,
+            payload: data
+        })
+    } catch (error) {
+        dispatch({
+            type: ACCOUNT_DELETE_FAIL,
+            payload: error.response.data
+        })
+    }
+}
+
+
 export const AuthLogoutAction = () => async (dispatch) => {
     try {
 
@@ -121,15 +167,34 @@ export const AuthLogoutAction = () => async (dispatch) => {
     }
 }
 
-export const ProfileUpdateAction = (first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user) => async (dispatch) => {
+export const CreatetagAction = (name) => async (dispatch) => {
+    try {
+        dispatch({ type: CREATE_TAG_REQUEST });
+
+        const { data } = await axios.post(`${APP_URL}/user/tag/store`, {
+            name
+        });
+        dispatch({
+            type: CREATE_TAG_SUCCESS,
+            payload: data
+        });
+    } catch (error) {
+        console.log(error);
+        dispatch({
+            type: CREATE_TAG_FAIL,
+            payload: error.response.data,
+        })
+
+    }
+}
+
+
+export const ProfileUpdateAction = (first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user, image) => async (dispatch) => {
     try {
         dispatch({ type: UPDATE_PROFILE_REQUEST });
 
         const { data } = await axios.put(`${APP_URL}/user/profile`, {
-            first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user,
-            headers: {
-                "Content-Type": "application/json",
-            }
+            first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user, image
         });
         dispatch({
             type: UPDATE_PROFILE_SUCCESS,

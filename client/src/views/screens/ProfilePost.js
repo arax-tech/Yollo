@@ -23,43 +23,45 @@ const ProfilePost = () => {
 
 
     return (
-        <SafeAreaView style={{ backgroundColor: Colors.white }}>
+        <ScrollView>
+            <SafeAreaView style={{ backgroundColor: Colors.white }}>
 
 
 
-            <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', padding: 5 }}>
-                {
-                    images.map((item) => (
-                        <TouchableOpacity key={item.id} style={styles.imageContainer}>
+                <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', padding: 5 }}>
+                    {
+                        images.map((item) => (
+                            <TouchableOpacity key={item.id} style={styles.imageContainer}>
 
-                            <View style={styles.iconContainer}>
+                                <View style={styles.iconContainer}>
 
-                                <View style={styles.actionButton}>
-                                    <Image style={styles.actionIcon} resizeMode='contain' source={require('../../assets/images/icons/eye.png')} />
-                                    <Text style={styles.actionText}>15K</Text>
+                                    <View style={styles.actionButton}>
+                                        <Image style={[styles.actionIcon, { width: 18, height: 18 }]} resizeMode='contain' source={require('../../assets/images/icons/eye.png')} />
+                                        <Text style={styles.actionText}>15K</Text>
+                                    </View>
+
+
+                                    <View style={styles.actionButton}>
+                                        <Image style={styles.actionIcon} resizeMode='contain' source={require('../../assets/images/icons/heart.png')} />
+                                        <Text style={styles.actionText}>12K</Text>
+                                    </View>
+
+
+                                    <View style={styles.actionButton}>
+                                        <Image style={styles.actionIcon} resizeMode='contain' source={require('../../assets/images/icons/comment.png')} />
+                                        <Text style={styles.actionText}>245</Text>
+                                    </View>
                                 </View>
 
-
-                                <View style={styles.actionButton}>
-                                    <Image style={styles.actionIcon} resizeMode='contain' source={require('../../assets/images/icons/heart.png')} />
-                                    <Text style={styles.actionText}>12K</Text>
-                                </View>
-
-
-                                <View style={styles.actionButton}>
-                                    <Image style={styles.actionIcon} resizeMode='contain' source={require('../../assets/images/icons/comment.png')} />
-                                    <Text style={styles.actionText}>245</Text>
-                                </View>
-                            </View>
-
-                            <Image style={styles.mainImage} source={item.imagrUrl} resizeMode='contain' />
-                        </TouchableOpacity>
-                    ))
-                }
-            </View>
+                                <Image style={styles.mainImage} source={item.imagrUrl} resizeMode='contain' />
+                            </TouchableOpacity>
+                        ))
+                    }
+                </View>
 
 
-        </SafeAreaView>
+            </SafeAreaView>
+        </ScrollView>
     )
 }
 

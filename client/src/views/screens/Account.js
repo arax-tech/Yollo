@@ -140,7 +140,7 @@ const Account = ({ navigation }) => {
                     </View>
 
 
-                    <TouchableOpacity style={[styles.settingList, { marginTop: 1, borderTopWidth: 2, borderBottomWidth: 2, borderColor: '#F5F5F5' }]} onPress={() => navigation.navigate('Account')}>
+                    <TouchableOpacity style={[styles.settingList, { marginTop: 1, borderTopWidth: 2, borderBottomWidth: 2, borderColor: '#F5F5F5' }]} onPress={() => navigation.navigate('AccountDisabled')}>
                         <Text style={styles.settingListTitle}>Disable account </Text>
                         <View style={styles.contentRight}>
                             <Image source={require('../../assets/images/icons/settings/arrow-right.png')} />
@@ -148,7 +148,7 @@ const Account = ({ navigation }) => {
                     </TouchableOpacity>
 
 
-                    <TouchableOpacity style={[styles.settingList, { marginTop: 1, borderTopWidth: 2, borderBottomWidth: 2, borderColor: '#F5F5F5' }]} onPress={() => navigation.navigate('Account')}>
+                    <TouchableOpacity style={[styles.settingList, { marginTop: 1, borderTopWidth: 2, borderBottomWidth: 2, borderColor: '#F5F5F5' }]} onPress={() => navigation.navigate('DeleteAccount')}>
                         <Text style={styles.settingListTitle}>Permanently delete account </Text>
                         <View style={styles.contentRight}>
                             <Image source={require('../../assets/images/icons/settings/delete-regular.png')} />

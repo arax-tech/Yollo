@@ -1,27 +1,55 @@
-import { Image, StatusBar, StyleSheet, TouchableOpacity, Text, View, SafeAreaView, TextInput, ScrollView, ToastAndroid, Platform, BackHandler } from 'react-native'
+import { Image, StatusBar, StyleSheet, TouchableOpacity, Text, View, SafeAreaView, TextInput, ScrollView, ToastAndroid, Platform, BackHandler, PermissionsAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Colors from '../../constants/Colors'
 import Fonts from '../../constants/Fonts'
 import { PrimaryButton } from '../components/Button'
-import { Calendar } from 'react-native-calendars'
 import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../components/Loading'
-import { AuthUserAction, ProfileUpdateAction } from '../../redux/actions/AuthAction'
-import { UPDATE_PROFILE_RESET } from '../../redux/constants/AuthConstant'
+import { AuthUserAction, CreatetagAction, ProfileUpdateAction } from '../../redux/actions/AuthAction'
+import { CREATE_TAG_RESET, UPDATE_PROFILE_RESET } from '../../redux/constants/AuthConstant'
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 import { Dropdown } from 'react-native-element-dropdown';
 
+import { launchImageLibrary } from 'react-native-image-picker';
 
 
 
 const ProfileEdit = ({ navigation }) => {
 
     const dispatch = useDispatch();
-    const { loading, user } = useSelector((state) => state.auth);
-    const { loading: updateLoading, message, isUpdated } = useSelector((state) => state.updateProfile);
+    const { loading, user, tags } = useSelector((state) => state.auth);
+    const { loading: updateLoading, message, isUpdated, isCreated } = useSelector((state) => state.updateProfile);
+
+    const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    const launchImagePicker = async () => {
+        const result = await launchImageLibrary({ mediaType: "photo", includeBase64: true });
+        setImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
+        setImagePreview(result.assets[0].uri);
+    }
+
+    const requestPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA, {
+                title: "Yello App Camera Permission",
+                message: "Yello App take access to your pictures so you can select awesome pictures.",
+                buttonNeutral: "Ask Me Later",
+                buttonNegative: "Cancel",
+                buttonPositive: "Okay"
+            },);
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                launchImagePicker();
+            } else {
+                ToastAndroid.show("Camera permission denied", ToastAndroid.SHORT);
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     const [birthday, setBirthDay] = useState(user?.birthday);
 
@@ -97,7 +125,18 @@ const ProfileEdit = ({ navigation }) => {
         } else if (data.bio === null) {
             ToastAndroid.show('Bio is required...', ToastAndroid.SHORT);
         } else {
-            dispatch(ProfileUpdateAction(data.first_name, data.last_name, data.username, data.email, data.phone, gender, birthday, data.country, data.city, data.bio, data.new_user));
+            dispatch(ProfileUpdateAction(data.first_name, data.last_name, data.username, data.email, data.phone, gender, birthday, data.country, data.city, data.bio, data.new_user, image !== null ? image : null));
+
+        }
+    }
+
+
+    const [tag, setTag] = useState(null);
+    const Createtag = () => {
+        if (tag === null) {
+            ToastAndroid.show('Tag is required...', ToastAndroid.SHORT);
+        } else {
+            dispatch(CreatetagAction(tag));
 
         }
     }
@@ -108,7 +147,12 @@ const ProfileEdit = ({ navigation }) => {
             dispatch({ type: UPDATE_PROFILE_RESET });
             dispatch(AuthUserAction());
         }
-    }, [dispatch, isUpdated, message])
+        if (isCreated && isCreated === true) {
+            ToastAndroid.show(message, ToastAndroid.SHORT);
+            dispatch({ type: CREATE_TAG_RESET });
+            dispatch(AuthUserAction());
+        }
+    }, [dispatch, isUpdated, isCreated, message])
 
     const handleBackButtonClick = () => {
         if (user?.new_user === true) {
@@ -124,8 +168,9 @@ const ProfileEdit = ({ navigation }) => {
             BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
         };
     }, []);
+
     return (
-        loading && updateLoading ? <Loading /> :
+        loading || updateLoading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
                 <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
 
@@ -147,12 +192,26 @@ const ProfileEdit = ({ navigation }) => {
                     <View style={styles.container}>
                         <Text style={[styles.formLabel, { fontSize: 20 }]}>Set up your profile details</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
+                            {
+                                imagePreview !== null ? (
+                                    <Image style={{ width: 130, height: 130, borderRadius: 100 }} resizeMode='contain' source={{ uri: imagePreview }} />
 
-                            <Image style={{ width: 130, height: 130 }} resizeMode='contain' source={require('../../assets/images/profile-placeholder.png')} />
+                                ) : (
+
+                                    user?.image ? (
+                                        <Image style={{ width: 130, height: 130, borderRadius: 100 }} resizeMode='contain' source={{ uri: user?.image.url }} />
+                                    ) : (
+                                        <Image style={{ width: 130, height: 130, }} resizeMode='contain' source={require('../../assets/images/profile-placeholder.png')} />
+                                    )
+
+
+                                )
+                            }
+
                         </View>
                         <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                            <TouchableOpacity>
-                                <Text style={styles.chnageProfileTxt}>Chnage Profile</Text>
+                            <TouchableOpacity onPress={requestPermission}>
+                                <Text style={styles.chnageProfileTxt}>Change Profile</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -248,7 +307,7 @@ const ProfileEdit = ({ navigation }) => {
 
                         <View style={styles.inputGroup}>
                             <Text style={styles.formLabel}>Your bio</Text>
-                            <TextInput style={[styles.formInput, { height: 110 }]}
+                            <TextInput style={[styles.formInput, { height: 110, textAlignVertical: "top" }]}
                                 multiline={true}
                                 numberOfLines={4}
                                 value={data.bio} onChangeText={(text) => InpChnage(text, 'bio')} />
@@ -258,52 +317,21 @@ const ProfileEdit = ({ navigation }) => {
 
                     </View>
                     <View style={{ borderBottomWidth: 1, borderBottomColor: '#D9D9D9' }}></View>
-                    <Text style={[styles.formLabel, { padding: 20 }]}>Add your profile badge</Text>
+                    <Text style={[styles.formLabel, { paddingHorizontal: 20, paddingVertical: 10 }]}>Your profile badge</Text>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', borderColor: '#E4E4E4', borderBottomWidth: 1, padding: 5, alignItems: 'center', justifyContent: 'center', marginTop: -5 }}>
-                        <TouchableOpacity style={styles.tagButton}>
-                            <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/cup-hot.png')} />
-                            <Text style={styles.tagButtonText}>Home Barista</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.tagButton}>
-                            <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/traveler.png')} />
-                            <Text style={styles.tagButtonText}>Traveler</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.tagButton}>
-                            <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/file-earmark-excel.png')} />
-                            <Text style={styles.tagButtonText}>Excel Nerd</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.tagButton}>
-                            <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/hiker.png')} />
-                            <Text style={styles.tagButtonText}>Hiker</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.tagButton}>
-                            <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/nature.png')} />
-                            <Text style={styles.tagButtonText}>Nature Lover</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.tagButton}>
-                            <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/writer.png')} />
-                            <Text style={styles.tagButtonText}>Writer</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.tagButton}>
-                            <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/runner.png')} />
-                            <Text style={styles.tagButtonText}>Runner</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.tagButton}>
-                            <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/cup-hot.png')} />
-                            <Text style={styles.tagButtonText}>Home Barista</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.tagButton}>
-                            <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/traveler.png')} />
-                            <Text style={styles.tagButtonText}>Traveler</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.tagButton, { backgroundColor: Colors.lightGray, paddingHorizontal: 20 }]}>
-                            <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/carbon-add.png')} />
-                        </TouchableOpacity>
+                        {
+                            tags?.map((tag, index) => (
+                                <TouchableOpacity key={index} style={styles.tagButton}>
+                                    <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/cup-hot.png')} />
+                                    <Text style={styles.tagButtonText}>{tag.name}</Text>
+                                </TouchableOpacity>
+                            ))
+                        }
                     </View>
 
 
                     <Text style={[styles.formLabel, { padding: 20 }]}>Suggestion</Text>
-                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', borderColor: '#E4E4E4', borderBottomWidth: 1, paddingLeft: 20, alignItems: 'center', justifyContent: 'center', marginTop: -10, }}>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', borderColor: '#E4E4E4', borderBottomWidth: 1, paddingLeft: 15, alignItems: 'center', justifyContent: 'center', marginTop: -10, }}>
                         <View style={styles.tagList}>
                             <TouchableOpacity style={[styles.tagButton, { padding: 10 }]}>
                                 <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/cup-hot.png')} />
@@ -344,9 +372,9 @@ const ProfileEdit = ({ navigation }) => {
 
                             <View style={[styles.inputGroup, { width: '80%' }]}>
                                 <Text style={styles.formLabel}>Create your own tag</Text>
-                                <TextInput style={styles.formInput} />
+                                <TextInput style={styles.formInput} value={tag} onChangeText={(text) => setTag(text)} />
                             </View>
-                            <TouchableOpacity style={[styles.inputGroup, { width: '18%' }]}>
+                            <TouchableOpacity style={[styles.inputGroup, { width: '18%' }]} onPress={Createtag}>
                                 <Text style={[styles.formLabel, { color: 'transparent' }]}>City</Text>
                                 <Text style={[styles.formInput, { lineHeight: 50, color: Colors.white, borderColor: Colors.primary, paddingLeft: 15, backgroundColor: Colors.primary }]} >Add</Text>
                             </TouchableOpacity>

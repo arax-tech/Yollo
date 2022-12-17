@@ -15,7 +15,7 @@ const Login = ({ navigation }) => {
 
 
     const [type, setType] = useState('phone')
-    const [phone, setPhone] = useState('+92-306-5831989');
+    const [phone, setPhone] = useState('');
     const [email, setEmail] = useState(null);
 
     const LoginFunction = () => {
@@ -87,7 +87,7 @@ const Login = ({ navigation }) => {
                                     </Text>
                                 </React.Fragment>
                             ) : (
-                                <React.Fragment>
+                                <View>
                                     <Text style={styles.email}>Enter Email Address</Text>
                                     <TextInput keyboardType='email-address' style={styles.txtInput} onChangeText={(text) => setEmail(text)} value={email} placeholder='info@example.com' />
 
@@ -97,7 +97,7 @@ const Login = ({ navigation }) => {
                                             <Text style={styles.instenet}>Mobile</Text>
                                         </TouchableOpacity>
                                     </Text>
-                                </React.Fragment>
+                                </View>
                             )
                         }
 

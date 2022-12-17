@@ -13,20 +13,23 @@ const deviceHeight = Dimensions.get("window").height;
 
 const NotificationSettings = ({ navigation }) => {
 
-    const { loading, user } = useSelector((state) => state.auth);
-    const { loading: updateLoading, message, isUpdated } = useSelector((state) => state.updateProfile);
     const dispatch = useDispatch();
 
+    const { loading, user } = useSelector((state) => state.auth);
+    const { loading: updateLoading, message, isUpdated } = useSelector((state) => state.updateProfile);
+
+
+
     const [items, setItems] = useState([
-        { id: 1, checked: user?.notification_settings ? user.notification_settings[0].checked : true, name: "Push Notification", },
-        { id: 2, checked: user?.notification_settings ? user.notification_settings[1].checked : true, name: "Post from people you may know", },
-        { id: 3, checked: user?.notification_settings ? user.notification_settings[2].checked : true, name: "Likes", },
-        { id: 4, checked: user?.notification_settings ? user.notification_settings[3].checked : true, name: "Comments", },
-        { id: 5, checked: user?.notification_settings ? user.notification_settings[4].checked : true, name: "New followers", },
-        { id: 6, checked: user?.notification_settings ? user.notification_settings[5].checked : true, name: "Time", },
-        { id: 7, checked: user?.notification_settings ? user.notification_settings[6].checked : true, name: "Add diamond", },
-        { id: 8, checked: user?.notification_settings ? user.notification_settings[7].checked : true, name: "Mentions & tags", },
-        { id: 9, checked: user?.notification_settings ? user.notification_settings[8].checked : true, name: "Repost", },
+        { id: 1, checked: user?.notification_settings[0] ? user?.notification_settings[0].checked : true, name: "Push Notification", },
+        { id: 2, checked: user?.notification_settings[0] ? user?.notification_settings[1].checked : true, name: "Post from people you may know", },
+        { id: 3, checked: user?.notification_settings[0] ? user?.notification_settings[2].checked : true, name: "Likes", },
+        { id: 4, checked: user?.notification_settings[0] ? user?.notification_settings[3].checked : true, name: "Comments", },
+        { id: 5, checked: user?.notification_settings[0] ? user?.notification_settings[4].checked : true, name: "New followers", },
+        { id: 6, checked: user?.notification_settings[0] ? user?.notification_settings[5].checked : true, name: "Time", },
+        { id: 7, checked: user?.notification_settings[0] ? user?.notification_settings[6].checked : true, name: "Add diamond", },
+        { id: 8, checked: user?.notification_settings[0] ? user?.notification_settings[7].checked : true, name: "Mentions & tags", },
+        { id: 9, checked: user?.notification_settings[0] ? user?.notification_settings[8].checked : true, name: "Repost", },
     ]);
 
     const getValue = (id) => {
@@ -53,6 +56,7 @@ const NotificationSettings = ({ navigation }) => {
         if (isUpdated && isUpdated === true) {
             ToastAndroid.show(message, ToastAndroid.SHORT);
             dispatch({ type: UPDATE_NOTIFICATION_SETTING_RESET });
+            dispatch(AuthUserAction());
             navigation.navigate("NotificationSettings")
         }
     }, [dispatch, navigation, isUpdated, message])

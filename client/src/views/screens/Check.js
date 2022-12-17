@@ -12,7 +12,7 @@ import Loading from '../components/Loading'
 
 
 const Check = ({ navigation, }) => {
-    const [Checked, setChecked] = useState(true);
+    const [Checked, setChecked] = useState(false);
 
     const { loading, isAuthenticated } = useSelector((state) => state.auth);
 

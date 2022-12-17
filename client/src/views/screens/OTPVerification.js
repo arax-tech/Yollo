@@ -6,7 +6,7 @@ import Fonts from '../../constants/Fonts'
 import { PrimaryButton } from '../components/Button'
 import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../components/Loading'
-import { VerificationAction } from '../../redux/actions/AuthAction'
+import { LoginAction, VerificationAction } from '../../redux/actions/AuthAction'
 import { CLEAR_ERRORS } from '../../redux/constants/AuthConstant'
 
 const OTPVerification = ({ navigation }) => {
@@ -28,6 +28,7 @@ const OTPVerification = ({ navigation }) => {
 
     const { loading, isAuthenticated, errors, status, message, type, phone, email, user } = useSelector((state) => state.auth);
 
+
     const OTPVerificationFunction = () => {
         if (Pin1 === null) {
             ToastAndroid.show("OTP is required...", ToastAndroid.SHORT);
@@ -42,6 +43,25 @@ const OTPVerification = ({ navigation }) => {
             dispatch(VerificationAction(newOtp, email, phone, type));
         }
     }
+
+    const ResendOtpFunction = () => {
+        if (type === 'phone') {
+            if (phone === null) {
+                ToastAndroid.show("Phone is required...", ToastAndroid.SHORT);
+            } else {
+                dispatch(LoginAction(phone, email, type));
+            }
+
+        } else {
+            if (email === null) {
+                ToastAndroid.show("Email is required...", ToastAndroid.SHORT);
+            } else {
+                dispatch(LoginAction(phone, email, type));
+            }
+        }
+    }
+
+
     useEffect(() => {
         if (isAuthenticated && isAuthenticated === true) {
             navigation.navigate("HomeNavigation");
@@ -123,7 +143,7 @@ const OTPVerification = ({ navigation }) => {
 
                 <View style={{ padding: 15, justifyContent: 'flex-end', alignItems: 'flex-end', flexDirection: 'row' }}>
                     <Text style={styles.otptext}> Didn’t receive the OTP ?</Text>
-                    <TouchableOpacity onPress={() => { lastTimerCount > 0 ? '' : alert('New OTP Send Successfully...') }}>
+                    <TouchableOpacity onPress={() => { lastTimerCount > 0 ? '' : ResendOtpFunction() }}>
                         <Text style={styles.instenet}> {lastTimerCount > 0 ? timerCount : "Resend OTP"}</Text>
                     </TouchableOpacity>
                 </View>

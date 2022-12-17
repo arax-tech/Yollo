@@ -14,10 +14,10 @@ const PORT = process.env.PORT || 8000;
 
 
 // Middlewares
-app.use(express.json());
+app.use(express.json({ limit: '100mb' }));
 app.use(cors());
 app.use(cookie());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
 app.use(fileUpload());
 app.use(morgan("dev"));
 
@@ -40,8 +40,9 @@ cloudinary.config({
 app.use("/api/auth", require("./routes/auth"))
 
 // User
-app.use("/api/user", require("./routes/User/profile"));
+app.use("/api/user", require("./routes/User/user"));
 app.use("/api/user/help/support", require("./routes/User/support"));
+app.use("/api/user/tag", require("./routes/User/tag"));
 
 // Server Listing At 
 app.listen(PORT, () => {
