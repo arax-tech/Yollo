@@ -11,6 +11,7 @@ import Following from './Following'
 import Suggested from './Suggested'
 import { useSelector } from 'react-redux'
 import Loading from '../components/Loading'
+import { IconAntDesign } from '../components/Icons';
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -35,7 +36,7 @@ const ProfileTabs = ({ navigation }) => {
                     <View style={styles.postHeaderContainer}>
 
                         <TouchableOpacity style={styles.postBackButton} onPress={() => navigation.goBack()}>
-                            <Image style={{ width: 20, tintColor: Colors.dark }} resizeMode='contain' source={require('../../assets/images/icons/arrow-left.png')} />
+                            <IconAntDesign name='arrowleft' size={23} color={Colors.dark} />
                         </TouchableOpacity>
                         <Text style={styles.postTitle}>{user?.username}</Text>
 

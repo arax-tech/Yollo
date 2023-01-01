@@ -16,6 +16,7 @@ import ProfilePostYouReacted from './ProfilePostYouReacted'
 import ProfileInfo from '../components/ProfileInfo'
 import { useSelector } from 'react-redux';
 import Loading from '../components/Loading';
+import { IconAntDesign, IconEntypo, IconFeather, IconOcticons } from '../components/Icons';
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -57,7 +58,10 @@ const Profile = ({ navigation }) => {
 
 
                                 <TouchableOpacity onPress={toggleModal} style={{ flex: 1, alignItems: 'flex-end', padding: 15 }}>
-                                    <Image source={require('../../assets/images/icons/model-close.png')} resizeMode='contain' style={{ height: 15, width: 15, marginBottom: 3 }} />
+                                    {/* <Image source={require('../../assets/images/icons/model-close.png')} resizeMode='contain' style={{ height: 15, width: 15, marginBottom: 3 }} /> */}
+
+                                    <IconAntDesign name='close' size={22} color={Colors.dark} style={{ marginBottom: 3 }} />
+
                                 </TouchableOpacity>
 
 
@@ -82,7 +86,8 @@ const Profile = ({ navigation }) => {
                                     toggleModal()
                                 }} style={[styles.modelList, { borderBottomColor: 'transparent' }]} >
                                     <View style={styles.modelInside}>
-                                        <Image source={require('../../assets/images/icons/settings.png')} resizeMode='contain' style={styles.modelImage} />
+                                        {/* <Image source={require('../../assets/images/icons/settings.png')} resizeMode='contain' style={styles.modelImage} /> */}
+                                        <IconFeather name='settings' size={20} color={Colors.dark} style={{ marginRight: 10 }} />
                                         <Text style={styles.modelTitle}>Settings</Text>
                                     </View>
                                 </TouchableOpacity>
@@ -95,10 +100,12 @@ const Profile = ({ navigation }) => {
 
                     <View style={styles.container}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: -50, marginBottom: -30 }}>
-                            <Image style={{ width: 25 }} resizeMode='contain' source={require('../../assets/images/icons/user-plus.png')} />
+                            {/* <Image style={{ width: 25 }} resizeMode='contain' source={require('../../assets/images/icons/user-plus.png')} /> */}
+                            <IconAntDesign name='adduser' size={22} color={Colors.dark} />
+
                             <Image style={{ width: 100 }} resizeMode='contain' source={require('../../assets/logo.png')} />
                             <TouchableOpacity onPress={toggleModal}>
-                                <Image style={{ width: 25 }} resizeMode='contain' source={require('../../assets/images/icons/menu-vertical.png')} />
+                                <IconEntypo name='dots-three-vertical' size={20} color={Colors.dark} />
                             </TouchableOpacity>
                         </View>
 
@@ -152,7 +159,7 @@ const Profile = ({ navigation }) => {
                             options={{
                                 tabBarIcon: ({ focused }) => (
                                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                        <Image source={require('../../assets/images/icons/menu-grid-outline.png')} resizeMode='contain' style={{ height: 20, width: 20, marginBottom: 3, tintColor: focused ? Colors.dark : Colors.darkLight }} />
+                                        <IconFeather name='grid' color={focused ? Colors.dark : Colors.darkLight} size={20} style={{ height: 20, width: 20, marginBottom: 3 }} />
                                     </View>
                                 )
                             }}
@@ -163,7 +170,8 @@ const Profile = ({ navigation }) => {
                             options={{
                                 tabBarIcon: ({ focused }) => (
                                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                        <Image source={require('../../assets/images/icons/round-favorite.png')} resizeMode='contain' style={{ height: 20, width: 20, marginBottom: 3, tintColor: focused ? Colors.dark : Colors.darkLight }} />
+                                        <IconFeather name='heart' color={focused ? Colors.dark : Colors.darkLight} size={20} style={{ height: 20, width: 20, marginBottom: 3 }} />
+
                                     </View>
                                 )
                             }}
@@ -175,7 +183,9 @@ const Profile = ({ navigation }) => {
                             options={{
                                 tabBarIcon: ({ focused }) => (
                                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                        <Image source={require('../../assets/images/icons/list-svgrepo-com.png')} resizeMode='contain' style={{ height: 20, width: 20, marginBottom: 3, tintColor: focused ? Colors.dark : Colors.darkLight }} />
+                                        {/* <Image source={require('../../assets/images/icons/list-svgrepo-com.png')} resizeMode='contain' style={{ height: 20, 
+                                            width: 20, marginBottom: 3, tintColor: focused ? Colors.dark : Colors.darkLight }} /> */}
+                                        <IconOcticons name='checklist' color={focused ? Colors.dark : Colors.darkLight} size={20} style={{ height: 20, width: 20, marginBottom: 3 }} />
                                     </View>
                                 )
                             }}

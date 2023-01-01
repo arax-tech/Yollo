@@ -15,22 +15,22 @@ const Login = ({ navigation }) => {
 
 
     const [type, setType] = useState('phone')
-    const [phone, setPhone] = useState('');
+    const [phone, setPhone] = useState('+92-356-46189');
     const [email, setEmail] = useState(null);
 
-    const LoginFunction = () => {
+    const LoginFunction = async () => {
         if (type === 'phone') {
             if (phone === null) {
                 ToastAndroid.show("Phone is required...", ToastAndroid.SHORT);
             } else {
-                dispatch(LoginAction(phone, email, type));
+                await dispatch(LoginAction(phone, email, type));
             }
 
         } else {
             if (email === null) {
                 ToastAndroid.show("Email is required...", ToastAndroid.SHORT);
             } else {
-                dispatch(LoginAction(phone, email, type));
+                await dispatch(LoginAction(phone, email, type));
             }
         }
     }

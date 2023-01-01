@@ -4,6 +4,7 @@ import Colors from '../../constants/Colors'
 import Fonts from '../../constants/Fonts'
 import { useSelector } from 'react-redux'
 import Loading from './Loading'
+import { IconAntDesign } from './Icons'
 
 const ProfileInfo = () => {
     const { loading, user, tags } = useSelector((state) => state.auth);
@@ -23,7 +24,7 @@ const ProfileInfo = () => {
                     {
                         tags?.map((tag, index) => (
                             <TouchableOpacity key={index} style={styles.tagButton}>
-                                <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/cup-hot.png')} />
+                                <IconAntDesign name='tags' size={15} color={"#BE7C5E"} style={{ marginHorizontal: 2 }} />
                                 <Text style={styles.tagButtonText}>{tag.name}</Text>
                             </TouchableOpacity>
                         ))

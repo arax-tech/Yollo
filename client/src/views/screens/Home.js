@@ -1,21 +1,37 @@
 import { Button, Dimensions, FlatList, Image, Share, StatusBar, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Colors from '../../constants/Colors'
 import Fonts from '../../constants/Fonts'
 
 import Modal from "react-native-modal";
 import { PrimaryButton } from '../components/Button'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../components/Loading'
+import { IconAntDesign, IconEntypo, IconFeather, IconFontAwesome, IconIonicons, IconMaterialCommunityIcons, IconSimpleLineIcons } from '../components/Icons'
+import { SVGShare } from '../components/Svgs'
+import { PostsAction } from '../../redux/actions/PostAction'
+import { PostLkeAction, PostViewAction } from '../../redux/actions/ReactionAction'
+
+import { throttle } from 'throttle-debounce';
 
 
+const Home = ({ navigation }) => {
 
-const Home = ({ navigation, route }) => {
 
-
+    const dispatch = useDispatch();
     const { loading, isAuthenticated, user } = useSelector((state) => state.auth);
+    const { loading: postLoading, posts } = useSelector((state) => state.post);
+
+    const [showLoading, setShowLoading] = useState(true);
+
+
+
     useEffect(() => {
+        setTimeout(() => {
+            setShowLoading(false)
+        }, 2000)
+
         navigation.addListener("focus", () => {
             if (user?.new_user === true) {
                 navigation.navigate("ProfileEdit");
@@ -30,11 +46,15 @@ const Home = ({ navigation, route }) => {
                 navigation.navigate("HomeNavigation");
             }
         }
-    }, [navigation, isAuthenticated, user])
+        const getPosts = async () => {
+            await dispatch(PostsAction());
+        }
+        getPosts();
+    }, [dispatch, navigation, isAuthenticated, user])
 
 
+    const [currentLike, setCurrentLike] = useState({ state: false, counter: 0 })
 
-    const [liked, setLiked] = useState(false);
     const [show, setShow] = useState(false);
     useEffect(() => {
         setTimeout(() => {
@@ -42,17 +62,25 @@ const Home = ({ navigation, route }) => {
         }, 1000)
     }, [show])
 
-    const likeHandel = (like) => {
-        setLiked(!like);
+    const likeHandel = (post_id) => {
+
+        setCurrentLike({
+            state: !currentLike.state,
+            counter: currentLike.counter + (currentLike.state ? -1 : 1)
+        })
         setShow(true);
     }
-    const images = [
-        { id: 1, imagrUrl: require('../../assets/images/home/1.png') },
-        { id: 2, imagrUrl: require('../../assets/images/home/2.png') },
-        { id: 3, imagrUrl: require('../../assets/images/home/3.png') },
-        { id: 4, imagrUrl: require('../../assets/images/home/4.png') },
-        { id: 5, imagrUrl: require('../../assets/images/home/5.png') },
-    ];
+
+
+
+
+
+    const likePostFunction = async (post_id) => {
+        dispatch(PostLkeAction(post_id));
+    }
+    const unLikePostFunction = async (post_id) => { }
+
+
 
     const onShare = async () => {
         try {
@@ -90,16 +118,38 @@ const Home = ({ navigation, route }) => {
     const deviceHeight = Dimensions.get("window").height;
 
 
+
+    // const [viewabilityConfiguration, setViewabilityConfiguration] = useState({
+    //     waitForInteraction: true,
+    //     viewAreaCoveragePercentThreshold: 40,
+    // });
+
+
+    // const [isRequest, setIsRequest] = useState(true);
+    // const onViewFunction = useCallback(async (viewableItems) => {
+    //     const { changed } = viewableItems;
+    //     await dispatch(PostViewAction(changed[0]?.key))
+    // }, [])
+
+    // viewabilityConfig={viewabilityConfiguration}
+    // onViewableItemsChanged={onViewFunction}
+
+
+
+
+
     return (
-        loading ? <Loading /> :
+        showLoading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
                 <StatusBar hidden />
                 <View style={styles.container}>
                     <FlatList
-                        data={images}
+                        data={posts}
                         pagingEnabled
-                        keyExtractor={item => item.id}
-                        renderItem={({ item, index }) => (
+                        keyExtractor={item => item._id.toString()}
+
+                        renderItem={({ item }) => (
+
                             <SafeAreaView>
 
 
@@ -165,25 +215,32 @@ const Home = ({ navigation, route }) => {
 
 
                                                 <TouchableOpacity onPress={toggleModal} style={{ flex: 1, alignItems: 'flex-end', padding: 15 }}>
-                                                    <Image source={require('../../assets/images/icons/model-close.png')} resizeMode='contain' style={{ height: 15, width: 15, marginBottom: 3 }} />
+                                                    {/* <Image source={require('../../assets/images/icons/model-close.png')} resizeMode='contain' style={{ height: 15, width: 15, marginBottom: 3 }} /> */}
+                                                    <IconAntDesign name='close' size={22} color={Colors.dark} style={{ marginBottom: 3 }} />
+
                                                 </TouchableOpacity>
 
 
                                                 <TouchableOpacity style={[styles.modelList, { marginTop: -40 }]} >
                                                     <View style={styles.modelInside}>
-                                                        <Image source={require('../../assets/images/icons/model-see-more.png')} resizeMode='contain' style={styles.modelImage} />
+                                                        {/* <Image source={require('../../assets/images/icons/model-see-more.png')} resizeMode='contain' style={styles.modelImage} /> */}
+                                                        <IconIonicons name='md-ellipsis-horizontal-circle' size={23} color={Colors.dark} style={{ marginRight: 10 }} />
+
                                                         <Text style={styles.modelTitle}>See more like this</Text>
                                                     </View>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity style={styles.modelList}>
                                                     <View style={styles.modelInside}>
-                                                        <Image source={require('../../assets/images/icons/mode-why-you-see.png')} resizeMode='contain' style={styles.modelImage} />
+                                                        <IconIonicons name='md-help-circle-outline' size={23} color={Colors.dark} style={{ marginRight: 10 }} />
+
+
+
                                                         <Text style={styles.modelTitle}>Why you seeing this post</Text>
                                                     </View>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity style={styles.modelList}>
                                                     <View style={styles.modelInside}>
-                                                        <Image source={require('../../assets/images/icons/model-hide-post.png')} resizeMode='contain' style={styles.modelImage} />
+                                                        <IconIonicons name='eye-off-outline' size={23} color={Colors.dark} style={{ marginRight: 10 }} />
                                                         <Text style={styles.modelTitle}>Hide post from andrew mate</Text>
                                                     </View>
                                                 </TouchableOpacity>
@@ -193,7 +250,7 @@ const Home = ({ navigation, route }) => {
                                                     toggleModal()
                                                 }} style={[styles.modelList, { borderBottomColor: 'transparent' }]} >
                                                     <View style={styles.modelInside}>
-                                                        <Image source={require('../../assets/images/icons/model-report.png')} resizeMode='contain' style={styles.modelImage} />
+                                                        <IconIonicons name='alert-circle-outline' size={23} color={"#FF375F"} style={{ marginRight: 10 }} />
                                                         <Text style={styles.modelTitle}>Report</Text>
                                                     </View>
                                                 </TouchableOpacity>
@@ -217,7 +274,7 @@ const Home = ({ navigation, route }) => {
                                             </TouchableOpacity>
                                             <Text style={{ color: 'transparent' }}>lorem isp dummy text</Text>
                                             <TouchableOpacity>
-                                                <Image style={{ tintColor: Colors.white }} source={require('../../assets/images/icons/search.png')} />
+                                                <IconAntDesign name='search1' size={23} color={Colors.white} />
                                             </TouchableOpacity>
                                         </View>
                                     </View>
@@ -232,8 +289,14 @@ const Home = ({ navigation, route }) => {
                                     <View style={{ position: 'absolute', zIndex: 1, bottom: 0, padding: 25 }}>
 
                                         <View style={{ flex: 1, flexDirection: 'row', alignItems: "center" }}>
-                                            <Image style={styles.userImage} source={require('../../assets/images/user-placeholder.png')} />
-                                            <Text style={styles.userName}>Andrew Mate</Text>
+                                            {
+                                                item?.user.image?.url ? (
+                                                    <Image style={styles.userImage} source={{ uri: item?.user.image?.url }} />
+                                                ) : (
+                                                    <Image style={styles.userImage} source={require('../../assets/images/placeholder.jpg')} />
+                                                )
+                                            }
+                                            <Text style={styles.userName}>{item?.user.first_name} {item?.user.last_name}</Text>
                                             <TouchableOpacity style={styles.followButton}>
                                                 <Text style={styles.followText}>Follow</Text>
                                             </TouchableOpacity>
@@ -241,7 +304,7 @@ const Home = ({ navigation, route }) => {
                                         </View>
 
                                         <View>
-                                            <Text style={styles.postTitle}>Lorem ipsum dolor sit amet, consectetur...</Text>
+                                            <Text style={styles.postTitle}>{item?.caption.length > 40 ? item?.caption.substring(0, 40) + "..." : item?.caption}</Text>
                                             <TouchableOpacity>
                                                 <Text style={styles.readMore}>Read More</Text>
                                             </TouchableOpacity>
@@ -253,64 +316,72 @@ const Home = ({ navigation, route }) => {
 
 
                                     {/* Main Image */}
-                                    <Image resizeMode="cover" style={styles.mainImage} source={item.imagrUrl} />
+                                    <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item?.image.url }} />
 
                                     {/* Right Side Icons */}
                                     <View style={styles.rightContainer}>
-                                        <TouchableOpacity>
-                                            <View style={{ alignItems: 'center' }}>
-                                                <Image style={styles.actionButton} resizeMode='contain' source={require('../../assets/images/icons/eye.png')} />
-                                                <Text style={styles.actionText}>15K</Text>
-                                            </View>
-                                        </TouchableOpacity>
+                                        <View style={{ flexGrow: 1, alignItems: "center", justifyContent: "center" }}>
+                                            <TouchableOpacity>
+                                                <View style={{ alignItems: 'center' }}>
+                                                    <IconSimpleLineIcons name='eye' size={23} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
+                                                    <Text style={styles.actionText}>{item?.views?.length}</Text>
+                                                </View>
+                                            </TouchableOpacity>
 
-                                        {
-                                            liked === true ? (
-                                                <TouchableOpacity onPress={() => likeHandel(liked)}>
-                                                    <View style={{ alignItems: 'center' }}>
-                                                        <Image style={styles.actionButton} resizeMode='contain' source={require('../../assets/images/icons/heart-red.png')} />
-                                                        <Text style={styles.actionText}>12K</Text>
-                                                    </View>
-                                                </TouchableOpacity>
-                                            ) : (
-                                                <TouchableOpacity onPress={() => likeHandel(liked)}>
-                                                    <View style={{ alignItems: 'center' }}>
-                                                        <Image style={styles.actionButton} resizeMode='contain' source={require('../../assets/images/icons/heart.png')} />
-                                                        <Text style={styles.actionText}>12K</Text>
-                                                    </View>
-                                                </TouchableOpacity>
-                                            )
-                                        }
-
-
-                                        <TouchableOpacity>
-                                            <View style={{ alignItems: 'center' }}>
-                                                <Image style={styles.actionButton} resizeMode='contain' source={require('../../assets/images/icons/comment.png')} />
-                                                <Text style={styles.actionText}>245</Text>
-                                            </View>
-                                        </TouchableOpacity>
-
-                                        <TouchableOpacity onPress={toggleRewardModal}>
-                                            <View style={{ alignItems: 'center' }}>
-                                                <Image style={styles.actionButton} resizeMode='contain' source={require('../../assets/images/icons/diamond-white.png')} />
-                                                <Text style={styles.actionText}>50</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={onShare}>
-                                            <View style={{ alignItems: 'center' }}>
-                                                <Image style={styles.actionButton} resizeMode='contain' source={require('../../assets/images/icons/share.png')} />
-                                                <Text style={styles.actionText}>60</Text>
-                                            </View>
-                                        </TouchableOpacity>
+                                            {
+                                                currentLike.state === true ? (
+                                                    <TouchableOpacity onPress={() => likeHandel(currentLike.state)}>
+                                                        <View style={{ alignItems: 'center' }}>
+                                                            <IconFontAwesome name='heart' size={21} color={"#FF2727"} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
+                                                            <Text style={styles.actionText}>{currentLike.counter}</Text>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                ) : (
+                                                    <TouchableOpacity onPress={() => likeHandel(currentLike.state)}>
+                                                        <View style={{ alignItems: 'center' }}>
+                                                            {/* <Image style={styles.actionButton} resizeMode='contain' source={require('../../assets/images/icons/heart.png')} /> */}
+                                                            <IconFontAwesome name='heart-o' size={21} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
+                                                            <Text style={styles.actionText}>{currentLike.counter}</Text>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                )
+                                            }
 
 
+                                            <TouchableOpacity>
+                                                <View style={{ alignItems: 'center' }}>
+                                                    <IconAntDesign name='message1' size={21} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
+                                                    {/* <Image style={[styles.actionButton, { width: 25 }]} resizeMode='contain' source={require('../../assets/images/icons/comment.png')} /> */}
+                                                    <Text style={styles.actionText}>{item?.comments.length}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+
+                                            <TouchableOpacity onPress={toggleRewardModal}>
+                                                <View style={{ alignItems: 'center' }}>
+                                                    {/* <IconMaterialCommunityIcons name='clock-plus-outline' size={26} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} /> */}
+                                                    <Image style={[styles.actionButton, { width: 25, marginBottom: 2 }]} resizeMode='contain' source={require('../../assets/images/icons/clock-plus.png')} />
+
+                                                    <Text style={styles.actionText}>{item?.diamonds}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={onShare} >
+                                                <View style={{ alignItems: 'center' }}>
+                                                    {/* <Image style={[styles.actionButton, { width: 25, marginBottom: 2 }]} resizeMode='contain' source={require('../../assets/images/icons/share.png')} /> */}
+                                                    {/* <IconFontAwesome name='share-square-o' size={23} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -7 }} /> */}
+                                                    <SVGShare color={Colors.primary} style={{ padding: 10, marginTop: 20, marginBottom: 2 }} />
+                                                    <Text style={styles.actionText}>{item?.shares?.length}</Text>
+                                                </View>
+                                            </TouchableOpacity>
 
 
-                                        <TouchableOpacity onPress={toggleModal}>
-                                            <View style={{ alignItems: 'center' }}>
-                                                <Image style={styles.actionButton} resizeMode='contain' source={require('../../assets/images/icons/menu.png')} />
-                                            </View>
-                                        </TouchableOpacity>
+
+
+                                            <TouchableOpacity onPress={toggleModal} >
+                                                <View style={{ alignItems: 'center' }}>
+                                                    <IconEntypo name='dots-three-horizontal' size={23} color={Colors.white} style={{ padding: 5, marginTop: 10 }} />
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
 
 
                                     </View>
@@ -321,7 +392,8 @@ const Home = ({ navigation, route }) => {
                                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-55%' }}>
                                                 <TouchableOpacity style={{ width: 134, height: 42, borderRadius: 20, backgroundColor: Colors.likeButtonBackground }}>
                                                     <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <Image source={require('../../assets/images/icons/clock.png')} resizeMode='contain' style={{ height: 20, width: 20, marginBottom: 3 }} />
+                                                        {/* <Image source={require('../../assets/images/icons/clock.png')} resizeMode='contain' style={{ height: 20, width: 20, marginBottom: 3 }} /> */}
+                                                        <IconFeather name='clock' size={20} color={Colors.dark} style={{ marginBottom: 3, marginRight: 3 }} />
                                                         <Text style={{ color: Colors.dark, fontFamily: Fonts.primary, fontSize: 16, fontWeight: '700', marginTop: -3, marginLeft: 2 }}>1 Sec</Text>
                                                     </View>
                                                 </TouchableOpacity>
@@ -343,20 +415,20 @@ export default Home
 
 const styles = StyleSheet.create({
     mainImage: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 },
-    userImage: { width: 40, height: 40 },
+    userImage: { width: 40, height: 40, borderRadius: 100 },
     userName: { fontFamily: Fonts.primary, fontSize: 14, fontWeight: '700', paddingLeft: 15, paddingRight: 15, color: Colors.white },
     followButton: { backgroundColor: Colors.white, padding: 5, borderRadius: 15, width: 75 },
     followText: { fontFamily: Fonts.primary, fontSize: 14, fontWeight: '700', color: Colors.red, textAlign: 'center' },
-    postTitle: { fontFamily: Fonts.primary, fontSize: 12, fontWeight: '600', color: Colors.white, marginTop: 10 },
+    postTitle: { fontFamily: Fonts.primary, fontSize: 12, fontWeight: '600', color: Colors.white, marginTop: 10, paddingRight: 30 },
     readMore: { fontFamily: Fonts.primary, fontSize: 10, fontWeight: '500', color: Colors.white, marginTop: 5 },
 
     following: { fontFamily: Fonts.primary, fontSize: 16, padding: 3, fontWeight: '500', color: Colors.white },
     pipe: { fontFamily: Fonts.primary, fontSize: 23, padding: 3, fontWeight: '500', color: Colors.white },
     forYou: { fontFamily: Fonts.primary, fontSize: 16, padding: 3, fontWeight: '700', color: Colors.white },
 
-    rightContainer: { alignItems: 'flex-end', justifyContent: 'flex-end', top: Dimensions.get('window').height - 450, padding: 25 },
+    rightContainer: { alignItems: 'flex-end', justifyContent: 'flex-end', top: Dimensions.get('window').height - 430, padding: 20 },
     actionButton: { padding: 10, marginTop: 20 },
-    actionText: { fontFamily: Fonts.primary, fontSize: 15, fontWeight: '700', color: Colors.white, textAlign: 'center' },
+    actionText: { fontFamily: Fonts.primary, fontSize: 12, fontWeight: '700', color: Colors.white, textAlign: 'center' },
 
 
     modelList: { flex: 1, flexDirection: 'row', alignItems: "center", borderBottomWidth: 2, borderBottomColor: Colors.borderGray },

@@ -58,7 +58,7 @@ router.put("/account/update", auth, user, async (request, response) => {
 router.put("/account/update/notification/settings", auth, user, async (request, response) => {
 
     try {
-        console.log(request.body);
+        // console.log(request.body);
         const _id = request.user.id;
         await User.findByIdAndUpdate(_id, request.body, { new: true });
         response.status(200).json({

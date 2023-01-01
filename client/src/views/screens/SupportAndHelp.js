@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SupportAction } from '../../redux/actions/SupportAction';
 import { HELP_AND_SUPPORT_RESET } from '../../redux/constants/SupportConstant';
 import Loading from '../components/Loading';
+import { IconAntDesign, IconFeather, IconMaterialIcons } from '../components/Icons';
 
 const SupportAndHelp = ({ navigation }) => {
 
@@ -60,7 +61,7 @@ const SupportAndHelp = ({ navigation }) => {
 
                         <View style={{ flexDirection: 'row', padding: 15, justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity style={styles.settingBackButton} onPress={() => navigation.goBack()}>
-                                <Image style={{ tintColor: Colors.dark }} resizeMode='contain' source={require('../../assets/images/icons/arrow-left.png')} />
+                                <IconAntDesign name='arrowleft' size={23} color={Colors.dark} />
                             </TouchableOpacity>
                             <View style={{ flex: 1, }}>
                                 <Text style={styles.headerTitle}>Support & Help</Text>
@@ -71,12 +72,14 @@ const SupportAndHelp = ({ navigation }) => {
 
 
                     <TouchableOpacity style={[styles.settingList, { marginTop: 1, borderBottomWidth: 10, borderColor: '#F5F5F5', paddingTop: 40 }]} onPress={() => navigation.navigate('Account')}>
-                        <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/phone.png')} />
+                        {/* <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/phone.png')} /> */}
+                        <IconFeather name='phone' size={20} color={Colors.dark} />
                         <Text style={styles.settingListTitle}>+351 210 935 394 </Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={[styles.settingList, { marginTop: 1, borderBottomWidth: 10, borderColor: '#F5F5F5' }]} onPress={() => navigation.navigate('Account')}>
-                        <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/phone.png')} />
+                        {/* <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/phone.png')} /> */}
+                        <IconFeather name='mail' size={20} color={Colors.dark} />
                         <Text style={styles.settingListTitle}>info@yello.com </Text>
                     </TouchableOpacity>
 
@@ -112,7 +115,8 @@ const SupportAndHelp = ({ navigation }) => {
                         <TouchableOpacity style={styles.inputGroup}>
                             <View style={[styles.formInput, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: 15 }]}>
                                 <Text>Attachment (optional)</Text>
-                                <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/attachment.png')} />
+                                {/* <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/attachment.png')} /> */}
+                                <IconMaterialIcons name='attach-file' size={20} color={Colors.dark} style={{ opacity: 0.4 }} />
                             </View>
                         </TouchableOpacity>
 

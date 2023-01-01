@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import Colors from '../../constants/Colors'
 import Fonts from '../../constants/Fonts'
 import { PrimaryButton } from '../components/Button';
-import { AuthUserAction, DisableAccountAction } from '../../redux/actions/AuthAction';
+import { DisableAccountAction } from '../../redux/actions/AuthAction';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../components/Loading';
 

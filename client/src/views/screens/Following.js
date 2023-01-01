@@ -14,15 +14,16 @@ const Following = () => {
     const { loading, user } = useSelector((state) => state.auth);
     const { loading: yelloLoading, status, message } = useSelector((state) => state.yello);
 
-    const UnFollowFunction = (unfollow_user_id) => {
-        dispatch(UnFollowAction(unfollow_user_id));
+    const UnFollowFunction = async (unfollow_user_id) => {
+        await dispatch(UnFollowAction(unfollow_user_id));
+        await dispatch(AuthUserAction());
+        await dispatch(AllSuggessionAction());
     }
     useEffect(() => {
         if (status && status === 230) {
             ToastAndroid.show(message, ToastAndroid.SHORT);
             dispatch({ type: UNFOLLOW_RESET })
-            dispatch(AuthUserAction());
-            dispatch(AllSuggessionAction());
+
         }
         dispatch(AllSuggessionAction());
     }, [dispatch, status, message])

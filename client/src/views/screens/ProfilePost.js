@@ -6,6 +6,7 @@ import Colors from '../../constants/Colors'
 
 import styles from './css/ProfileStyle'
 import ProfileInfo from '../components/ProfileInfo'
+import { IconAntDesign, IconFontAwesome, IconIonicons } from '../components/Icons'
 
 const ProfilePost = () => {
 
@@ -36,19 +37,19 @@ const ProfilePost = () => {
                                 <View style={styles.iconContainer}>
 
                                     <View style={styles.actionButton}>
-                                        <Image style={[styles.actionIcon, { width: 18, height: 18 }]} resizeMode='contain' source={require('../../assets/images/icons/eye.png')} />
+                                        <IconIonicons name='eye-outline' size={19} color={Colors.white} />
                                         <Text style={styles.actionText}>15K</Text>
                                     </View>
 
 
                                     <View style={styles.actionButton}>
-                                        <Image style={styles.actionIcon} resizeMode='contain' source={require('../../assets/images/icons/heart.png')} />
+                                        <IconAntDesign name='hearto' size={15} color={Colors.white} style={{ marginTop: 3 }} />
                                         <Text style={styles.actionText}>12K</Text>
                                     </View>
 
 
                                     <View style={styles.actionButton}>
-                                        <Image style={styles.actionIcon} resizeMode='contain' source={require('../../assets/images/icons/comment.png')} />
+                                        <IconAntDesign name='message1' size={15} color={Colors.white} style={{ marginTop: 3 }} />
                                         <Text style={styles.actionText}>245</Text>
                                     </View>
                                 </View>

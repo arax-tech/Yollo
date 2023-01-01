@@ -5,6 +5,7 @@ import Fonts from '../../constants/Fonts'
 import { ScrollView } from 'react-native-gesture-handler'
 
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { IconAntDesign, IconFeather, IconSimpleLineIcons } from '../components/Icons'
 
 const Reward = () => {
     return (
@@ -16,7 +17,7 @@ const Reward = () => {
 
                     <View style={{ flexDirection: 'row', padding: 15, justifyContent: 'center', alignItems: 'center' }}>
                         <View style={{ flex: 1, }}>
-                            <Text style={[styles.headerTitle, {fontSize : 25}]}>Rewards</Text>
+                            <Text style={[styles.headerTitle, { fontSize: 25 }]}>Rewards</Text>
                         </View>
                     </View>
 
@@ -32,7 +33,9 @@ const Reward = () => {
                     <Text style={styles.headerSubTitle}><Text style={{ color: Colors.primary }}>Congratulation!</Text> you have earned <Text style={{ fontWeight: '800' }}>100</Text> diamonds today</Text>
 
                     <View style={[styles.alignItemsCenter, { flexDirection: 'row', backgroundColor: '#EEEEEE', padding: 5, marginTop: 10 }]}>
-                        <Image style={styles.rewardErrorImage} resizeMode='contain' source={require('../../assets/images/icons/error-black.png')} />
+                        {/* <Image style={styles.rewardErrorImage} resizeMode='contain' source={require('../../assets/images/icons/error-black.png')} /> */}
+                        <IconAntDesign name='exclamationcircleo' size={13} color={Colors.dark} style={{ opacity: 0.4, marginRight: 3 }} />
+
                         <Text style={styles.rewardError}> Spend 30 more seconds to get another diamond</Text>
 
                     </View>
@@ -40,14 +43,11 @@ const Reward = () => {
                 </View>
 
                 <View style={[styles.rewardInfo, { borderColor: '#D9D9D9', borderTopWidth: 2, borderBottomWidth: 2, padding: 10 }]}>
-                    <Image style={{ marginHorizontal: 3 }} source={require('../../assets/images/icons/question-circle.png')} />
+                    <IconAntDesign name='questioncircleo' size={17} color={"#FF375F"} style={{ marginHorizontal: 4 }} />
                     <Text style={{ fontWeight: '700' }}>How Yollo Diamonds Works</Text>
                     <View style={styles.contentRight}>
-                        <Icon
-                            size={30}
-                            color={Colors.primary}
-                            name={'arrow-right'}
-                        />
+                        <IconAntDesign name='arrowright' size={20} color={Colors.primary} style={{ marginHorizontal: 4 }} />
+
                     </View>
                 </View>
 
@@ -65,9 +65,9 @@ const Reward = () => {
                     </View>
                     <View style={styles.contentRight}>
                         <TouchableOpacity style={[styles.rewardButton, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '70%' }]}>
-                            <Image source={require('../../assets/images/icons/arrow-out.png')} />
+                            <IconFeather name='arrow-up-left' size={15} color={"#AC4646"} />
                             <Text style={styles.notificationButtonText}>50</Text>
-                            <Image source={require('../../assets/images/icons/diamond-theme.png')} />
+                            <IconSimpleLineIcons name='diamond' size={15} color={Colors.primary} style={{}} />
                         </TouchableOpacity>
                     </View>
 
@@ -80,28 +80,14 @@ const Reward = () => {
                     </View>
                     <View style={styles.contentRight}>
                         <TouchableOpacity style={[styles.rewardButton, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '70%' }]}>
-                            <Image source={require('../../assets/images/icons/arrow-in.png')} />
+                            <IconFeather name='arrow-down-right' size={15} color={"#5CBA53"} />
                             <Text style={styles.notificationButtonText}>50</Text>
-                            <Image source={require('../../assets/images/icons/diamond-theme.png')} />
+                            <IconSimpleLineIcons name='diamond' size={15} color={Colors.primary} style={{}} />
                         </TouchableOpacity>
                     </View>
 
                 </View>
-                <View style={styles.rewardList}>
-                    <Image source={require('../../assets/images/reward/3.png')} />
-                    <View style={styles.rewardMainTitles}>
-                        <Text style={{ fontWeight: '700' }}> Alex Rodrigues </Text>
-                        <Text style={styles.rewardTime}>27 JAN 12:03 AM</Text>
-                    </View>
-                    <View style={styles.contentRight}>
-                        <TouchableOpacity style={[styles.rewardButton, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '70%' }]}>
-                            <Image source={require('../../assets/images/icons/arrow-out.png')} />
-                            <Text style={styles.notificationButtonText}>50</Text>
-                            <Image source={require('../../assets/images/icons/diamond-theme.png')} />
-                        </TouchableOpacity>
-                    </View>
 
-                </View>
 
                 <View style={styles.rewardList}>
                     <Image source={require('../../assets/images/reward/1.png')} />
@@ -111,9 +97,9 @@ const Reward = () => {
                     </View>
                     <View style={styles.contentRight}>
                         <TouchableOpacity style={[styles.rewardButton, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '70%' }]}>
-                            <Image source={require('../../assets/images/icons/arrow-out.png')} />
+                            <IconFeather name='arrow-up-left' size={15} color={"#AC4646"} />
                             <Text style={styles.notificationButtonText}>50</Text>
-                            <Image source={require('../../assets/images/icons/diamond-theme.png')} />
+                            <IconSimpleLineIcons name='diamond' size={15} color={Colors.primary} style={{}} />
                         </TouchableOpacity>
                     </View>
 
@@ -126,28 +112,49 @@ const Reward = () => {
                     </View>
                     <View style={styles.contentRight}>
                         <TouchableOpacity style={[styles.rewardButton, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '70%' }]}>
-                            <Image source={require('../../assets/images/icons/arrow-in.png')} />
+                            <IconFeather name='arrow-down-right' size={15} color={"#5CBA53"} />
                             <Text style={styles.notificationButtonText}>50</Text>
-                            <Image source={require('../../assets/images/icons/diamond-theme.png')} />
+                            <IconSimpleLineIcons name='diamond' size={15} color={Colors.primary} style={{}} />
                         </TouchableOpacity>
                     </View>
 
                 </View>
+
+
+
                 <View style={styles.rewardList}>
-                    <Image source={require('../../assets/images/reward/3.png')} />
+                    <Image source={require('../../assets/images/reward/1.png')} />
                     <View style={styles.rewardMainTitles}>
                         <Text style={{ fontWeight: '700' }}> Alex Rodrigues </Text>
                         <Text style={styles.rewardTime}>27 JAN 12:03 AM</Text>
                     </View>
                     <View style={styles.contentRight}>
                         <TouchableOpacity style={[styles.rewardButton, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '70%' }]}>
-                            <Image source={require('../../assets/images/icons/arrow-out.png')} />
+                            <IconFeather name='arrow-up-left' size={15} color={"#AC4646"} />
                             <Text style={styles.notificationButtonText}>50</Text>
-                            <Image source={require('../../assets/images/icons/diamond-theme.png')} />
+                            <IconSimpleLineIcons name='diamond' size={15} color={Colors.primary} style={{}} />
                         </TouchableOpacity>
                     </View>
 
                 </View>
+                <View style={styles.rewardList}>
+                    <Image source={require('../../assets/images/reward/2.png')} />
+                    <View style={styles.rewardMainTitles}>
+                        <Text style={{ fontWeight: '700' }}> Alex Rodrigues </Text>
+                        <Text style={styles.rewardTime}>27 JAN 12:03 AM</Text>
+                    </View>
+                    <View style={styles.contentRight}>
+                        <TouchableOpacity style={[styles.rewardButton, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '70%' }]}>
+                            <IconFeather name='arrow-down-right' size={15} color={"#5CBA53"} />
+                            <Text style={styles.notificationButtonText}>50</Text>
+                            <IconSimpleLineIcons name='diamond' size={15} color={Colors.primary} style={{}} />
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+
+
+
 
 
 
@@ -172,7 +179,7 @@ const styles = StyleSheet.create({
 
     rewardImage: { width: 230 },
     headerSubTitle: { fontFamily: Fonts.primary, fontSize: 18, fontWeight: '500', color: Colors.dark },
-    rewardInfo: { flexDirection: 'row', padding: 10, backgroundColor: Colors.white, marginTop: 2, marginBottom: 5 },
+    rewardInfo: { flexDirection: 'row', padding: 10, alignItems: "center", justifyContent: "center", backgroundColor: Colors.white, marginTop: 2, marginBottom: 5 },
     rewardList: { flexDirection: 'row', padding: 10, backgroundColor: Colors.white, marginTop: 2, marginBottom: 5, borderBottomColor: Colors.lightGray, borderBottomWidth: 1 },
     rewardErrorImage: { width: 15, height: 15, marginRight: 5 },
     rewardError: { fontFamily: Fonts.primary, color: Colors.dark, fontSize: 12.6, opacity: 0.4, },

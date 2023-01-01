@@ -9,6 +9,9 @@ const fileUpload = require("express-fileupload")
 const bodyParser = require("body-parser")
 const morgan = require("morgan")
 
+const cron = require('node-cron');
+
+
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -36,6 +39,43 @@ cloudinary.config({
 });
 
 
+// Model
+
+const Post = require("./models/Post");
+
+
+
+cron.schedule('0 */1 * * * *', async () => {
+    const posts = await Post.find();
+
+    posts?.map(async (post) => (
+        await Post.findByIdAndUpdate(post._id, {
+            $set: {
+                diamonds: post.diamonds > 0 ? post.diamonds - 1 : 0,
+            }
+        }, {
+            new: true,
+            useFindAndModify: false
+        })
+    ));
+
+    const NewPosts = await Post.find();
+
+    NewPosts?.map(async (post) => (
+        await Post.findByIdAndUpdate(post._id, {
+            $set: {
+                status: post.diamonds > 0 ? "Active" : "InActive"
+            }
+        }, {
+            new: true,
+            useFindAndModify: false
+        })
+    ));
+
+    console.log('Diamonds Update in a every 1 minutes');
+});
+
+
 // Auth Routes
 app.use("/api/auth", require("./routes/auth"))
 
@@ -43,6 +83,16 @@ app.use("/api/auth", require("./routes/auth"))
 app.use("/api/user", require("./routes/User/user"));
 app.use("/api/user/help/support", require("./routes/User/support"));
 app.use("/api/user/tag", require("./routes/User/tag"));
+
+
+// Posts
+app.use("/api/user/post", require("./routes/User/post"));
+
+app.use("/api/user/getstream", require("./routes/User/getstream"));
+
+app.use("/api/user/post", require("./routes/User/post"));
+app.use("/api/user/diamond", require("./routes/User/diamond"));
+app.use("/api/user/notification", require("./routes/User/notification"));
 
 // Server Listing At 
 app.listen(PORT, () => {

@@ -14,6 +14,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 
 import { launchImageLibrary } from 'react-native-image-picker';
+import { IconAntDesign } from '../components/Icons'
 
 
 
@@ -107,7 +108,7 @@ const ProfileEdit = ({ navigation }) => {
         setData({ ...data, [field]: text });
     }
 
-    const UpdateProfile = () => {
+    const UpdateProfile = async () => {
         if (data.first_name === null) {
             ToastAndroid.show('First name is required...', ToastAndroid.SHORT);
         } else if (data.last_name === null) {
@@ -125,19 +126,20 @@ const ProfileEdit = ({ navigation }) => {
         } else if (data.bio === null) {
             ToastAndroid.show('Bio is required...', ToastAndroid.SHORT);
         } else {
-            dispatch(ProfileUpdateAction(data.first_name, data.last_name, data.username, data.email, data.phone, gender, birthday, data.country, data.city, data.bio, data.new_user, image !== null ? image : null));
+            await dispatch(ProfileUpdateAction(data.first_name, data.last_name, data.username, data.email, data.phone, gender, birthday, data.country, data.city, data.bio, data.new_user, image !== null ? image : null));
+            await dispatch(AuthUserAction());
 
         }
     }
 
 
     const [tag, setTag] = useState(null);
-    const Createtag = () => {
+    const Createtag = async () => {
         if (tag === null) {
             ToastAndroid.show('Tag is required...', ToastAndroid.SHORT);
         } else {
-            dispatch(CreatetagAction(tag));
-
+            await dispatch(CreatetagAction(tag));
+            await dispatch(AuthUserAction());
         }
     }
 
@@ -145,12 +147,12 @@ const ProfileEdit = ({ navigation }) => {
         if (isUpdated && isUpdated === true) {
             ToastAndroid.show(message, ToastAndroid.SHORT);
             dispatch({ type: UPDATE_PROFILE_RESET });
-            dispatch(AuthUserAction());
+
         }
         if (isCreated && isCreated === true) {
             ToastAndroid.show(message, ToastAndroid.SHORT);
             dispatch({ type: CREATE_TAG_RESET });
-            dispatch(AuthUserAction());
+
         }
     }, [dispatch, isUpdated, isCreated, message])
 
@@ -180,7 +182,8 @@ const ProfileEdit = ({ navigation }) => {
 
                         <View style={{ flexDirection: 'row', padding: 15, justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity style={styles.settingBackButton} onPress={handleBackButtonClick}>
-                                <Image style={{ tintColor: Colors.dark }} resizeMode='contain' source={require('../../assets/images/icons/arrow-left.png')} />
+                                {/* <Image style={{ tintColor: Colors.dark }} resizeMode='contain' source={require('../../assets/images/icons/arrow-left.png')} /> */}
+                                <IconAntDesign name='arrowleft' size={23} color={Colors.dark} />
                             </TouchableOpacity>
                             <View style={{ flex: 1, }}>
                                 <Text style={styles.headerTitle}>Edit Profile</Text>
@@ -194,12 +197,12 @@ const ProfileEdit = ({ navigation }) => {
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
                             {
                                 imagePreview !== null ? (
-                                    <Image style={{ width: 130, height: 130, borderRadius: 100 }} resizeMode='contain' source={{ uri: imagePreview }} />
+                                    <Image style={{ width: 130, height: 130, borderRadius: 10 }} resizeMode='contain' source={{ uri: imagePreview }} />
 
                                 ) : (
 
                                     user?.image ? (
-                                        <Image style={{ width: 130, height: 130, borderRadius: 100 }} resizeMode='contain' source={{ uri: user?.image.url }} />
+                                        <Image style={{ width: 130, height: 130, borderRadius: 10 }} resizeMode='contain' source={{ uri: user?.image.url }} />
                                     ) : (
                                         <Image style={{ width: 130, height: 130, }} resizeMode='contain' source={require('../../assets/images/profile-placeholder.png')} />
                                     )
@@ -322,7 +325,7 @@ const ProfileEdit = ({ navigation }) => {
                         {
                             tags?.map((tag, index) => (
                                 <TouchableOpacity key={index} style={styles.tagButton}>
-                                    <Image style={{ width: 20 }} resizeMode='contain' source={require('../../assets/images/tags/cup-hot.png')} />
+                                    <IconAntDesign name='tags' size={15} color={"#BE7C5E"} style={{ marginHorizontal: 2 }} />
                                     <Text style={styles.tagButtonText}>{tag.name}</Text>
                                 </TouchableOpacity>
                             ))

@@ -6,10 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../components/Loading';
 import { AuthUserAction, NotificationSettingUpdateAction } from '../../redux/actions/AuthAction';
 import { UPDATE_NOTIFICATION_SETTING_RESET } from '../../redux/constants/AuthConstant';
-
-const deviceWidth = Dimensions.get("window").width;
-const deviceHeight = Dimensions.get("window").height;
-
+import { IconAntDesign } from '../components/Icons';
 
 const NotificationSettings = ({ navigation }) => {
 
@@ -17,8 +14,6 @@ const NotificationSettings = ({ navigation }) => {
 
     const { loading, user } = useSelector((state) => state.auth);
     const { loading: updateLoading, message, isUpdated } = useSelector((state) => state.updateProfile);
-
-
 
     const [items, setItems] = useState([
         { id: 1, checked: user?.notification_settings[0] ? user?.notification_settings[0].checked : true, name: "Push Notification", },
@@ -32,7 +27,7 @@ const NotificationSettings = ({ navigation }) => {
         { id: 9, checked: user?.notification_settings[0] ? user?.notification_settings[8].checked : true, name: "Repost", },
     ]);
 
-    const getValue = (id) => {
+    const getValue = async (id) => {
 
         let newItems = [...items];
         let index = newItems.findIndex(el => el.id === id);
@@ -44,8 +39,7 @@ const NotificationSettings = ({ navigation }) => {
         }
 
         setItems(newItems);
-        dispatch(NotificationSettingUpdateAction(newItems));
-
+        await dispatch(NotificationSettingUpdateAction(newItems));
     }
 
 
@@ -56,10 +50,9 @@ const NotificationSettings = ({ navigation }) => {
         if (isUpdated && isUpdated === true) {
             ToastAndroid.show(message, ToastAndroid.SHORT);
             dispatch({ type: UPDATE_NOTIFICATION_SETTING_RESET });
-            dispatch(AuthUserAction());
-            navigation.navigate("NotificationSettings")
+
         }
-    }, [dispatch, navigation, isUpdated, message])
+    }, [dispatch, isUpdated, message])
 
 
 
@@ -79,7 +72,7 @@ const NotificationSettings = ({ navigation }) => {
 
                     <View style={{ flexDirection: 'row', padding: 15, justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity style={styles.settingBackButton} onPress={() => navigation.goBack()}>
-                            <Image style={{ tintColor: Colors.dark }} resizeMode='contain' source={require('../../assets/images/icons/arrow-left.png')} />
+                            <IconAntDesign name='arrowleft' size={23} color={Colors.dark} />
                         </TouchableOpacity>
                         <View style={{ flex: 1, }}>
                             <Text style={styles.headerTitle}>Notification Settings</Text>

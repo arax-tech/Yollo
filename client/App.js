@@ -20,12 +20,13 @@ import Account from './src/views/screens/Account';
 import NotificationSettings from './src/views/screens/NotificationSettings';
 import SupportAndHelp from './src/views/screens/SupportAndHelp';
 
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import Store from './src/redux/Store';
 import { AuthUserAction } from './src/redux/actions/AuthAction';
 import AuthWelcome from './src/views/screens/AuthWelcome';
 import AccountDisabled from './src/views/screens/AccountDisabled';
 import DeleteAccount from './src/views/screens/DeleteAccount';
+import PostCreateSuccess from './src/views/screens/PostCreateSuccess';
 
 
 
@@ -35,6 +36,8 @@ import DeleteAccount from './src/views/screens/DeleteAccount';
 const Stack = createNativeStackNavigator();
 
 function App() {
+
+
     const [show, setShow] = useState(true);
     useEffect(() => {
         setTimeout(() => {
@@ -44,20 +47,14 @@ function App() {
 
     useEffect(() => {
         Store.dispatch(AuthUserAction());
-    }, []);
+    }, [Store.dispatch]);
 
     return (
         <Provider store={Store}>
             <NavigationContainer>
                 <Stack.Navigator initialRouteName='Splash'>
 
-                    {
-                        show ? (
-                            <Stack.Screen options={{ headerShown: false }} name="Splash" component={Splash} />
-                        )
-                            :
-                            null
-                    }
+                    {show ? <Stack.Screen options={{ headerShown: false }} name="Splash" component={Splash} /> : null}
                     <Stack.Screen options={{ headerShown: false }} name="Check" component={Check} />
                     <Stack.Screen options={{ headerShown: false }} name="AuthWelcome" component={AuthWelcome} />
                     <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
@@ -67,6 +64,7 @@ function App() {
                     <Stack.Screen options={{ headerShown: false }} name="Home" component={Home} />
                     <Stack.Screen options={{ headerShown: false }} name="Profile" component={Profile} />
                     <Stack.Screen options={{ headerShown: false }} name="CreateSuccess" component={CreateSuccess} />
+                    <Stack.Screen options={{ headerShown: false }} name="PostCreateSuccess" component={PostCreateSuccess} />
 
                     <Stack.Screen options={{ headerShown: false }} name="ProfileTabs" component={ProfileTabs} />
                     <Stack.Screen options={{ headerShown: false }} name="Settings" component={Settings} />

@@ -8,7 +8,7 @@ const deviceWidth = Dimensions.get("window").width;
 const styles = StyleSheet.create({
     actionButton: { flex: 1, alignItems: 'center', justifyContent: 'space-between' },
     actionIcon: { width: 15, height: 15, },
-    actionText: { fontFamily: Fonts.primary, fontSize: 10, fontWeight: '600', color: Colors.white, textAlign: 'center' },
+    actionText: { fontFamily: Fonts.primary, fontSize: 10, fontWeight: '600', color: Colors.white, textAlign: 'center', marginTop: -2 },
     imageContainer: {},
     mainImage: { width: deviceWidth / 3 - 8, height: deviceHeight / 3, marginVertical: 5, borderRadius: 5, margin: 2, marginTop: 10 },
     iconContainer: { display: 'flex', flexDirection: 'row', marginBottom: -45, marginTop: 4, zIndex: 999 }

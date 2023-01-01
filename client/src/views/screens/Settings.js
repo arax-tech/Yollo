@@ -5,6 +5,7 @@ import Fonts from '../../constants/Fonts'
 import { useDispatch, useSelector } from 'react-redux';
 import { AuthLogoutAction } from '../../redux/actions/AuthAction';
 import Loading from '../components/Loading';
+import { IconAntDesign, IconEntypo, IconFeather, IconFontAwesome5, IconSimpleLineIcons } from '../components/Icons';
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -36,7 +37,7 @@ const Settings = ({ navigation }) => {
 
                     <View style={{ flexDirection: 'row', padding: 15, justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity style={styles.settingBackButton} onPress={() => navigation.goBack()}>
-                            <Image style={{ tintColor: Colors.dark }} resizeMode='contain' source={require('../../assets/images/icons/arrow-left.png')} />
+                            <IconAntDesign name='arrowleft' size={23} color={Colors.dark} />
                         </TouchableOpacity>
                         <View style={{ flex: 1, }}>
                             <Text style={styles.headerTitle}>Settings</Text>
@@ -54,39 +55,45 @@ const Settings = ({ navigation }) => {
                     <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/user-settings.png')} />
                     <Text style={styles.settingListTitle}>Account </Text>
                     <View style={styles.contentRight}>
-                        <Image source={require('../../assets/images/icons/settings/arrow-right.png')} />
+                        {/* <Image source={require('../../assets/images/icons/settings/arrow-right.png')} /> */}
+                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
                     </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
-                    <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/memories.png')} />
+                    {/* <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/memories.png')} /> */}
+
+                    <IconAntDesign name='calendar' size={25} color={Colors.primary} />
+
+
                     <Text style={styles.settingListTitle}>Memories </Text>
                     <View style={styles.contentRight}>
-                        <Image source={require('../../assets/images/icons/settings/arrow-right.png')} />
+                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
                     </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={() => navigation.navigate('NotificationSettings')}>
-                    <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/notification-setting.png')} />
+                    <IconEntypo name='notification' size={25} color={Colors.primary} />
                     <Text style={styles.settingListTitle}>Notification Setting </Text>
                     <View style={styles.contentRight}>
-                        <Image source={require('../../assets/images/icons/settings/arrow-right.png')} />
+                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
                     </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
-                    <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/share-profile.png')} />
+                    <IconAntDesign name='sharealt' size={25} color={Colors.primary} />
                     <Text style={styles.settingListTitle}>Share Profile </Text>
                     <View style={styles.contentRight}>
-                        <Image source={require('../../assets/images/icons/settings/arrow-right.png')} />
+                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
                     </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
-                    <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/question-circle.png')} />
+                    <IconAntDesign name='questioncircleo' size={25} color={Colors.primary} />
+
                     <Text style={styles.settingListTitle}>FAQ </Text>
                     <View style={styles.contentRight}>
-                        <Image source={require('../../assets/images/icons/settings/arrow-right.png')} />
+                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
                     </View>
                 </TouchableOpacity>
 
@@ -94,7 +101,7 @@ const Settings = ({ navigation }) => {
                     <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/terms.png')} />
                     <Text style={styles.settingListTitle}>Terms & Condition </Text>
                     <View style={styles.contentRight}>
-                        <Image source={require('../../assets/images/icons/settings/arrow-right.png')} />
+                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
                     </View>
                 </TouchableOpacity>
 
@@ -102,23 +109,25 @@ const Settings = ({ navigation }) => {
                     <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/privacy-policy.png')} />
                     <Text style={styles.settingListTitle}>Privacy Policy </Text>
                     <View style={styles.contentRight}>
-                        <Image source={require('../../assets/images/icons/settings/arrow-right.png')} />
+                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
                     </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={() => navigation.navigate('SupportAndHelp')}>
-                    <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/support-help.png')} />
+                    {/* <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/support-help.png')} /> */}
+                    <IconFontAwesome5 name='headset' size={25} color={Colors.primary} />
                     <Text style={styles.settingListTitle}>Support & Help </Text>
                     <View style={styles.contentRight}>
-                        <Image source={require('../../assets/images/icons/settings/arrow-right.png')} />
+                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
                     </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={LogoutFunction}>
-                    <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/logout.png')} />
+                    {/* <Image style={styles.settingIcon} source={require('../../assets/images/icons/settings/logout.png')} /> */}
+                    <IconSimpleLineIcons name='logout' size={25} color={Colors.primary} />
                     <Text style={styles.settingListTitle}>Logout </Text>
                     <View style={styles.contentRight}>
-                        <Image source={require('../../assets/images/icons/settings/arrow-right.png')} />
+                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
                     </View>
                 </TouchableOpacity>
             </SafeAreaView >

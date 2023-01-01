@@ -1,0 +1,28 @@
+export const POSTS_REQUEST = "POSTS_REQUEST";
+export const POSTS_SUCCESS = "POSTS_SUCCESS";
+export const POSTS_FAIL = "POSTS_FAIL";
+export const POSTS_RESET = "POSTS_RESET";
+
+export const CREATE_POST_REQUEST = "CREATE_POST_REQUEST";
+export const CREATE_POST_SUCCESS = "CREATE_POST_SUCCESS";
+export const CREATE_POST_FAIL = "CREATE_POST_FAIL";
+export const CREATE_POST_RESET = "CREATE_POST_RESET";
+
+
+
+
+
+
+
+
+
+
+
+export const VIEW_POST_REQUEST = "VIEW_POST_REQUEST";
+export const VIEW_POST_SUCCESS = "VIEW_POST_SUCCESS";
+export const VIEW_POST_FAIL = "VIEW_POST_FAIL";
+export const VIEW_POST_RESET = "VIEW_POST_RESET";
+
+
+export const CLEAR_ERRORS = "CLEAR_ERRORS";
+

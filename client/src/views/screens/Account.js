@@ -10,7 +10,8 @@ import { PrimaryButton } from '../components/Button';
 import { AccountUpdateAction, AuthUserAction } from '../../redux/actions/AuthAction';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../components/Loading';
-import { UPDATE_ACCOUNT_REQUEST } from '../../redux/constants/AuthConstant';
+import { UPDATE_ACCOUNT_RESET } from '../../redux/constants/AuthConstant';
+import { IconAntDesign, IconFeather, IconFontAwesome5, IconIonicons } from '../components/Icons';
 
 const Account = ({ navigation }) => {
 
@@ -30,7 +31,7 @@ const Account = ({ navigation }) => {
         setData({ ...data, [field]: text });
     }
 
-    const UpdateAccount = () => {
+    const UpdateAccount = async () => {
         if (data.email === null) {
             ToastAndroid.show('Email is required...', ToastAndroid.SHORT);
         } else if (data.recovery_email === null) {
@@ -40,15 +41,15 @@ const Account = ({ navigation }) => {
         } else if (visibility === null) {
             ToastAndroid.show('Profile Visibility is required...', ToastAndroid.SHORT);
         } else {
-            dispatch(AccountUpdateAction(data.email, data.recovery_email, data.phone, visibility));
-            dispatch(AuthUserAction());
+            await dispatch(AccountUpdateAction(data.email, data.recovery_email, data.phone, visibility));
+            await dispatch(AuthUserAction());
         }
     }
 
     useEffect(() => {
         if (isUpdated && isUpdated === true) {
             ToastAndroid.show(message, ToastAndroid.SHORT);
-            dispatch({ type: UPDATE_ACCOUNT_REQUEST });
+            dispatch({ type: UPDATE_ACCOUNT_RESET });
         }
     }, [dispatch, isUpdated, message])
 
@@ -83,7 +84,7 @@ const Account = ({ navigation }) => {
 
                         <View style={{ flexDirection: 'row', padding: 15, justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity style={styles.settingBackButton} onPress={() => navigation.goBack()}>
-                                <Image style={{ tintColor: Colors.dark }} resizeMode='contain' source={require('../../assets/images/icons/arrow-left.png')} />
+                                <IconAntDesign name='arrowleft' size={23} color={Colors.dark} />
                             </TouchableOpacity>
                             <View style={{ flex: 1, }}>
                                 <Text style={styles.headerTitle}>Account</Text>
@@ -143,7 +144,7 @@ const Account = ({ navigation }) => {
                     <TouchableOpacity style={[styles.settingList, { marginTop: 1, borderTopWidth: 2, borderBottomWidth: 2, borderColor: '#F5F5F5' }]} onPress={() => navigation.navigate('AccountDisabled')}>
                         <Text style={styles.settingListTitle}>Disable account </Text>
                         <View style={styles.contentRight}>
-                            <Image source={require('../../assets/images/icons/settings/arrow-right.png')} />
+                            <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
                         </View>
                     </TouchableOpacity>
 
@@ -151,7 +152,8 @@ const Account = ({ navigation }) => {
                     <TouchableOpacity style={[styles.settingList, { marginTop: 1, borderTopWidth: 2, borderBottomWidth: 2, borderColor: '#F5F5F5' }]} onPress={() => navigation.navigate('DeleteAccount')}>
                         <Text style={styles.settingListTitle}>Permanently delete account </Text>
                         <View style={styles.contentRight}>
-                            <Image source={require('../../assets/images/icons/settings/delete-regular.png')} />
+                            <IconFeather name='trash-2' size={20} color='#FF375F' />
+                            {/* <Image source={require('../../assets/images/icons/settings/delete-regular.png')} /> */}
                         </View>
                     </TouchableOpacity>
 
