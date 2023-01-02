@@ -9,7 +9,7 @@ const AuthWelcome = ({ navigation }) => {
     useEffect(() => {
         setTimeout(() => {
             setShow(false)
-        }, 100)
+        }, 3000)
 
         show === false ? (
             navigation.navigate("Home")

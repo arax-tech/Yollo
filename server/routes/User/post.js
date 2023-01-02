@@ -11,12 +11,35 @@ const user = require("../../middleware/user")
 
 // Model 
 const Post = require("../../models/Post")
+const Notification = require("../../models/Notification")
+const Reaction = require("../../models/Reaction")
 
 
 // All Posts
 router.get("/", auth, user, async (request, response) => {
     try {
         const posts = await Post.find({ status: "Active" }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.user", "first_name last_name image");
+        response.status(200).json({
+            status: 200,
+            posts: posts
+        });
+    }
+    catch (error) {
+        response.status(500).json({
+            status: 500,
+            message: error.message
+        });
+    }
+})
+
+
+// My Following Posts
+
+router.get("/my-following-posts", auth, user, async (request, response) => {
+    try {
+        console.log(request.user.following[0].user.toString())
+        // { user: { $in: request.user.following[0].user.toString() } }
+        const posts = await Post.find({ user: { $in: [request.user.following.map((user) => (user.user.toString()))] } }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.user", "first_name last_name image");
         response.status(200).json({
             status: 200,
             posts: posts
@@ -144,16 +167,35 @@ router.put("/comment/store/:post_id", auth, user, async (request, response) => {
         const { comment } = request.body;
 
         const post = await Post.findById(request.params.post_id);
+
         post.comments.push({
             user: request.user.id,
             comment,
             createAt: new Date(Date.now()),
         });
 
+
         await post.save();
+
+        // Notification
+        await Notification.create({
+            user_id: post?.user.toString(),
+            user: request.user.id,
+            description: "comment on your photo",
+            type: "Comment"
+        });
+
+        await Reaction.create({
+            user: post?.user.toString(),
+            reaction_user: request.user.id,
+            description: "comment on your photo",
+        });
+
+        const newPost = await Post.findById(request.params.post_id);
 
         response.status(201).json({
             status: 201,
+            updatedComments: newPost.comments,
             message: "Comment Create Successfully...",
         });
 
@@ -181,9 +223,11 @@ router.delete("/comment/delete/:post_id/:comment_id", auth, async (request, resp
 
 
         await post.save();
+        const newPost = await Post.findById(request.params.post_id);
 
         response.status(200).json({
             status: 200,
+            updatedComments: newPost.comments,
             message: "Comment Delete Successfully...",
         });
 
@@ -255,6 +299,22 @@ router.put("/like/:post_id", auth, user, async (request, response) => {
         });
 
         await post.save();
+
+        // Notification
+        await Notification.create({
+            user_id: post?.user.toString(),
+            user: request.user.id,
+            description: "like your photo",
+            type: "Like"
+        });
+
+        // Reactions
+        await Reaction.create({
+            user: post?.user.toString(),
+            reaction_user: request.user.id,
+            description: "like your photo",
+        });
+
 
         response.status(200).json({
             status: 200,

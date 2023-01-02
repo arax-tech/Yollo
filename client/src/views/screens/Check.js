@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View, SafeAreaView } from 'react-native'
 
 import Colors from '../../constants/Colors'
 

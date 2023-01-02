@@ -33,8 +33,8 @@ const userSchema = new mongoose.Schema({
             name: { type: String },
         }
     ],
-    followers: [{ user_id: { type: mongoose.Schema.ObjectId, ref: "User", required: true } }],
-    following: [{ user_id: { type: mongoose.Schema.ObjectId, ref: "User", required: true } }],
+    followers: [{ user: { type: mongoose.Schema.ObjectId, ref: "User", required: true } }],
+    following: [{ user: { type: mongoose.Schema.ObjectId, ref: "User", required: true } }],
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     tokens: [

@@ -12,6 +12,7 @@ const router = express.Router()
 const auth = require("../middleware/auth")
 
 // Models 
+const Diamond = require("../models/Diamond");
 const User = require("../models/User");
 
 
@@ -43,7 +44,16 @@ router.post('/login', async (request, response) => {
                 });
             } else {
                 // Save new User Phone
+
                 await User.create({ phone: request.body.phone, otp: otp, status: 'Active' });
+                const user = await User.findOne({ email: email });
+                await Diamond.create({
+                    user: user._id,
+                    diamonds: 1000
+                });
+
+
+
 
                 response.status(200).json({
                     status: 200,
@@ -120,7 +130,7 @@ router.post('/verify', async (request, response) => {
                 httpOnly: true
             });
 
-            const authuser = await User.findById(loginUser._id).select('-createAt -password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user_id', "image username last_name first_name ").populate('followers.user_id', "image username last_name first_name ");
+            const authuser = await User.findById(loginUser._id).select('-createAt -password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ");
 
             response.status(200).json({
                 status: 202,

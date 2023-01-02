@@ -42,8 +42,6 @@ router.get("/reward/store", auth, user, async (request, response) => {
 
 
         if (diamond) {
-
-
             await Diamond.findByIdAndUpdate(diamond._id, {
                 $set: {
                     diamonds: diamond.diamonds + request.body.diamonds,

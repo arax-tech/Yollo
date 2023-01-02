@@ -3,10 +3,7 @@ import { StyleSheet, View, Text, Button, ScrollView } from "react-native";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 
 const Sheet = () => {
-    // hooks
     const sheetRef = useRef(0);
-
-    // variables
     const data = useMemo(
         () =>
             Array(50)
@@ -15,9 +12,9 @@ const Sheet = () => {
         []
     );
     const snapPoints = useMemo(() => ["25%", "50%", "75%"], []);
-    
+
     const [openModel, setOpenModel] = useState(0);
-    
+
     // callbacks
     const handleSheetChange = useCallback((index) => {
         console.log("handleSheetChange", index);

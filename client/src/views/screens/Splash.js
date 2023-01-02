@@ -1,6 +1,5 @@
-import { Dimensions, Image, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Image, StatusBar, StyleSheet, SafeAreaView, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import Colors from '../../constants/Colors'
 import Fonts from '../../constants/Fonts'
 import { useSelector } from 'react-redux'

@@ -6,14 +6,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
 import Notification from '../screens/Notification';
 import Reward from '../screens/Reward';
-import Profile from '../screens/Profile';
 
 
 
 import Colors from '../../constants/Colors';
-import CreatePost from '../screens/CreatePost';
+import CreatePost from '../screens/Post/CreatePost';
 import LinearGradient from 'react-native-linear-gradient';
 import { IconAntDesign, IconIonicons, IconSimpleLineIcons } from '../components/Icons';
+import Profile from '../screens/Profile/Profile';
 
 
 

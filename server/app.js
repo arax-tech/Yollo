@@ -11,7 +11,6 @@ const morgan = require("morgan")
 
 const cron = require('node-cron');
 
-
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -25,6 +24,8 @@ app.use(fileUpload());
 app.use(morgan("dev"));
 
 app.use(express.static("public"));
+
+
 
 
 // Database 
@@ -42,6 +43,7 @@ cloudinary.config({
 // Model
 
 const Post = require("./models/Post");
+const auth = require("./middleware/auth");
 
 
 
@@ -72,8 +74,15 @@ cron.schedule('0 */1 * * * *', async () => {
         })
     ));
 
-    console.log('Diamonds Update in a every 1 minutes');
+
+    var currentdate = new Date();
+    var datetime = "Date & Time: " + currentdate.getDate() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getFullYear() + " | "
+        + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+
+    console.log(`Diamonds Update at ${datetime}`);
 });
+
+
 
 
 // Auth Routes

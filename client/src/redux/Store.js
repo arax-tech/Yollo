@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { AuthReducer, updateProfileReducer } from './reducers/AuthReducer';
 import { postReducer } from './reducers/PostReducer';
-import { reactionReducer } from './reducers/ReactionReducer';
+import { commentModeReducer, reactionReducer } from './reducers/ReactionReducer';
 import { supportReducer } from './reducers/SupportReducer';
 import { yelloReducer } from './reducers/YelloReducer';
 
@@ -15,7 +15,8 @@ const reducer = combineReducers({
     yello: yelloReducer,
 
     post: postReducer,
-    reaction: reactionReducer
+    reaction: reactionReducer,
+    commentModel: commentModeReducer
 });
 
 let initialState = {};

@@ -1,6 +1,5 @@
-import { StatusBar, StyleSheet, ToastAndroid, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { StatusBar, StyleSheet, ToastAndroid, Text, TextInput, TouchableOpacity, View, SafeAreaView } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import Colors from '../../constants/Colors'
 import Fonts from '../../constants/Fonts'
 import { PrimaryButton } from '../components/Button'

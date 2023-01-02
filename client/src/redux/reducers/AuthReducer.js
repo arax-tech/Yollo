@@ -73,6 +73,9 @@ export const AuthReducer = (state = { user: {} }, action) => {
                 status: action.payload.status,
                 user: action.payload.user,
                 tags: action.payload.tags,
+                diamonds: action.payload.diamonds,
+                notifications: action.payload.notifications,
+                reactions: action.payload.reactions,
                 token: action.payload.token,
             };
 
