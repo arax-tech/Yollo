@@ -18,7 +18,7 @@ const user = require("../../middleware/user")
 
 // Model 
 const User = require("../../models/User")
-const Tag = require("../../models/Tag")
+const Tag = require("../../models/Badge")
 
 
 // Create a following relationship between arham's "timeline" feed and Chris' "user" feed:

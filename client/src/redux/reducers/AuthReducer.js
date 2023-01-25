@@ -11,6 +11,10 @@ import {
     AUTH_USER_SUCCESS,
     AUTH_USER_FAIL,
 
+    GET_USER_REQUEST,
+    GET_USER_SUCCESS,
+    GET_USER_FAIL,
+
     AUTH_LOGOUT_SUCCESS,
     AUTH_LOGOUT_FAIL,
 
@@ -49,6 +53,7 @@ export const AuthReducer = (state = { user: {} }, action) => {
         case LOGIN_REQUEST:
         case VERIFY_REQUEST:
         case AUTH_USER_REQUEST:
+        case GET_USER_REQUEST:
             return {
                 loading: true,
                 isAuthenticated: false
@@ -76,7 +81,23 @@ export const AuthReducer = (state = { user: {} }, action) => {
                 diamonds: action.payload.diamonds,
                 notifications: action.payload.notifications,
                 reactions: action.payload.reactions,
+                activePosts: action.payload.activePosts,
+                profilePostLikes: action.payload.profilePostLikes,
+                profilePostYouLikes: action.payload.profilePostYouLikes,
                 token: action.payload.token,
+            };
+
+        case GET_USER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                message: action.payload.message,
+                status: action.payload.status,
+                user: action.payload.user,
+                reactions: action.payload.reactions,
+                activePosts: action.payload.activePosts,
+                profilePostLikes: action.payload.profilePostLikes,
+                profilePostYouLikes: action.payload.profilePostYouLikes,
             };
 
         case AUTH_LOGOUT_SUCCESS:
@@ -113,6 +134,7 @@ export const AuthReducer = (state = { user: {} }, action) => {
         case AUTH_LOGOUT_FAIL:
         case ACCOUNT_DISABLE_FAIL:
         case ACCOUNT_DELETE_FAIL:
+        case GET_USER_FAIL:
             return {
                 ...state,
                 loading: false,

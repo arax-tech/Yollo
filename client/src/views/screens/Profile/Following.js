@@ -8,7 +8,7 @@ import { UNFOLLOW_RESET } from '../../../redux/constants/YelloConstant'
 import { AuthUserAction } from '../../../redux/actions/AuthAction'
 import { AllSuggessionAction, UnFollowAction } from '../../../redux/actions/YelloAction'
 
-const Following = () => {
+const Following = ({ navigation }) => {
     const dispatch = useDispatch();
 
     const { loading, user } = useSelector((state) => state.auth);
@@ -16,7 +16,6 @@ const Following = () => {
 
     const UnFollowFunction = async (unfollow_user_id) => {
         await dispatch(UnFollowAction(unfollow_user_id));
-        await dispatch(AuthUserAction());
         await dispatch(AllSuggessionAction());
     }
     useEffect(() => {
@@ -35,7 +34,7 @@ const Following = () => {
                     {
                         user?.following.map((user, index) => (
                             <View key={index} style={[styles.userList, { marginTop: 10 }]}>
-                                <TouchableOpacity style={{ flexDirection: 'row' }}>
+                                <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate("PublicProfile", { userId: user?.user?._id, authUser: user })}>
                                     {
                                         user.user.image ? (
                                             <Image style={styles.userImage} source={{ uri: user.user.image.url }} />
@@ -50,7 +49,7 @@ const Following = () => {
                                 </TouchableOpacity>
                                 <View style={styles.contentRight}>
                                     <TouchableOpacity style={styles.buttonLight} onPress={() => UnFollowFunction(user?.user._id)}>
-                                        <Text style={styles.buttonLightText}>UnFollow</Text>
+                                        <Text style={styles.buttonLightText}>Un Follow</Text>
                                     </TouchableOpacity>
 
                                 </View>

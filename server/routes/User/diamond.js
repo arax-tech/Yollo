@@ -79,7 +79,6 @@ router.post("/send", auth, user, async (request, response) => {
 
         const sender_id = request.user.id;
         const reciver_id = request.body.user;
-        console.log(reciver_id)
 
         const senderDiamonds = await Diamond.findOne({ user: sender_id });
 

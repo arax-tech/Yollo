@@ -9,13 +9,17 @@ import Loading from '../components/Loading'
 import moment from 'moment';
 import { AuthUserAction } from '../../redux/actions/AuthAction'
 
-const Reward = ({ route }) => {
+const Reward = ({ navigation }) => {
 
     const dispatch = useDispatch();
 
     const { loading, diamonds } = useSelector((state) => state.auth);
     useEffect(() => {
-        dispatch(AuthUserAction());
+        const getUserDiamonds = navigation.addListener('focus', async () => {
+            await dispatch(AuthUserAction());
+        });
+        return getUserDiamonds;
+
     }, [dispatch])
     return (
         loading ? <Loading /> :

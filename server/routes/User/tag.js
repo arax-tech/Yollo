@@ -11,7 +11,7 @@ const user = require("../../middleware/user")
 
 // Model 
 const User = require("../../models/User")
-const Tag = require("../../models/Tag")
+const Tag = require("../../models/Badge")
 
 
 

@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { BackHandler, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,33 +14,34 @@ const CommentSheet = () => {
     const dispatch = useDispatch();
     const { open, post, modelType } = useSelector((state) => state.commentModel);
 
-    const data = useMemo(
-        () =>
-            Array(50)
-                .fill(0)
-                .map((_, index) => `index-${index}`),
-        []
-    );
+
+
 
     const snapPoints = useMemo(() => ["25%", "50%"], []);
-
-    // render
-    const renderItem = useCallback(
-        ({ item }) => (
-            <View style={styles.itemContainer}>
-                <Text>{item}</Text>
-            </View>
-        ),
-        []
-    );
-
-
     const bootmSheerRef = useRef(null);
     useEffect(() => {
         if (open && bootmSheerRef.current) {
             bootmSheerRef.current.expand();
         }
     }, [open])
+
+
+
+    useEffect(() => {
+
+        const backAction = async () => {
+            await dispatch(CloseSheetAction());
+            bootmSheerRef.current.close();
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+        );
+
+        return () => backHandler.remove();
+    }, []);
 
     const renderContent = () => {
         switch (modelType) {

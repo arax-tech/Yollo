@@ -20,6 +20,16 @@ import {
     CREATE_COMMENT_FAIL,
     CREATE_COMMENT_RESET,
 
+    LIKE_COMMENT_REQUEST,
+    LIKE_COMMENT_SUCCESS,
+    LIKE_COMMENT_FAIL,
+    LIKE_COMMENT_RESET,
+
+    UNLIKE_COMMENT_REQUEST,
+    UNLIKE_COMMENT_SUCCESS,
+    UNLIKE_COMMENT_FAIL,
+    UNLIKE_COMMENT_RESET,
+
     DELETE_COMMENT_REQUEST,
     DELETE_COMMENT_SUCCESS,
     DELETE_COMMENT_FAIL,
@@ -29,6 +39,21 @@ import {
     ONE_MINUT_REWARD_SUCCESS,
     ONE_MINUT_REWARD_FAIL,
     ONE_MINUT_REWARD_RESET,
+
+    REPORT_POST_REQUEST,
+    REPORT_POST_SUCCESS,
+    REPORT_POST_FAIL,
+    REPORT_POST_RESET,
+
+    ADD_DIAMOND_IN_POST_REQUEST,
+    ADD_DIAMOND_IN_POST_SUCCESS,
+    ADD_DIAMOND_IN_POST_FAIL,
+    ADD_DIAMOND_IN_POST_RESET,
+
+    SHARE_POST_REQUEST,
+    SHARE_POST_SUCCESS,
+    SHARE_POST_FAIL,
+    SHARE_POST_RESET,
 
     SHEET_OPEN,
     SHEET_CLOSE,
@@ -47,8 +72,12 @@ export const reactionReducer = (state = {}, action) => {
         case LIKE_POST_REQUEST:
         case UNLIKE_POST_REQUEST:
         case CREATE_COMMENT_REQUEST:
+        case LIKE_COMMENT_REQUEST:
+        case UNLIKE_COMMENT_REQUEST:
         case DELETE_COMMENT_REQUEST:
-
+        case REPORT_POST_REQUEST:
+        case ADD_DIAMOND_IN_POST_REQUEST:
+        case SHARE_POST_REQUEST:
         case ONE_MINUT_REWARD_REQUEST:
             return {
                 ...state,
@@ -59,14 +88,25 @@ export const reactionReducer = (state = {}, action) => {
         case LIKE_POST_SUCCESS:
         case UNLIKE_POST_SUCCESS:
         case ONE_MINUT_REWARD_SUCCESS:
-
+        case REPORT_POST_SUCCESS:
+        case SHARE_POST_SUCCESS:
             return {
                 ...state,
                 status: action.payload.status,
                 message: action.payload.message,
             };
 
+        case ADD_DIAMOND_IN_POST_SUCCESS:
+            return {
+                ...state,
+                status: action.payload.status,
+                message: action.payload.message,
+                updatedDaimonds: action.payload.updatedDaimonds,
+            };
+
         case CREATE_COMMENT_SUCCESS:
+        case LIKE_COMMENT_SUCCESS:
+        case UNLIKE_COMMENT_SUCCESS:
         case DELETE_COMMENT_SUCCESS:
             return {
                 ...state,
@@ -79,8 +119,23 @@ export const reactionReducer = (state = {}, action) => {
         case LIKE_POST_FAIL:
         case UNLIKE_POST_FAIL:
         case CREATE_COMMENT_FAIL:
+        case LIKE_COMMENT_FAIL:
+        case UNLIKE_COMMENT_FAIL:
         case DELETE_COMMENT_FAIL:
         case ONE_MINUT_REWARD_FAIL:
+        case REPORT_POST_FAIL:
+        case SHARE_POST_FAIL:
+            return {
+                ...state,
+                loading: false,
+                message: action.payload.message,
+                status: action.payload.status,
+                errors: action.payload,
+            };
+
+
+
+        case ADD_DIAMOND_IN_POST_FAIL:
             return {
                 ...state,
                 loading: false,
@@ -96,10 +151,14 @@ export const reactionReducer = (state = {}, action) => {
         case LIKE_POST_RESET:
         case UNLIKE_POST_RESET:
         case CREATE_COMMENT_RESET:
+        case LIKE_COMMENT_RESET:
+        case UNLIKE_COMMENT_RESET:
         case DELETE_COMMENT_RESET:
         case ONE_MINUT_REWARD_RESET:
+        case REPORT_POST_RESET:
+        case ADD_DIAMOND_IN_POST_RESET:
+        case SHARE_POST_RESET:
             return {
-                ...state,
                 status: null,
                 message: null,
             };
@@ -112,7 +171,8 @@ export const reactionReducer = (state = {}, action) => {
             return {
                 ...state,
                 errors: null,
-                status: null
+                status: null,
+                message: null
             };
 
         default:

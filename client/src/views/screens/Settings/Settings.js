@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AuthLogoutAction } from '../../../redux/actions/AuthAction';
 import Loading from '../../components/Loading';
 import { IconAntDesign, IconEntypo, IconFeather, IconFontAwesome5, IconSimpleLineIcons } from '../../components/Icons';
+import { SVGSettingAccount, SVGSettingLogout, SVGSettingMemories, SVGSettingNotification, SVGSettingPrivacy, SVGSettingQuestion, SVGSettingShare, SVGSettingSupport, SVGSettingTerms } from '../../components/Svgs';
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -52,15 +53,16 @@ const Settings = ({ navigation }) => {
 
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 1 }]} onPress={() => navigation.navigate('Account')}>
-                    <Image style={styles.settingIcon} source={require('../../../assets/images/icons/settings/user-settings.png')} />
+                    {/* <Image style={styles.settingIcon} source={require('../../../assets/images/icons/settings/user-settings.png')} /> */}
+                    <SVGSettingAccount style={styles.settingIcon} />
                     <Text style={styles.settingListTitle}>Account </Text>
                     <View style={styles.contentRight}>
                         <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
-                    <IconAntDesign name='calendar' size={25} color={Colors.primary} />
+                <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={() => navigation.navigate("Memories")}>
+                    <SVGSettingMemories />
                     <Text style={styles.settingListTitle}>Memories </Text>
                     <View style={styles.contentRight}>
                         <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
@@ -68,7 +70,7 @@ const Settings = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={() => navigation.navigate('NotificationSettings')}>
-                    <IconEntypo name='notification' size={25} color={Colors.primary} />
+                    <SVGSettingNotification />
                     <Text style={styles.settingListTitle}>Notification Setting </Text>
                     <View style={styles.contentRight}>
                         <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
@@ -76,7 +78,7 @@ const Settings = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
-                    <IconAntDesign name='sharealt' size={25} color={Colors.primary} />
+                    <SVGSettingShare />
                     <Text style={styles.settingListTitle}>Share Profile </Text>
                     <View style={styles.contentRight}>
                         <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
@@ -84,7 +86,7 @@ const Settings = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
-                    <IconAntDesign name='questioncircleo' size={25} color={Colors.primary} />
+                    <SVGSettingQuestion />
 
                     <Text style={styles.settingListTitle}>FAQ </Text>
                     <View style={styles.contentRight}>
@@ -93,7 +95,7 @@ const Settings = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
-                    <Image style={styles.settingIcon} source={require('../../../assets/images/icons/settings/terms.png')} />
+                    <SVGSettingTerms />
                     <Text style={styles.settingListTitle}>Terms & Condition </Text>
                     <View style={styles.contentRight}>
                         <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
@@ -101,7 +103,7 @@ const Settings = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
-                    <Image style={styles.settingIcon} source={require('../../../assets/images/icons/settings/privacy-policy.png')} />
+                    <SVGSettingPrivacy />
                     <Text style={styles.settingListTitle}>Privacy Policy </Text>
                     <View style={styles.contentRight}>
                         <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
@@ -109,8 +111,7 @@ const Settings = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={() => navigation.navigate('SupportAndHelp')}>
-                    {/* <Image style={styles.settingIcon} source={require('../../../assets/images/icons/settings/support-help.png')} /> */}
-                    <IconFontAwesome5 name='headset' size={25} color={Colors.primary} />
+                    <SVGSettingSupport />
                     <Text style={styles.settingListTitle}>Support & Help </Text>
                     <View style={styles.contentRight}>
                         <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
@@ -118,8 +119,7 @@ const Settings = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={LogoutFunction}>
-                    {/* <Image style={styles.settingIcon} source={require('../../../assets/images/icons/settings/logout.png')} /> */}
-                    <IconSimpleLineIcons name='logout' size={25} color={Colors.primary} />
+                    <SVGSettingLogout />
                     <Text style={styles.settingListTitle}>Logout </Text>
                     <View style={styles.contentRight}>
                         <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />

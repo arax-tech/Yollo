@@ -1,4 +1,4 @@
-import { Dimensions, Image, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Image, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Colors from '../../../constants/Colors'
@@ -8,16 +8,26 @@ import Modal from "react-native-modal";
 import { PrimaryButton } from '../../components/Button'
 import { useDispatch, useSelector } from 'react-redux'
 import { IconAntDesign, IconEntypo, IconFeather, IconFontAwesome, IconIonicons, IconSimpleLineIcons } from '../../components/Icons'
-import { SVGShare } from '../../components/Svgs'
-import { OpenSheetAction, PostLikeAction, PostUnLikeAction } from '../../../redux/actions/ReactionAction'
+import { SVGClockPlusFinal, SVGShare } from '../../components/Svgs'
+import { AddDiamondPostAction, clearErrors, OpenSheetAction, PostLikeAction, PostUnLikeAction, SharePostAction } from '../../../redux/actions/ReactionAction'
 import { useNavigation } from '@react-navigation/native'
 
-const Post = ({ item }) => {
+import { Dropdown } from 'react-native-element-dropdown'
+
+
+import { ADD_DIAMOND_INTO_POST_RESET, SHARE_POST_RESET } from '../../../redux/constants/ReactionConstant'
+
+import Share from 'react-native-share';
+import RNFetchBlob from 'rn-fetch-blob';
+
+
+const Post = ({ item, isActive }) => {
 
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    const { user } = useSelector((state) => state.auth);
+    const { user, diamonds } = useSelector((state) => state.auth);
+    const { message, status, updatedDaimonds } = useSelector((state) => state.reaction);
 
 
 
@@ -25,7 +35,8 @@ const Post = ({ item }) => {
 
     // Likes  & Unlikes Actions
     const userLike = item.likes.filter(function (item) {
-        return item.user?._id.toString() === user?._id.toString();
+        // console.log(item)
+        return item.toString() === user?._id.toString();
     });
 
     const [currentLike, setCurrentLike] = useState({ state: userLike.length === 0 ? false : true, counter: item.likes.length })
@@ -34,7 +45,7 @@ const Post = ({ item }) => {
     useEffect(() => {
         setTimeout(() => {
             setShow(false)
-        }, 1000)
+        }, 10000)
 
     }, [show])
 
@@ -66,33 +77,45 @@ const Post = ({ item }) => {
 
 
 
+    const [shares, setShares] = useState(item?.shares?.length);
+    const fs = RNFetchBlob.fs;
 
+    const sharePost = () => {
 
-
-
-
-
-
-
-
-    const onShare = async () => {
-        try {
-            const result = await Share.share({
-                message: 'Lorem ipsum dolor sit amet, consectetur...',
+        RNFetchBlob.config({ fileCache: true })
+            .fetch('GET', item?.image.url)
+            .then((resp) => {
+                imagePath = resp.path();
+                return resp.readFile('base64');
+            })
+            .then((base64Data) => {
+                var imageUrl = 'data:image/png;base64,' + base64Data;
+                let shareImage = {
+                    title: item?.caption,
+                    message: item?.caption,
+                    url: imageUrl,
+                };
+                Share.open(shareImage)
+                    .then((res) => {
+                        // console.log(`done ${res}`);
+                        dispatch(SharePostAction(item?._id));
+                        setShares(item?.shares?.length + 1);
+                    })
+                    .catch((err) => {
+                        err && console.log(err);
+                    });
+                return fs.unlink(imagePath);
             });
-            if (result.action === Share.sharedAction) {
-                if (result.activityType) {
-                    // shared with activity type of result.activityType
-                } else {
-                    // shared
-                }
-            } else if (result.action === Share.dismissedAction) {
-                // dismissed
-            }
-        } catch (error) {
-            alert(error.message);
-        }
-    };
+    }
+
+
+
+
+
+
+
+
+
 
     const [isModalVisible, setModalVisible] = useState(false);
 
@@ -118,7 +141,44 @@ const Post = ({ item }) => {
     const deviceHeight = Dimensions.get("window").height;
 
 
+    const diamondArrray = [
+        { label: 'Minutes', value: '1' },
+        { label: 'Hours', value: '60' },
+        { label: 'Days', value: '1440' },
+    ]
 
+    const [allDiamonds, setAllDiamonds] = useState(item?.user_diamonds);
+    const [diamondType, setDiamondType] = useState(1);
+    const [diamondtoAdd, setDiamondToAdd] = useState(null);
+
+    const addDiamonIntoPost = async () => {
+        if (diamondtoAdd === null) {
+            ToastAndroid.show("Please Enter Diamonds", ToastAndroid.SHORT);
+        } else {
+            await dispatch(AddDiamondPostAction(item?._id, item?.user._id, Number(diamondtoAdd) * Number(diamondType)));
+        }
+    }
+    useEffect(() => {
+        if (message && message === "Diamond Added Successfully...") {
+            // ToastAndroid.show(message, ToastAndroid.SHORT);
+            setAllDiamonds(updatedDaimonds && updatedDaimonds);
+            setDiamondToAdd(null);
+            setDiamondType(1);
+            dispatch({ type: ADD_DIAMOND_INTO_POST_RESET });
+            setRewardModalVisible(false);
+        }
+
+        if (message && message === "Post Share Successfully...") {
+            // ToastAndroid.show(message, ToastAndroid.SHORT);
+            dispatch({ type: SHARE_POST_RESET });
+        }
+
+        if (status && status === 2010) {
+            ToastAndroid.show(message, ToastAndroid.SHORT);
+            dispatch({ type: ADD_DIAMOND_INTO_POST_RESET });
+
+        }
+    }, [dispatch, updatedDaimonds, message, status])
 
 
 
@@ -155,16 +215,31 @@ const Post = ({ item }) => {
 
                             <Text style={styles.rewardHeadingTitle}>Select the time you want to add</Text>
                             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                <TextInput style={styles.rewardModelInput} keyboardType={'numeric'} placeholder='Enter...' />
-                                <TouchableOpacity style={styles.rewardModelButton}>
+                                <TextInput style={styles.rewardModelInput} keyboardType={'numeric'} value={diamondtoAdd} onChangeText={setDiamondToAdd} placeholder='Enter...' />
+                                {/* <TouchableOpacity style={styles.rewardModelButton}>
                                     <Text style={styles.rewardModelButtonText}>Minutes</Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
+                                <Dropdown
+                                    style={styles.dropdown}
+                                    placeholderStyle={styles.selectedTextStyle}
+                                    selectedTextStyle={styles.selectedTextStyle}
+                                    itemContainerStyle={styles.itemContainerStyle}
+                                    itemTextStyle={styles.itemTextStyle}
+                                    data={diamondArrray}
+                                    maxHeight={300}
+                                    labelField="label"
+                                    search={false}
+                                    placeholder="Minutes"
+                                    valueField="value"
+                                    value={diamondType}
+                                    onChange={item => { setDiamondType(item.value) }}
+                                />
                             </View>
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
                                 <Image source={require('../../../assets/images/reward/icon.png')} resizeMode='contain' style={{ height: 80, width: 80, marginBottom: 3 }} />
                             </View>
-                            <Text style={styles.rewardHeadingTitle}>You need <Text style={{ fontWeight: '800' }}>40 diamonds</Text></Text>
-                            <PrimaryButton title='Send' />
+                            <Text style={styles.rewardHeadingTitle}>You have <Text style={{ fontWeight: '800' }}>{diamonds?.diamonds} diamonds</Text></Text>
+                            <PrimaryButton title='Send' onPress={addDiamonIntoPost} />
 
 
                         </View>
@@ -223,7 +298,7 @@ const Post = ({ item }) => {
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => {
-                                navigation.navigate('Report')
+                                navigation.navigate('Report', { post_id: item?._id })
                                 toggleModal()
                             }} style={[styles.modelList, { borderBottomColor: 'transparent' }]} >
                                 <View style={styles.modelInside}>
@@ -245,15 +320,15 @@ const Post = ({ item }) => {
                 <View style={{ position: 'absolute', zIndex: 1, top: 0, paddingHorizontal: 25, paddingVertical: 20, width: Dimensions.get('window').width }}>
 
                     <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'flex-end' }}>
-                        <TouchableOpacity>
-                            <Text style={styles.following}>Following</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate("FollowingPost")}>
+                            <Text style={isActive === "Following" ? [styles.topBarHeadings, { fontWeight: '900' }] : styles.topBarHeadings}>Following</Text>
                         </TouchableOpacity>
                         <Text style={styles.pipe}>|</Text>
-                        <TouchableOpacity>
-                            <Text style={styles.forYou}>For You</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+                            <Text style={isActive === "ForYou" ? [styles.topBarHeadings, { fontWeight: '900' }] : styles.topBarHeadings} >For You</Text>
                         </TouchableOpacity>
                         <Text style={{ color: 'transparent' }}>lorem isp dummy text</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('Search')}>
                             <IconAntDesign name='search1' size={23} color={Colors.white} />
                         </TouchableOpacity>
                     </View>
@@ -269,19 +344,29 @@ const Post = ({ item }) => {
                 <View style={{ position: 'absolute', zIndex: 1, bottom: 0, padding: 25 }}>
 
                     <View style={{ flex: 1, flexDirection: 'row', alignItems: "center" }}>
-                        {
-                            item?.user.image?.url ? (
-                                <Image style={styles.userImage} source={{ uri: item?.user.image?.url }} />
-                            ) : (
-                                <Image style={styles.userImage} source={require('../../../assets/images/placeholder.jpg')} />
-                            )
-                        }
-                        <Text style={styles.userName}>{item?.user.first_name} {item?.user.last_name}</Text>
+
+                        <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} onPress={() => navigation.navigate("PublicProfile", { userId: item?.user?._id, authUser: user })}>
+                            {
+                                item?.user.image?.url ? (
+                                    <Image style={styles.userImage} source={{ uri: item?.user.image?.url }} />
+                                ) : (
+                                    <Image style={styles.userImage} source={require('../../../assets/images/placeholder.jpg')} />
+                                )
+                            }
+                            <Text style={styles.userName}>{item?.user.first_name} {item?.user.last_name}</Text>
+                        </TouchableOpacity>
                         {
                             item.user._id !== user?._id && (
-                                <TouchableOpacity style={styles.followButton}>
-                                    <Text style={styles.followText}>Follow</Text>
-                                </TouchableOpacity>
+                                isActive === "Following" ? (
+                                    <TouchableOpacity style={styles.followingButton}>
+                                        <Text style={styles.followingText}>Following</Text>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity style={styles.followButton}>
+                                        <Text style={styles.followText}>Follow</Text>
+                                    </TouchableOpacity>
+
+                                )
                             )
                         }
 
@@ -343,17 +428,18 @@ const Post = ({ item }) => {
                         <TouchableOpacity onPress={toggleRewardModal}>
                             <View style={{ alignItems: 'center' }}>
                                 {/* <IconMaterialCommunityIcons name='clock-plus-outline' size={26} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} /> */}
-                                <Image style={[styles.actionButton, { width: 25, marginBottom: 2 }]} resizeMode='contain' source={require('../../../assets/images/icons/clock-plus.png')} />
+                                {/* <Image style={[styles.actionButton, { width: 25, marginBottom: 2 }]} resizeMode='contain' source={require('../../../assets/images/icons/clock-plus.png')} /> */}
+                                <SVGClockPlusFinal style={[styles.actionButton, { width: 29, height: 29, marginBottom: 2, }]} />
 
-                                <Text style={styles.actionText}>{item?.diamonds}</Text>
+                                <Text style={styles.actionText}>{allDiamonds}</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={onShare} >
+                        <TouchableOpacity onPress={sharePost} >
                             <View style={{ alignItems: 'center' }}>
                                 {/* <Image style={[styles.actionButton, { width: 25, marginBottom: 2 }]} resizeMode='contain' source={require('../../../assets/images/icons/share.png')} /> */}
                                 {/* <IconFontAwesome name='share-square-o' size={23} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -7 }} /> */}
                                 <SVGShare color={Colors.primary} style={{ padding: 10, marginTop: 20, marginBottom: 2 }} />
-                                <Text style={styles.actionText}>{item?.shares?.length}</Text>
+                                <Text style={styles.actionText}>{shares}</Text>
                             </View>
                         </TouchableOpacity>
 
@@ -376,9 +462,8 @@ const Post = ({ item }) => {
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-55%' }}>
                             <TouchableOpacity style={{ width: 134, height: 42, borderRadius: 20, backgroundColor: Colors.likeButtonBackground }}>
                                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                    {/* <Image source={require('../../../assets/images/icons/clock.png')} resizeMode='contain' style={{ height: 20, width: 20, marginBottom: 3 }} /> */}
                                     <IconFeather name='clock' size={20} color={Colors.dark} style={{ marginBottom: 3, marginRight: 3 }} />
-                                    <Text style={{ color: Colors.dark, fontFamily: Fonts.primary, fontSize: 16, fontWeight: '700', marginTop: -3, marginLeft: 2 }}>1 Sec</Text>
+                                    <Text style={{ color: Colors.dark, fontFamily: Fonts.primary, fontSize: 16, fontWeight: '700', marginTop: -3, marginLeft: 2 }}>10 Sec</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -391,7 +476,7 @@ const Post = ({ item }) => {
 
 
             </View>
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 
@@ -401,14 +486,18 @@ const styles = StyleSheet.create({
     mainImage: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 },
     userImage: { width: 40, height: 40, borderRadius: 100 },
     userName: { fontFamily: Fonts.primary, fontSize: 14, fontWeight: '700', paddingLeft: 15, paddingRight: 15, color: Colors.white },
+
     followButton: { backgroundColor: Colors.white, padding: 5, borderRadius: 15, width: 75 },
     followText: { fontFamily: Fonts.primary, fontSize: 14, fontWeight: '700', color: Colors.red, textAlign: 'center' },
+
+    followingButton: { backgroundColor: Colors.primary, padding: 5, borderRadius: 15, width: 75 },
+    followingText: { fontFamily: Fonts.primary, fontSize: 14, fontWeight: '700', color: "#000080", textAlign: 'center' },
+
     postTitle: { fontFamily: Fonts.primary, fontSize: 12, fontWeight: '600', color: Colors.white, marginTop: 10, paddingRight: 30 },
     readMore: { fontFamily: Fonts.primary, fontSize: 10, fontWeight: '500', color: Colors.white, marginTop: 5 },
 
-    following: { fontFamily: Fonts.primary, fontSize: 16, padding: 3, fontWeight: '500', color: Colors.white },
+    topBarHeadings: { fontFamily: Fonts.primary, fontSize: 16, padding: 3, color: Colors.white },
     pipe: { fontFamily: Fonts.primary, fontSize: 23, padding: 3, fontWeight: '500', color: Colors.white },
-    forYou: { fontFamily: Fonts.primary, fontSize: 16, padding: 3, fontWeight: '700', color: Colors.white },
 
     rightContainer: { alignItems: 'flex-end', justifyContent: 'flex-end', top: Dimensions.get('window').height - 430, padding: 20 },
     actionButton: { padding: 10, marginTop: 20 },
@@ -423,18 +512,14 @@ const styles = StyleSheet.create({
     rewardModelInput: { fontFamily: Fonts.primary, fontSize: 16, backgroundColor: '#FFE8B2', textAlign: 'center', padding: 10, width: 170 },
     rewardModelButton: { fontFamily: Fonts.primary, fontSize: 16, backgroundColor: '#D0D0D0', textAlign: 'center', padding: 12 },
 
-    sheetContainer: {
+    sheetContainer: { paddingTop: 200, },
+    sheetContentContainer: { backgroundColor: "white", },
+    itemContainer: { padding: 6, margin: 6, backgroundColor: "#eee", },
 
-        paddingTop: 200,
-    },
-    sheetContentContainer: {
-        backgroundColor: "white",
-    },
-    itemContainer: {
-        padding: 6,
-        margin: 6,
-        backgroundColor: "#eee",
-    },
+    dropdown: { width: 80, fontFamily: Fonts.primary, fontSize: 16, backgroundColor: '#D0D0D0', textAlign: 'center', padding: 4, paddingLeft: 10 },
+    itemContainerStyle: { width: 100, },
+    itemTextStyle: { fontFamily: Fonts.primary, fontSize: 12, color: Colors.dark, },
+    selectedTextStyle: { fontFamily: Fonts.primary, fontSize: 12, color: Colors.dark, },
 
 
 })

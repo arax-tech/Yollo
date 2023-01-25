@@ -19,7 +19,7 @@ const CreateSuccess = ({ navigation }) => {
             <ScrollView>
                 <View style={styles.postHeaderContainer}>
 
-                    <TouchableOpacity style={styles.postBackButton} onPress={() => navigation.navigate('Add')}>
+                    <TouchableOpacity style={styles.postBackButton} onPress={() => navigation.navigate('Home')}>
                         <Image style={{ width: 20, tintColor: Colors.dark }} resizeMode='contain' source={require('../../../assets/images/icons/arrow-left.png')} />
                     </TouchableOpacity>
                     <Text style={styles.postTitle}>Share Post</Text>

@@ -18,7 +18,6 @@ const Followers = () => {
 
     const UnFollowFunction = async (unfollow_user_id) => {
         await dispatch(UnFollowAction(unfollow_user_id));
-        await dispatch(AuthUserAction());
         await dispatch(AllSuggessionAction());
     }
     useEffect(() => {
@@ -53,7 +52,7 @@ const Followers = () => {
                                 </TouchableOpacity>
                                 <View style={styles.contentRight}>
                                     <TouchableOpacity style={styles.buttonLight} onPress={() => UnFollowFunction(user?.user._id)}>
-                                        <Text style={styles.buttonLightText}>UnFollow</Text>
+                                        <Text style={styles.buttonLightText}>Un Follow</Text>
                                     </TouchableOpacity>
 
                                 </View>

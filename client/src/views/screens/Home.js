@@ -1,5 +1,5 @@
-import { FlatList, SafeAreaView, StatusBar } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import { FlatList, StatusBar } from 'react-native'
+import React, { useEffect } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { PostsAction } from '../../redux/actions/PostAction'
@@ -8,7 +8,7 @@ import Loading from '../components/Loading'
 
 import Colors from '../../constants/Colors'
 import Post from './Post/Post'
-import { PostViewAction } from '../../redux/actions/ReactionAction'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const Home = ({ navigation }) => {
 
@@ -16,15 +16,9 @@ const Home = ({ navigation }) => {
     const { loading, isAuthenticated, user } = useSelector((state) => state.auth);
     const { loading: postLoading, posts } = useSelector((state) => state.post);
 
-    const [showLoading, setShowLoading] = useState(true);
-
 
 
     useEffect(() => {
-        setTimeout(() => {
-            setShowLoading(false)
-        }, 2000)
-
         navigation.addListener("focus", () => {
             if (user?.new_user === true) {
                 navigation.navigate("ProfileEdit");
@@ -39,10 +33,10 @@ const Home = ({ navigation }) => {
                 navigation.navigate("HomeNavigation");
             }
         }
-        const getPosts = async () => {
+        const getPosts = navigation.addListener('focus', async () => {
             await dispatch(PostsAction());
-        }
-        getPosts();
+        });
+        return getPosts;
     }, [dispatch, navigation, isAuthenticated, user])
 
 
@@ -65,15 +59,15 @@ const Home = ({ navigation }) => {
 
 
     return (
-        showLoading ? <Loading /> :
-            <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
-                <StatusBar hidden />
+        loading || postLoading ? <Loading /> :
+            <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }} forceInset={{ top: 'always' }}>
+                <StatusBar hidden barStyle={'dark-content'} />
                 <FlatList
                     data={posts}
                     pagingEnabled
                     keyExtractor={item => item._id.toString()}
                     renderItem={({ item }) => (
-                        <Post key={item._id} item={item} />
+                        <Post key={item._id} item={item} isActive={"ForYou"} />
                     )}
                 />
             </SafeAreaView>

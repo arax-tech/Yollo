@@ -9,12 +9,16 @@ import Loading from '../components/Loading'
 import moment from 'moment';
 import { AuthUserAction } from '../../redux/actions/AuthAction'
 
-const Notification = () => {
+const Notification = ({ navigation }) => {
     const dispatch = useDispatch();
     const { loading, user, notifications } = useSelector((state) => state.auth);
+
     useEffect(() => {
-        dispatch(AuthUserAction());
-    }, [dispatch])
+        const getUserNotification = navigation.addListener('focus', async () => {
+            await dispatch(AuthUserAction());
+        });
+        return getUserNotification;
+    }, [navigation, dispatch]);
     return (
         loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.lightGray }}>

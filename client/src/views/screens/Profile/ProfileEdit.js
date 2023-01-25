@@ -24,6 +24,16 @@ const ProfileEdit = ({ navigation }) => {
     const { loading, user, tags } = useSelector((state) => state.auth);
     const { loading: updateLoading, message, isUpdated, isCreated } = useSelector((state) => state.updateProfile);
 
+
+
+    // useEffect(() => {
+    //     const getUser = navigation.addListener('focus', async () => {
+    //         await dispatch(AuthUserAction());
+    //     });
+    //     return getUser
+    // }, [navigation, dispatch])
+
+
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const launchImagePicker = async () => {
@@ -126,8 +136,7 @@ const ProfileEdit = ({ navigation }) => {
         } else if (data.bio === null) {
             ToastAndroid.show('Bio is required...', ToastAndroid.SHORT);
         } else {
-            await dispatch(ProfileUpdateAction(data.first_name, data.last_name, data.username, data.email, data.phone, gender, birthday, data.country, data.city, data.bio, data.new_user, image !== null ? image : null));
-            await dispatch(AuthUserAction());
+            await dispatch(ProfileUpdateAction(data.first_name, data.last_name, data.username, data.email, data.phone, gender, birthday, data.country, data.city, data.bio, data.new_user, image));
 
         }
     }
@@ -139,7 +148,6 @@ const ProfileEdit = ({ navigation }) => {
             ToastAndroid.show('Tag is required...', ToastAndroid.SHORT);
         } else {
             await dispatch(CreatetagAction(tag));
-            await dispatch(AuthUserAction());
         }
     }
 
@@ -147,6 +155,7 @@ const ProfileEdit = ({ navigation }) => {
         if (isUpdated && isUpdated === true) {
             ToastAndroid.show(message, ToastAndroid.SHORT);
             dispatch({ type: UPDATE_PROFILE_RESET });
+            navigation.navigate("Profile")
 
         }
         if (isCreated && isCreated === true) {
@@ -154,7 +163,7 @@ const ProfileEdit = ({ navigation }) => {
             dispatch({ type: CREATE_TAG_RESET });
 
         }
-    }, [dispatch, isUpdated, isCreated, message])
+    }, [dispatch, navigation, isUpdated, isCreated, message])
 
     const handleBackButtonClick = () => {
         if (user?.new_user === true) {
@@ -319,7 +328,7 @@ const ProfileEdit = ({ navigation }) => {
 
                     </View>
                     <View style={{ borderBottomWidth: 1, borderBottomColor: '#D9D9D9' }}></View>
-                    <Text style={[styles.formLabel, { paddingHorizontal: 20, paddingVertical: 10 }]}>Your profile badge</Text>
+                    {/* <Text style={[styles.formLabel, { paddingHorizontal: 20, paddingVertical: 10 }]}>Your profile badge</Text>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', borderColor: '#E4E4E4', borderBottomWidth: 1, padding: 5, alignItems: 'center', justifyContent: 'center', marginTop: -5 }}>
                         {
                             tags?.map((tag, index) => (
@@ -329,7 +338,7 @@ const ProfileEdit = ({ navigation }) => {
                                 </TouchableOpacity>
                             ))
                         }
-                    </View>
+                    </View> */}
 
 
                     <Text style={[styles.formLabel, { padding: 20 }]}>Suggestion</Text>
@@ -368,7 +377,7 @@ const ProfileEdit = ({ navigation }) => {
 
 
                     <View style={styles.container}>
-                        <Text style={[styles.formLabel, { textAlign: 'center' }]}>Or</Text>
+                        {/* <Text style={[styles.formLabel, { textAlign: 'center' }]}>Or</Text>
 
                         <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
 
@@ -380,7 +389,7 @@ const ProfileEdit = ({ navigation }) => {
                                 <Text style={[styles.formLabel, { color: 'transparent' }]}>City</Text>
                                 <Text style={[styles.formInput, { lineHeight: 50, color: Colors.white, borderColor: Colors.primary, paddingLeft: 15, backgroundColor: Colors.primary }]} >Add</Text>
                             </TouchableOpacity>
-                        </View>
+                        </View> */}
 
 
 

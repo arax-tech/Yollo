@@ -7,3 +7,7 @@ info.txt
 # Server
 #
 server/node_modules/
+
+# Web
+#
+web/node_modules/

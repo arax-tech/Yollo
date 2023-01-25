@@ -3,32 +3,34 @@ import React from 'react'
 import styles from '../css/ProfileStyle'
 import { IconAntDesign, IconIonicons } from '../../components/Icons'
 import Colors from '../../../constants/Colors'
+import { useNavigation } from '@react-navigation/native'
 
-const ProfileSinglePost = ({ item }) => {
+const ProfileSinglePost = ({ post }) => {
+    const navigation = useNavigation();
     return (
-        <TouchableOpacity key={item.id} style={styles.imageContainer}>
+        <TouchableOpacity style={styles.imageContainer} onPress={() => navigation.navigate("SignlePost", { postId: post?._id })}>
 
             <View style={styles.iconContainer}>
 
                 <View style={styles.actionButton}>
                     <IconIonicons name='eye-outline' size={19} color={Colors.white} />
-                    <Text style={styles.actionText}>15K</Text>
+                    <Text style={styles.actionText}>{post?.views.length}</Text>
                 </View>
 
 
                 <View style={styles.actionButton}>
                     <IconAntDesign name='hearto' size={15} color={Colors.white} style={{ marginTop: 3 }} />
-                    <Text style={styles.actionText}>12K</Text>
+                    <Text style={styles.actionText}>{post?.likes.length}</Text>
                 </View>
 
 
                 <View style={styles.actionButton}>
                     <IconAntDesign name='message1' size={15} color={Colors.white} style={{ marginTop: 3 }} />
-                    <Text style={styles.actionText}>245</Text>
+                    <Text style={styles.actionText}>{post?.comments.length}</Text>
                 </View>
             </View>
 
-            <Image style={styles.mainImage} source={item.imagrUrl} resizeMode='contain' />
+            <Image style={styles.mainImage} source={{ uri: post?.image?.url }} resizeMode='contain' />
         </TouchableOpacity>
     )
 }

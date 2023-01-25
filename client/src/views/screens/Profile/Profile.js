@@ -1,5 +1,5 @@
 import { Image, StatusBar, StyleSheet, TouchableOpacity, Text, View, SafeAreaView, ScrollView, Dimensions, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Modal from "react-native-modal";
 
@@ -17,11 +17,13 @@ import ProfilePostLikes from './ProfilePostLikes'
 import ProfilePostYouReacted from './ProfilePostYouReacted'
 import Loading from '../../components/Loading';
 import Fonts from '../../../constants/Fonts';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Tab = createMaterialTopTabNavigator();
 
 import { Avatar, Dialog } from 'react-native-paper';
+import { AuthUserAction } from '../../../redux/actions/AuthAction';
+import { SVGFollow, SVGPublicView, SVGSettings } from '../../components/Svgs';
 
 
 
@@ -30,6 +32,8 @@ const deviceHeight = Dimensions.get("window").height;
 
 
 const Profile = ({ navigation }) => {
+    const dispatch = useDispatch();
+
     const [model, setModel] = useState(false);
 
     const [isModalVisible, setModalVisible] = useState(false);
@@ -39,11 +43,20 @@ const Profile = ({ navigation }) => {
     };
 
 
-    const { loading, user, reactions } = useSelector((state) => state.auth);
-    const [isActive, setIsActive] = useState('ProfilePost')
+    const { loading, user, reactions, activePosts, profilePostYouLikes, profilePostLikes } = useSelector((state) => state.auth);
+
+    const [isActive, setIsActive] = useState('ProfilePostLikes')
     const setStatusFilter = (status) => {
         setIsActive(status);
     }
+
+    useEffect(() => {
+        const getUser = navigation.addListener('focus', async () => {
+            await dispatch(AuthUserAction());
+        });
+        return getUser
+    }, [navigation, dispatch])
+
     return (
         loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
@@ -78,13 +91,18 @@ const Profile = ({ navigation }) => {
                                 toggleModal()
                             }} >
                                 <View style={styles.modelInside}>
-                                    <Image source={require('../../../assets/images/icons/following.png')} resizeMode='contain' style={styles.modelImage} />
+                                    {/* <Image source={require('../../../assets/images/icons/following.png')} resizeMode='contain' style={styles.modelImage} /> */}
+                                    <SVGFollow style={styles.modelImage} />
                                     <Text style={styles.modelTitle}>Followers</Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.modelList}>
+                            <TouchableOpacity style={styles.modelList} onPress={() => {
+                                navigation.navigate("PublicProfile", { userId: user?._id })
+                                toggleModal()
+                            }}>
                                 <View style={styles.modelInside}>
-                                    <Image source={require('../../../assets/images/icons/public-view.png')} resizeMode='contain' style={styles.modelImage} />
+                                    <SVGPublicView style={styles.modelImage} />
+                                    {/* <Image source={require('../../../assets/images/icons/public-view.png')} resizeMode='contain' style={styles.modelImage} /> */}
                                     <Text style={styles.modelTitle}>Public View</Text>
                                 </View>
                             </TouchableOpacity>
@@ -94,7 +112,8 @@ const Profile = ({ navigation }) => {
                                 toggleModal()
                             }} style={[styles.modelList, { borderBottomColor: 'transparent' }]} >
                                 <View style={styles.modelInside}>
-                                    <IconFeather name='settings' size={20} color={Colors.dark} style={{ marginRight: 10 }} />
+                                    {/* <IconFeather name='settings' size={20} color={Colors.dark} style={{ marginRight: 10 }} /> */}
+                                    <SVGSettings style={styles.modelImage} />
                                     <Text style={styles.modelTitle}>Settings</Text>
                                 </View>
                             </TouchableOpacity>
@@ -117,12 +136,12 @@ const Profile = ({ navigation }) => {
 
 
                     <View style={styles.container}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: -50, marginBottom: -30 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: -65, marginBottom: -30 }}>
                             <TouchableOpacity onPress={() => setModel(true)}>
                                 <IconAntDesign name='adduser' size={22} color={Colors.dark} />
                             </TouchableOpacity>
 
-                            <Image style={{ width: 100 }} resizeMode='contain' source={require('../../../assets/logo.png')} />
+                            <Image style={{ width: 80 }} resizeMode='contain' source={require('../../../assets/logo.png')} />
                             <TouchableOpacity onPress={toggleModal}>
                                 <IconEntypo name='dots-three-vertical' size={20} color={Colors.dark} />
                             </TouchableOpacity>
@@ -130,7 +149,7 @@ const Profile = ({ navigation }) => {
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
                             <TouchableOpacity style={{ flexDirection: 'column' }} onPress={() => navigation.navigate("ProfileTabs")}>
-                                <Text style={[styles.text, { fontSize: 16, fontWeight: '900' }]}>{user?.followers.length}</Text>
+                                <Text style={[styles.text, { fontSize: 25, fontWeight: 'bold' }]}>{user?.followers.length}</Text>
                                 <Text style={styles.text}>Followers</Text>
                             </TouchableOpacity>
                             {
@@ -141,7 +160,7 @@ const Profile = ({ navigation }) => {
                                 )
                             }
                             <View style={{ flexDirection: 'column' }}>
-                                <Text style={[styles.text, { fontSize: 16, fontWeight: '900' }]}>{reactions?.length}</Text>
+                                <Text style={[styles.text, { fontSize: 25, fontWeight: 'bold' }]}>{reactions?.length}</Text>
                                 <Text style={styles.text}>Reactions</Text>
                             </View>
                         </View>
@@ -184,11 +203,11 @@ const Profile = ({ navigation }) => {
                     </View>
 
 
-                    {isActive === "ProfilePost" && <ProfilePost />}
+                    {isActive === "ProfilePost" && <ProfilePost posts={activePosts} />}
 
-                    {isActive === "ProfilePostLikes" && <ProfilePostLikes />}
+                    {isActive === "ProfilePostLikes" && <ProfilePostLikes posts={profilePostLikes} />}
 
-                    {isActive === "ProfilePostYouReacted" && <ProfilePostYouReacted />}
+                    {isActive === "ProfilePostYouReacted" && <ProfilePostYouReacted posts={profilePostYouLikes} />}
 
 
                 </ScrollView>

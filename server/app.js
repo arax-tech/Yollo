@@ -53,7 +53,7 @@ cron.schedule('0 */1 * * * *', async () => {
     posts?.map(async (post) => (
         await Post.findByIdAndUpdate(post._id, {
             $set: {
-                diamonds: post.diamonds > 0 ? post.diamonds - 1 : 0,
+                post_diamonds: post.post_diamonds > 0 ? post.post_diamonds - 1 : 0,
             }
         }, {
             new: true,
@@ -66,7 +66,7 @@ cron.schedule('0 */1 * * * *', async () => {
     NewPosts?.map(async (post) => (
         await Post.findByIdAndUpdate(post._id, {
             $set: {
-                status: post.diamonds > 0 ? "Active" : "InActive"
+                status: post.post_diamonds > 0 ? "Active" : "InActive"
             }
         }, {
             new: true,
@@ -87,6 +87,7 @@ cron.schedule('0 */1 * * * *', async () => {
 
 // Auth Routes
 app.use("/api/auth", require("./routes/auth"))
+app.use("/api/admin", require("./routes/admin"))
 
 // User
 app.use("/api/user", require("./routes/User/user"));
@@ -96,12 +97,22 @@ app.use("/api/user/tag", require("./routes/User/tag"));
 
 // Posts
 app.use("/api/user/post", require("./routes/User/post"));
+app.use("/api/user/memories", require("./routes/User/memories"));
+app.use("/api/user/search", require("./routes/User/search"));
 
 app.use("/api/user/getstream", require("./routes/User/getstream"));
 
 app.use("/api/user/post", require("./routes/User/post"));
 app.use("/api/user/diamond", require("./routes/User/diamond"));
 app.use("/api/user/notification", require("./routes/User/notification"));
+
+// Admin
+app.use("/api/admin/post", require("./routes/Admin/post"));
+app.use("/api/admin/user", require("./routes/Admin/user"));
+app.use("/api/admin/badge", require("./routes/Admin/badge"));
+app.use("/api/admin/page", require("./routes/Admin/page"));
+app.use("/api/admin/support", require("./routes/Admin/support"));
+
 
 // Server Listing At 
 app.listen(PORT, () => {
@@ -111,12 +122,4 @@ app.listen(PORT, () => {
 
 
 
-// Unhandeled Promise Rejection
-process.on("unhandledRejection", (error) => {
-    console.log(`Error : ${error.message}`);
-    console.log("Shutting down the server due to Unhandeled Promise Rejection");
 
-    server.close(() => {
-        process.exit(1);
-    })
-})

@@ -13,6 +13,8 @@ import Report from './src/views/screens/Report';
 import Notification from './src/views/screens/Notification';
 import AuthWelcome from './src/views/screens/AuthWelcome';
 
+import Search from './src/views/screens/Search/Search';
+
 
 
 import Profile from './src/views/screens/Profile/Profile';
@@ -39,6 +41,10 @@ import { AuthUserAction } from './src/redux/actions/AuthAction';
 import Sheet from './src/views/screens/Sheet';
 import CommentSheet from './src/views/components/BottomSheet';
 import { OneMinuteRewardAction } from './src/redux/actions/ReactionAction';
+import Memories from './src/views/screens/Memories/Memories';
+import PublicProfile from './src/views/screens/Profile/PublicProfile';
+import SignlePost from './src/views/screens/Profile/SignlePost';
+import MemorySignlePost from './src/views/screens/Memories/MemorySignlePost';
 
 
 
@@ -77,10 +83,22 @@ const App = () => {
 
                     <Stack.Screen options={{ headerShown: false }} name="HomeNavigation" component={BottomNavigation} />
                     <Stack.Screen options={{ headerShown: false }} name="Home" component={Home} />
+
+
+
+                    <Stack.Screen options={{ headerShown: false }} name="Search" component={Search} />
+
+                    <Stack.Screen options={{ headerShown: false }} name="Memories" component={Memories} />
+                    <Stack.Screen options={{ headerShown: false }} name="MemorySignlePost" component={MemorySignlePost} />
+
+
+
                     <Stack.Screen options={{ headerShown: false }} name="CreateSuccess" component={CreateSuccess} />
                     <Stack.Screen options={{ headerShown: false }} name="PostCreateSuccess" component={PostCreateSuccess} />
 
                     <Stack.Screen options={{ headerShown: false }} name="Profile" component={Profile} />
+                    <Stack.Screen options={{ headerShown: false }} name="SignlePost" component={SignlePost} />
+                    <Stack.Screen options={{ headerShown: false }} name="PublicProfile" component={PublicProfile} />
                     <Stack.Screen options={{ headerShown: false }} name="ProfileTabs" component={ProfileTabs} />
                     <Stack.Screen options={{ headerShown: false }} name="ProfileEdit" component={ProfileEdit} />
 

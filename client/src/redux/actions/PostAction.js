@@ -10,9 +10,19 @@ import {
     CREATE_POST_SUCCESS,
     CREATE_POST_FAIL,
 
-    VIEW_POST_REQUEST,
-    VIEW_POST_SUCCESS,
-    VIEW_POST_FAIL,
+    FOLLOWING_POSTS_REQUEST,
+    FOLLOWING_POSTS_SUCCESS,
+    FOLLOWING_POSTS_FAIL,
+
+    SINGLE_POST_REQUEST,
+    SINGLE_POST_SUCCESS,
+    SINGLE_POST_FAIL,
+
+
+    DELETE_POST_REQUEST,
+    DELETE_POST_SUCCESS,
+    DELETE_POST_FAIL,
+
 
     CLEAR_ERRORS,
 
@@ -41,12 +51,79 @@ export const PostsAction = () => async (dispatch) => {
     }
 }
 
-export const CreatePostAction = (caption, image, who_can_see, allow_comments, allow_reactions, allow_high_quality, diamonds) => async (dispatch) => {
+export const SinglePostAction = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: SINGLE_POST_REQUEST });
+
+        const { data } = await axios.get(`${APP_URL}/user/post/single/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        dispatch({
+            type: SINGLE_POST_SUCCESS,
+            payload: data
+        });
+    } catch (error) {
+        dispatch({
+            type: SINGLE_POST_FAIL,
+            payload: error.response.data,
+        })
+
+    }
+}
+
+
+export const DeletePostAction = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: DELETE_POST_REQUEST });
+
+        const { data } = await axios.delete(`${APP_URL}/user/post/delete/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        dispatch({
+            type: DELETE_POST_SUCCESS,
+            payload: data
+        });
+    } catch (error) {
+        dispatch({
+            type: DELETE_POST_FAIL,
+            payload: error.response.data,
+        })
+
+    }
+}
+
+export const FollowingPostsAction = () => async (dispatch) => {
+    try {
+        dispatch({ type: FOLLOWING_POSTS_REQUEST });
+
+        const { data } = await axios.get(`${APP_URL}/user/post/my-following-posts`, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        dispatch({
+            type: FOLLOWING_POSTS_SUCCESS,
+            payload: data
+        });
+    } catch (error) {
+        dispatch({
+            type: FOLLOWING_POSTS_FAIL,
+            payload: error.response.data,
+        })
+
+    }
+}
+
+export const CreatePostAction = (caption, image, who_can_see, allow_comments, allow_reactions, allow_high_quality, post_diamonds) => async (dispatch) => {
     try {
         dispatch({ type: CREATE_POST_REQUEST });
 
         const { data } = await axios.post(`${APP_URL}/user/post/store`, {
-            caption, image, who_can_see, allow_comments, allow_reactions, allow_high_quality, diamonds,
+            caption, image, who_can_see, allow_comments, allow_reactions, allow_high_quality, post_diamonds,
             headers: {
                 "Content-Type": "application/json",
             }
@@ -67,28 +144,6 @@ export const CreatePostAction = (caption, image, who_can_see, allow_comments, al
 
 
 
-
-export const PostViewAction = (post_id) => async (dispatch) => {
-    try {
-        dispatch({ type: VIEW_POST_REQUEST });
-
-        const { data } = await axios.put(`${APP_URL}/user/post/view/${post_id}`, {
-            headers: {
-                "Content-Type": "application/json",
-            }
-        });
-        dispatch({
-            type: VIEW_POST_SUCCESS,
-            payload: data
-        });
-    } catch (error) {
-        dispatch({
-            type: VIEW_POST_FAIL,
-            payload: error.response.data,
-        })
-
-    }
-}
 
 
 

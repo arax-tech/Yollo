@@ -1,8 +1,10 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { AuthReducer, updateProfileReducer } from './reducers/AuthReducer';
+import { memoriesReducer } from './reducers/MemoriesReducer';
 import { postReducer } from './reducers/PostReducer';
 import { commentModeReducer, reactionReducer } from './reducers/ReactionReducer';
+import { searchReducer } from './reducers/SearchReducer';
 import { supportReducer } from './reducers/SupportReducer';
 import { yelloReducer } from './reducers/YelloReducer';
 
@@ -16,7 +18,10 @@ const reducer = combineReducers({
 
     post: postReducer,
     reaction: reactionReducer,
-    commentModel: commentModeReducer
+    commentModel: commentModeReducer,
+
+    search: searchReducer,
+    memories: memoriesReducer,
 });
 
 let initialState = {};

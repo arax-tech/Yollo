@@ -8,13 +8,12 @@ import { AllSuggessionAction, FollowAction } from '../../../redux/actions/YelloA
 import { FOLLOW_RESET } from '../../../redux/constants/YelloConstant'
 import { AuthUserAction } from '../../../redux/actions/AuthAction'
 
-const Suggested = () => {
+const Suggested = ({ navigation }) => {
     const dispatch = useDispatch();
     const { loading, user } = useSelector((state) => state.auth);
     const { loading: yelloLoading, users, status, message } = useSelector((state) => state.yello);
     const FollowFunction = async (follow_user_id) => {
         await dispatch(FollowAction(follow_user_id));
-        await dispatch(AuthUserAction());
         await dispatch(AllSuggessionAction());
 
     }
@@ -45,7 +44,7 @@ const Suggested = () => {
 
 
                                 <View key={index} style={[styles.userList, { marginTop: 10 }]}>
-                                    <TouchableOpacity style={{ flexDirection: 'row' }}>
+                                    <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate("PublicProfile", { userId: user0?._id, authUser: user })}>
                                         {
                                             user0.image ? (
                                                 <Image style={styles.userImage} source={{ uri: user0.image.url }} />

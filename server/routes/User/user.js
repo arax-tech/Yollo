@@ -11,10 +11,13 @@ const user = require("../../middleware/user")
 
 // Model 
 const User = require("../../models/User")
-const Tag = require("../../models/Tag")
+const Tag = require("../../models/Badge")
 const Diamond = require("../../models/Diamond")
 const Notification = require("../../models/Notification")
 const Reaction = require("../../models/Reaction")
+const Post = require("../../models/Post")
+
+
 
 
 
@@ -24,7 +27,13 @@ router.get("/profile", auth, user, async (request, response) => {
         const tags = await Tag.find({ user: _id });
         const user = await User.findById(_id).select('-password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ");;
 
-        const diamonds = await Diamond.find({ user: _id }).populate("transactions.user", "first_name last_name image");
+        const activePosts = await Post.find({ status: "Active", user: _id }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes", "first_name last_name image");
+
+        const profilePostYouLikes = await Post.find({ likes: { $in: request.user.id } }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
+
+        const profilePostLikes = await Post.find({ user: _id, numbersOfLikes: { $gt: 0 } }).sort({ numbersOfLikes: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
+        ;
+        const diamonds = await Diamond.find({ user: _id }).sort({ createAt: -1 }).populate("transactions.user", "first_name last_name image");
 
         const notifications = await Notification.find({ user_id: _id }).populate("user", "first_name last_name image").populate("post", "first_name last_name image");
         const reactions = await Reaction.find({ user: _id }).populate("reaction_user", "first_name last_name image");
@@ -36,6 +45,9 @@ router.get("/profile", auth, user, async (request, response) => {
             diamonds: diamonds && diamonds[0],
             notifications: notifications,
             reactions: reactions,
+            activePosts: activePosts,
+            profilePostLikes: profilePostLikes,
+            profilePostYouLikes: profilePostYouLikes
         });
     }
     catch (error) {
@@ -45,6 +57,38 @@ router.get("/profile", auth, user, async (request, response) => {
         });
     }
 })
+
+router.get("/single/:id", auth, user, async (request, response) => {
+    try {
+        const _id = request.params.id;
+        const user = await User.findById(_id).select('-password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ");;
+
+        const activePosts = await Post.find({ status: "Active", user: _id }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes", "first_name last_name image");
+        const profilePostYouLikes = await Post.find({ likes: { $in: _id } }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
+        const profilePostLikes = await Post.find({ user: _id, numbersOfLikes: { $gt: 0 } }).sort({ numbersOfLikes: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
+        const reactions = await Reaction.find({ user: _id }).populate("reaction_user", "first_name last_name image");
+
+        response.status(200).json({
+            status: 200,
+            user: user,
+            reactions: reactions,
+            activePosts: activePosts,
+            profilePostLikes: profilePostLikes,
+            profilePostYouLikes: profilePostYouLikes
+        });
+    }
+    catch (error) {
+        response.status(500).json({
+            status: 500,
+            message: error.message
+        });
+    }
+})
+
+
+
+
+
 
 
 router.put("/account/update", auth, user, async (request, response) => {
@@ -97,7 +141,11 @@ router.put("/profile", auth, user, async (request, response) => {
 
         const { first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user, image } = request.body;
 
-        if (image) {
+        if (image == null) {
+            const user = await User.findByIdAndUpdate(_id);
+            request.body.image = user?.image;
+            await User.findByIdAndUpdate(_id, request.body, { new: true });
+        } else {
             const user = await User.findByIdAndUpdate(_id);
             if (user?.image.public_id) {
                 const imageUrl = user.image.public_id;
@@ -113,8 +161,6 @@ router.put("/profile", auth, user, async (request, response) => {
                     url: myCloud.secure_url
                 }
             });
-        } else {
-            await User.findByIdAndUpdate(_id, request.body, { new: true });
         }
 
 
@@ -245,3 +291,11 @@ router.get("/suggession", auth, user, async (request, response) => {
 
 
 module.exports = router;
+
+
+
+
+
+
+
+

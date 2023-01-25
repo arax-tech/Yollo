@@ -9,10 +9,21 @@ import {
     POSTS_FAIL,
     POSTS_RESET,
 
-    VIEW_POST_REQUEST,
-    VIEW_POST_SUCCESS,
-    VIEW_POST_FAIL,
-    VIEW_POST_RESET,
+    SINGLE_POST_REQUEST,
+    SINGLE_POST_SUCCESS,
+    SINGLE_POST_FAIL,
+    SINGLE_POST_RESET,
+
+    DELETE_POST_REQUEST,
+    DELETE_POST_SUCCESS,
+    DELETE_POST_FAIL,
+    DELETE_POST_RESET,
+
+    FOLLOWING_POSTS_REQUEST,
+    FOLLOWING_POSTS_SUCCESS,
+    FOLLOWING_POSTS_FAIL,
+    FOLLOWING_POSTS_RESET,
+
 
     CLEAR_ERRORS,
 
@@ -25,8 +36,10 @@ import {
 export const postReducer = (state = {}, action) => {
     switch (action.type) {
         case POSTS_REQUEST:
+        case FOLLOWING_POSTS_REQUEST:
         case CREATE_POST_REQUEST:
-        case VIEW_POST_REQUEST:
+        case SINGLE_POST_REQUEST:
+        case DELETE_POST_REQUEST:
             return {
                 ...state,
                 loading: true,
@@ -44,25 +57,37 @@ export const postReducer = (state = {}, action) => {
                 status: action.payload.status,
                 isCreated: true,
             };
+        case DELETE_POST_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                message: action.payload.message,
+                status: action.payload.status,
+                IsDeleted: true,
+            };
         case POSTS_SUCCESS:
+        case FOLLOWING_POSTS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 posts: action.payload.posts,
             };
-        case VIEW_POST_SUCCESS:
+
+        case SINGLE_POST_SUCCESS:
             return {
                 ...state,
                 loading: false,
+                post: action.payload.post,
             };
 
 
 
 
-
         case CREATE_POST_FAIL:
-        case VIEW_POST_FAIL:
         case POSTS_FAIL:
+        case FOLLOWING_POSTS_FAIL:
+        case SINGLE_POST_FAIL:
+        case DELETE_POST_FAIL:
             return {
                 ...state,
                 loading: false,
@@ -75,11 +100,23 @@ export const postReducer = (state = {}, action) => {
 
 
         case CREATE_POST_RESET:
-        case VIEW_POST_RESET:
-        case POSTS_RESET:
             return {
                 ...state,
                 isCreated: false,
+            };
+        case DELETE_POST_RESET:
+            return {
+                ...state,
+                IsDeleted: false,
+            };
+
+        case POSTS_RESET:
+        case FOLLOWING_POSTS_RESET:
+        case SINGLE_POST_RESET:
+            return {
+                ...state,
+                errors: null,
+                status: null
             };
 
 
@@ -97,3 +134,7 @@ export const postReducer = (state = {}, action) => {
             return state;
     }
 }
+
+
+
+

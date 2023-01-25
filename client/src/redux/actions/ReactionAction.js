@@ -21,6 +21,14 @@ import {
     CREATE_COMMENT_SUCCESS,
     CREATE_COMMENT_FAIL,
 
+    LIKE_COMMENT_REQUEST,
+    LIKE_COMMENT_SUCCESS,
+    LIKE_COMMENT_FAIL,
+
+    UNLIKE_COMMENT_REQUEST,
+    UNLIKE_COMMENT_SUCCESS,
+    UNLIKE_COMMENT_FAIL,
+
     DELETE_COMMENT_REQUEST,
     DELETE_COMMENT_SUCCESS,
     DELETE_COMMENT_FAIL,
@@ -28,6 +36,19 @@ import {
     ONE_MINUT_REWARD_REQUEST,
     ONE_MINUT_REWARD_SUCCESS,
     ONE_MINUT_REWARD_FAIL,
+
+    REPORT_POST_REQUEST,
+    REPORT_POST_SUCCESS,
+    REPORT_POST_FAIL,
+
+
+    ADD_DIAMOND_IN_POST_REQUEST,
+    ADD_DIAMOND_IN_POST_SUCCESS,
+    ADD_DIAMOND_IN_POST_FAIL,
+
+    SHARE_POST_REQUEST,
+    SHARE_POST_SUCCESS,
+    SHARE_POST_FAIL,
 
     CLEAR_ERRORS,
 
@@ -149,6 +170,49 @@ export const CreateCommentAction = (post_id, comment) => async (dispatch) => {
     }
 }
 
+export const LikeCommentAction = (post_id, comment_id) => async (dispatch) => {
+    try {
+        dispatch({ type: LIKE_COMMENT_REQUEST });
+
+        const { data } = await axios.put(`${APP_URL}/user/post/comment/like/${post_id}/${comment_id}`, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        dispatch({
+            type: LIKE_COMMENT_SUCCESS,
+            payload: data
+        });
+    } catch (error) {
+        dispatch({
+            type: LIKE_COMMENT_FAIL,
+            payload: error.response.data,
+        })
+
+    }
+}
+
+export const UnLikeCommentAction = (post_id, comment_id) => async (dispatch) => {
+    try {
+        dispatch({ type: UNLIKE_COMMENT_REQUEST });
+
+        const { data } = await axios.put(`${APP_URL}/user/post/comment/unlike/${post_id}/${comment_id}`, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        dispatch({
+            type: UNLIKE_COMMENT_SUCCESS,
+            payload: data
+        });
+    } catch (error) {
+        dispatch({
+            type: UNLIKE_COMMENT_FAIL,
+            payload: error.response.data,
+        })
+
+    }
+}
 
 export const DeleteCommentAction = (post_id, comment_id) => async (dispatch) => {
     try {
@@ -172,6 +236,80 @@ export const DeleteCommentAction = (post_id, comment_id) => async (dispatch) => 
     }
 }
 
+export const ReportPostAction = (post_id, reason) => async (dispatch) => {
+    try {
+        dispatch({ type: REPORT_POST_REQUEST });
+
+
+        const { data } = await axios.post(`${APP_URL}/user/post/report/${post_id}`, {
+            reason,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        dispatch({
+            type: REPORT_POST_SUCCESS,
+            payload: data
+        });
+    } catch (error) {
+        dispatch({
+            type: REPORT_POST_FAIL,
+            payload: error.response.data,
+        })
+
+    }
+}
+
+
+
+export const AddDiamondPostAction = (post_id, user, post_diamonds) => async (dispatch) => {
+    try {
+        dispatch({ type: ADD_DIAMOND_IN_POST_REQUEST });
+
+
+        const { data } = await axios.put(`${APP_URL}/user/post/diamond/${post_id}`, {
+            user, post_diamonds,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        dispatch({
+            type: ADD_DIAMOND_IN_POST_SUCCESS,
+            payload: data
+        });
+    } catch (error) {
+        dispatch({
+            type: ADD_DIAMOND_IN_POST_FAIL,
+            payload: error.response.data,
+        })
+
+    }
+}
+
+
+
+export const SharePostAction = (post_id) => async (dispatch) => {
+    try {
+        dispatch({ type: SHARE_POST_REQUEST });
+
+
+        const { data } = await axios.put(`${APP_URL}/user/post/share/${post_id}`, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        dispatch({
+            type: SHARE_POST_SUCCESS,
+            payload: data
+        });
+    } catch (error) {
+        dispatch({
+            type: SHARE_POST_FAIL,
+            payload: error.response.data,
+        })
+
+    }
+}
 
 
 

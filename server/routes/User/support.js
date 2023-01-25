@@ -9,7 +9,7 @@ const user = require("../../middleware/user")
 
 
 // Model 
-const Support = require("../../models/Suppor")
+const Support = require("../../models/Support")
 
 
 
