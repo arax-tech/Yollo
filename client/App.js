@@ -45,6 +45,7 @@ import Memories from './src/views/screens/Memories/Memories';
 import PublicProfile from './src/views/screens/Profile/PublicProfile';
 import SignlePost from './src/views/screens/Profile/SignlePost';
 import MemorySignlePost from './src/views/screens/Memories/MemorySignlePost';
+import Referral from './src/views/screens/Settings/Referral';
 
 
 
@@ -104,6 +105,7 @@ const App = () => {
 
                     <Stack.Screen options={{ headerShown: false }} name="Settings" component={Settings} />
                     <Stack.Screen options={{ headerShown: false }} name="Account" component={Account} />
+                    <Stack.Screen options={{ headerShown: false }} name="Referral" component={Referral} />
                     <Stack.Screen options={{ headerShown: false }} name="AccountDisabled" component={AccountDisabled} />
                     <Stack.Screen options={{ headerShown: false }} name="DeleteAccount" component={DeleteAccount} />
                     <Stack.Screen options={{ headerShown: false }} name="NotificationSettings" component={NotificationSettings} />

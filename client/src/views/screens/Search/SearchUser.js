@@ -50,7 +50,7 @@ const SearchUser = ({ users, start }) => {
                                 ))
                                 : (
                                     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-                                        <Text style={{ fontSize: 16, color: Colors.dark, textAlign: 'center', paddingTop: 30 }}>Users not found with this keyword...</Text>
+                                        <Text style={{ fontSize: 16, color: Colors.dark, textAlign: 'center', paddingTop: 30 }}>No result found...</Text>
                                     </View>
                                 )
 

@@ -59,6 +59,7 @@ const Memories = ({ navigation }) => {
 
     // console.log(monthDay16Posts)
     let currentDate = new Date();
+    console.log(currentDate.getMonth() + 1)
     useEffect(() => {
         const getMemories = navigation.addListener('focus', async () => {
             await dispatch(MemoriesAction(currentDate.getMonth() + 1, currentDate.getFullYear()));

@@ -75,7 +75,7 @@ const SearchHashtag = ({ posts, start, text }) => {
                             </ScrollView>
                         ) : (
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text style={{ fontSize: 16, color: Colors.dark, textAlign: 'center', paddingTop: 40 }}>Hashtag not found with this keyword...</Text>
+                                <Text style={{ fontSize: 16, color: Colors.dark, textAlign: 'center', paddingTop: 40 }}>No result found...</Text>
                             </View>
                         )
 

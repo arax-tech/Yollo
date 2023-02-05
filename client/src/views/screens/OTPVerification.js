@@ -25,7 +25,7 @@ const OTPVerification = ({ navigation }) => {
 
     const dispatch = useDispatch();
 
-    const { loading, isAuthenticated, errors, status, message, type, phone, email, user } = useSelector((state) => state.auth);
+    const { loading, isAuthenticated, errors, status, message, type, phone, email, user, code } = useSelector((state) => state.auth);
 
 
     const OTPVerificationFunction = () => {
@@ -39,7 +39,7 @@ const OTPVerification = ({ navigation }) => {
             ToastAndroid.show("OTP is required...", ToastAndroid.SHORT);
         } else {
             const newOtp = Pin1 + Pin2 + Pin3 + Pin4;
-            dispatch(VerificationAction(newOtp, email, phone, type));
+            dispatch(VerificationAction(newOtp, email, phone, type, code));
         }
     }
 
@@ -48,14 +48,14 @@ const OTPVerification = ({ navigation }) => {
             if (phone === null) {
                 ToastAndroid.show("Phone is required...", ToastAndroid.SHORT);
             } else {
-                dispatch(LoginAction(phone, email, type));
+                dispatch(LoginAction(phone, email, type, code));
             }
 
         } else {
             if (email === null) {
                 ToastAndroid.show("Email is required...", ToastAndroid.SHORT);
             } else {
-                dispatch(LoginAction(phone, email, type));
+                dispatch(LoginAction(phone, email, type, code));
             }
         }
     }

@@ -1,4 +1,4 @@
-import { StatusBar, StyleSheet, TouchableOpacity, SafeAreaView, Text, View, Image } from 'react-native'
+import { StatusBar, StyleSheet, TouchableOpacity, SafeAreaView, Text, View, Image, ToastAndroid } from 'react-native'
 import React, { useEffect } from 'react'
 import Colors from '../../constants/Colors'
 import Fonts from '../../constants/Fonts'
@@ -8,10 +8,13 @@ import Loading from '../components/Loading'
 
 import moment from 'moment';
 import { AuthUserAction } from '../../redux/actions/AuthAction'
+import { HideNotificationAction } from '../../redux/actions/YelloAction'
+import { HIDE_NOTIFICATION_RESET } from '../../redux/constants/YelloConstant'
 
 const Notification = ({ navigation }) => {
     const dispatch = useDispatch();
-    const { loading, user, notifications } = useSelector((state) => state.auth);
+    const { loading, notifications } = useSelector((state) => state.auth);
+    const { loading: notificaionLoading, message, isHide } = useSelector((state) => state.yello);
 
     useEffect(() => {
         const getUserNotification = navigation.addListener('focus', async () => {
@@ -19,8 +22,22 @@ const Notification = ({ navigation }) => {
         });
         return getUserNotification;
     }, [navigation, dispatch]);
+
+    useEffect(() => {
+        if (isHide && isHide == true) {
+            ToastAndroid.show(message, ToastAndroid.SHORT);
+            dispatch({ type: HIDE_NOTIFICATION_RESET });
+        }
+    }, [dispatch, isHide])
+
+
+    const HideNotification = async (id) => {
+        await dispatch(HideNotificationAction(id));
+        await dispatch(AuthUserAction());
+    }
+
     return (
-        loading ? <Loading /> :
+        loading || notificaionLoading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.lightGray }}>
                 <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
                 <View style={styles.header}>
@@ -31,97 +48,105 @@ const Notification = ({ navigation }) => {
 
                     {
                         notifications?.map((notification) => (
-                            notification?.user?._id !== user?._id && (
-                                <View key={notification?._id} style={styles.notificationList}>
+                            <TouchableOpacity key={notification?._id} style={styles.notificationList} onPress={() => HideNotification(notification?._id)}>
 
 
-                                    {
-                                        notification?.user.image?.url ? (
-                                            <Image style={styles.notificationImage} source={{ uri: notification?.user.image?.url }} />
-                                        ) : (
-                                            <Image style={styles.notificationImage} source={require('../../assets/images/placeholder.jpg')} />
-                                        )
-                                    }
+                                {
+                                    notification?.user.image?.url ? (
+                                        <Image style={styles.notificationImage} source={{ uri: notification?.user.image?.url }} />
+                                    ) : (
+                                        <Image style={styles.notificationImage} source={require('../../assets/images/placeholder.jpg')} />
+                                    )
+                                }
 
-                                    <View style={styles.notificationMainTitles}>
-                                        <Text style={styles.notificationTitle}><Text style={{ fontWeight: '700' }}>{notification?.user.first_name} {notification?.user.last_name}</Text> {notification?.description}</Text>
-                                        <Text style={styles.notificationTime}>{moment(notification?.createdAt).fromNow()}</Text>
-                                    </View>
+                                {
+                                    notification?.type === "PostTimeEnding" ? (
 
-
-                                    {
-                                        notification?.type === "Like" && (
-                                            <View style={styles.contentRight}>
-                                                <TouchableOpacity style={styles.notificationButtonPrimary}>
-                                                    <Text style={styles.notificationButtonText}>View Post</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        )
-                                    }
-                                    {
-                                        notification?.type === "Comment" && (
-                                            <View style={styles.contentRight}>
-                                                <TouchableOpacity style={styles.notificationButtonPrimary}>
-                                                    <Text style={styles.notificationButtonText}>View Post</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        )
-                                    }
+                                        <View style={styles.notificationMainTitles}>
+                                            <Text style={styles.notificationTitle}>{notification?.description.split("-|-")[0]}</Text>
+                                            <Text style={[styles.notificationTime, { color: "#FF2727", fontWeight: '700', opacity: 1 }]}>Ending In {notification?.description.split("-|-")[1]} Minutes</Text>
+                                        </View>
+                                    ) : (
+                                        <View style={styles.notificationMainTitles}>
+                                            <Text style={styles.notificationTitle}><Text style={{ fontWeight: '700' }}>{notification?.user.first_name} {notification?.user.last_name}</Text> {notification?.description}</Text>
+                                            <Text style={styles.notificationTime}>{moment(notification?.createdAt).fromNow()}</Text>
+                                        </View>
+                                    )
+                                }
 
 
-                                    {
-                                        notification?.type === "Post" && (
-                                            <View style={styles.contentRight}>
-                                                <Image style={styles.notificationPostImage} source={require('../../assets/images/notification/2.png')} />
-                                            </View>
-
-                                        )
-                                    }
-
-
-                                    {
-                                        notification?.type === "PostTimeEnding" && (
-                                            <View style={styles.contentRight}>
-                                                <TouchableOpacity style={styles.notificationButtonDanger}>
-                                                    <Text style={styles.notificationButtonText}>Increase Time</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        )
-                                    }
-
-                                    {
-                                        notification?.type === "GiveYouDiamond" && (
-                                            <View style={styles.contentRight}>
-                                                <TouchableOpacity style={styles.notificationButtonPrimary}>
-                                                    <Text style={styles.notificationButtonText}>Send Time</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        )
-                                    }
-
-                                    {
-                                        notification?.type === "FollowingPost" && (
-                                            <View style={styles.contentRight}>
-                                                <Image style={styles.notificationPostImage} source={require('../../assets/images/notification/2.png')} />
-                                            </View>
-                                        )
-                                    }
-                                    {
-                                        notification?.type === "FollowYou" && (
-                                            <View style={styles.contentRight}>
-                                                <TouchableOpacity style={styles.notificationButtonPrimary}>
-                                                    <Text style={styles.notificationButtonText}>Follow Back</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        )
-                                    }
+                                {
+                                    notification?.type === "Like" && (
+                                        <View style={styles.contentRight}>
+                                            <TouchableOpacity style={styles.notificationButtonPrimary} >
+                                                <Text style={styles.notificationButtonText}>View Post</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )
+                                }
+                                {
+                                    notification?.type === "Comment" && (
+                                        <View style={styles.contentRight}>
+                                            <TouchableOpacity style={styles.notificationButtonPrimary}>
+                                                <Text style={styles.notificationButtonText}>View Post</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )
+                                }
 
 
+                                {
+                                    notification?.type === "Post" && (
+                                        <View style={styles.contentRight}>
+                                            <Image style={styles.notificationPostImage} source={require('../../assets/images/notification/2.png')} />
+                                        </View>
+
+                                    )
+                                }
+
+
+                                {
+                                    notification?.type === "PostTimeEnding" && (
+                                        <View style={styles.contentRight}>
+                                            <TouchableOpacity style={styles.notificationButtonDanger}>
+                                                <Text style={styles.notificationButtonText}>Increase Time</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )
+                                }
+
+                                {
+                                    notification?.type === "GiveYouDiamond" && (
+                                        <View style={styles.contentRight}>
+                                            <TouchableOpacity style={styles.notificationButtonPrimary}>
+                                                <Text style={styles.notificationButtonText}>Send Time</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )
+                                }
+
+                                {
+                                    notification?.type === "FollowingPost" && (
+                                        <View style={styles.contentRight}>
+                                            <Image style={styles.notificationPostImage} source={require('../../assets/images/notification/2.png')} />
+                                        </View>
+                                    )
+                                }
+                                {
+                                    notification?.type === "FollowYou" && (
+                                        <View style={styles.contentRight}>
+                                            <TouchableOpacity style={styles.notificationButtonPrimary}>
+                                                <Text style={styles.notificationButtonText}>Follow Back</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )
+                                }
 
 
 
-                                </View>
-                            )
+
+
+                            </TouchableOpacity>
 
                         ))
                     }

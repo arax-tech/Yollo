@@ -14,22 +14,24 @@ const Login = ({ navigation }) => {
 
 
     const [type, setType] = useState('phone')
-    const [phone, setPhone] = useState('+92-356-46189');
+    const [phone, setPhone] = useState('+92-306-5831989');
     const [email, setEmail] = useState(null);
+    const [code, setCode] = useState(null);
+    const [show, setShow] = useState(false);
 
     const LoginFunction = async () => {
         if (type === 'phone') {
             if (phone === null) {
                 ToastAndroid.show("Phone is required...", ToastAndroid.SHORT);
             } else {
-                await dispatch(LoginAction(phone, email, type));
+                await dispatch(LoginAction(phone, email, type, code));
             }
 
         } else {
             if (email === null) {
                 ToastAndroid.show("Email is required...", ToastAndroid.SHORT);
             } else {
-                await dispatch(LoginAction(phone, email, type));
+                await dispatch(LoginAction(phone, email, type, code));
             }
         }
     }
@@ -72,33 +74,91 @@ const Login = ({ navigation }) => {
                         <Text style={styles.subtitle}>We will send  you a one time password to your {type == 'phone' ? 'mobile number' : 'email address'}</Text>
                     </View>
                     <View style={styles.form}>
-                        {
-                            type == 'phone' ? (
-                                <React.Fragment>
-                                    <Text style={styles.email}>Enter Mobile Number</Text>
-                                    <TextInput keyboardType='name-phone-pad' style={styles.txtInput} onChangeText={(text) => setPhone(text)} value={phone} placeholder='+91138492304' />
+                        <View>
 
-                                    <Text style={styles.or_use}>
-                                        Or Use Your
-                                        <TouchableOpacity onPress={() => setType('email')}>
-                                            <Text style={styles.instenet}>Email</Text>
-                                        </TouchableOpacity>
-                                    </Text>
-                                </React.Fragment>
-                            ) : (
-                                <View>
-                                    <Text style={styles.email}>Enter Email Address</Text>
-                                    <TextInput keyboardType='email-address' style={styles.txtInput} onChangeText={(text) => setEmail(text)} value={email} placeholder='info@example.com' />
+                            {
+                                type == 'phone' ? (
+                                    <React.Fragment>
+                                        <Text style={styles.email}>Enter Mobile Number</Text>
+                                        <TextInput keyboardType='name-phone-pad' style={styles.txtInput} onChangeText={(text) => setPhone(text)} value={phone} placeholder='+91138492304' />
 
-                                    <Text style={styles.or_use}>
-                                        Or Use Your
-                                        <TouchableOpacity onPress={() => setType('phone')}>
-                                            <Text style={styles.instenet}>Mobile</Text>
-                                        </TouchableOpacity>
-                                    </Text>
-                                </View>
-                            )
-                        }
+                                        {
+                                            show && show == true && (
+                                                <>
+                                                    <Text style={styles.email}>Enter Referral Code</Text>
+                                                    <TextInput keyboardType='name-phone-pad' style={styles.txtInput} onChangeText={(text) => setCode(text)} value={code} />
+                                                </>
+                                            )
+                                        }
+
+                                        <View style={styles.or_use}>
+                                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+
+                                                {
+
+                                                    show && show == true ?
+                                                        <TouchableOpacity onPress={() => setShow(false)}>
+                                                            <Text>Hide Referral Code </Text>
+                                                        </TouchableOpacity>
+                                                        :
+                                                        <TouchableOpacity onPress={() => setShow(true)}>
+                                                            <Text>Referral Code ?</Text>
+                                                        </TouchableOpacity>
+                                                }
+
+                                                <View style={{ flexDirection: "row" }}>
+                                                    <Text>Or Use Your </Text>
+                                                    <TouchableOpacity onPress={() => setType('email')}>
+                                                        <Text style={styles.instenet}>Email</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </React.Fragment>
+                                ) : (
+                                    <View>
+                                        <Text style={styles.email}>Enter Email Address</Text>
+                                        <TextInput keyboardType='email-address' style={styles.txtInput} onChangeText={(text) => setEmail(text)} value={email} placeholder='info@example.com' />
+
+
+                                        {
+                                            show && show == true && (
+                                                <>
+                                                    <Text style={styles.email}>Enter Referral Code</Text>
+                                                    <TextInput keyboardType='name-phone-pad' style={styles.txtInput} onChangeText={(text) => setCode(text)} value={code} />
+                                                </>
+                                            )
+                                        }
+
+
+
+                                        <View style={styles.or_use}>
+                                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                                {
+
+                                                    show && show == true ?
+                                                        <TouchableOpacity onPress={() => setShow(false)}>
+                                                            <Text>Hide Referral Code </Text>
+                                                        </TouchableOpacity>
+                                                        :
+                                                        <TouchableOpacity onPress={() => setShow(true)}>
+                                                            <Text>Referral Code ?</Text>
+                                                        </TouchableOpacity>
+                                                }
+                                                <View style={{ flexDirection: "row" }}>
+                                                    <Text>Or Use Your</Text>
+                                                    <TouchableOpacity onPress={() => setType('phone')}>
+                                                        <Text style={styles.instenet}>Mobile</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        </View>
+
+
+                                    </View>
+                                )
+                            }
+                        </View>
 
 
 
@@ -123,6 +183,6 @@ const styles = StyleSheet.create({
     form: { padding: 20, marginTop: 20, },
     email: { fontFamily: Fonts.primary, fontSize: 16, fontWeight: '500', lineHeight: 24 },
     txtInput: { fontFamily: Fonts.primary, backgroundColor: Colors.gary, borderRadius: 10, padding: 13, marginBottom: 12 },
-    or_use: { fontFamily: Fonts.primary, fontSize: 14, fontWeight: '500', lineHeight: 24, textAlign: 'right', },
-    instenet: { fontFamily: Fonts.primary, color: '#5458F7', fontSize: 16, marginBottom: -6, marginLeft: 3, fontWeight: '900', lineHeight: 24, textAlign: 'right' },
+    or_use: { fontFamily: Fonts.primary, fontSize: 14, fontWeight: '500', lineHeight: 24, },
+    instenet: { fontFamily: Fonts.primary, color: '#5458F7', fontSize: 16, marginLeft: 3, fontWeight: '900', marginTop: -1 },
 })

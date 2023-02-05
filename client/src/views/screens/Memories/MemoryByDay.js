@@ -18,7 +18,7 @@ const MemoryByDay = ({ posts }) => {
                     </View>
                 ) : (
                     <View style={styles.notFoundBox}>
-                        <Text style={styles.notFoundTitle}>Record not found...</Text>
+                        <Text style={styles.notFoundTitle}>No <Text style={{ color: Colors.primary }}>Yollo</Text> memories ...</Text>
                     </View>
                 )
             }

@@ -17,7 +17,7 @@ const CommentSheet = () => {
 
 
 
-    const snapPoints = useMemo(() => ["25%", "50%"], []);
+    const snapPoints = useMemo(() => ["25%", "60%"], []);
     const bootmSheerRef = useRef(null);
     useEffect(() => {
         if (open && bootmSheerRef.current) {

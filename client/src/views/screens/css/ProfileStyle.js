@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     actionIcon: { width: 15, height: 15, },
     actionText: { fontFamily: Fonts.primary, fontSize: 10, fontWeight: '600', color: Colors.white, textAlign: 'center', marginTop: -2 },
     imageContainer: {},
-    mainImage: { width: deviceWidth / 3 - 8, height: deviceHeight / 3, marginVertical: 5, borderRadius: 5, margin: 2, marginTop: 10 },
+    mainImage: { width: deviceWidth / 3 - 8, height: 120, marginVertical: 5, borderRadius: 5, margin: 2, marginTop: 10 },
     iconContainer: { display: 'flex', flexDirection: 'row', marginBottom: -45, marginTop: 4, zIndex: 999 }
 });
 

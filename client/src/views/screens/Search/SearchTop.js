@@ -41,7 +41,7 @@ const SearchTop = ({ posts }) => {
                         <View />
                         <View />
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <IconAntDesign name={'heart'} color='#FC1B95' size={15} />
+                            <IconAntDesign name={'heart'} color='#FF2727' size={15} />
                             <Text style={styles.userName}> {post?.likes?.length}</Text>
                         </View>
                     </View>
@@ -63,7 +63,7 @@ const SearchTop = ({ posts }) => {
                     {
                         posts && posts.length === 0 && (
                             <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-                                <Text style={{ fontSize: 16, color: Colors.dark, textAlign: 'center', paddingTop: 30 }}>Record not found with this keyword...</Text>
+                                <Text style={{ fontSize: 16, color: Colors.dark, textAlign: 'center', paddingTop: 30 }}>No result found...</Text>
                             </View>
                         )
                     }

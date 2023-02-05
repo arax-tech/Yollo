@@ -85,7 +85,7 @@ router.post("/store", auth, user, async (request, response) => {
 
         const myCloud = await cloudinary.v2.uploader.upload(image, { folder: "yello/posts" });
 
-        await Post.create({
+        const post = await Post.create({
             user: request.user.id, caption, who_can_see, allow_comments, allow_reactions, allow_high_quality, post_diamonds,
             image: {
                 public_id: myCloud.public_id,
@@ -93,6 +93,15 @@ router.post("/store", auth, user, async (request, response) => {
             }
         });
 
+
+        // Diamonds  
+        const diamond = await Diamond.findOne({ user: request.user.id });
+
+        await Diamond.findByIdAndUpdate(diamond._id, {
+            $set: {
+                diamonds: diamond.diamonds + 60
+            }
+        });
 
         response.status(201).json({
             status: 201,
@@ -414,6 +423,7 @@ router.put("/like/:post_id", auth, user, async (request, response) => {
             reaction_user: request.user.id,
             description: "like your photo",
         });
+
         // Diamonds
         await Post.findByIdAndUpdate(request.params.post_id, {
             $set: {

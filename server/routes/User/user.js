@@ -35,7 +35,7 @@ router.get("/profile", auth, user, async (request, response) => {
         ;
         const diamonds = await Diamond.find({ user: _id }).sort({ createAt: -1 }).populate("transactions.user", "first_name last_name image");
 
-        const notifications = await Notification.find({ user_id: _id }).populate("user", "first_name last_name image").populate("post", "first_name last_name image");
+        const notifications = await Notification.find({ user_id: _id, status: "Show" }).populate("user", "first_name last_name image").populate("post", "first_name last_name image");
         const reactions = await Reaction.find({ user: _id }).populate("reaction_user", "first_name last_name image");
 
         response.status(200).json({

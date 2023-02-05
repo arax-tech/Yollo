@@ -67,6 +67,7 @@ export const AuthReducer = (state = { user: {} }, action) => {
                 type: action.payload.type,
                 phone: action.payload.phone,
                 email: action.payload.email,
+                code: action.payload.code,
             };
         case AUTH_USER_SUCCESS:
         case VERIFY_SUCCESS:

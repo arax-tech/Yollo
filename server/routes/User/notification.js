@@ -53,4 +53,24 @@ router.post("/store", auth, user, async (request, response) => {
 
 
 
+router.get("/hide/:id", auth, async (request, response) => {
+    try {
+
+        await Notification.findByIdAndDelete(request.params.id);
+
+        response.status(200).json({
+            status: 200,
+            message: "Notification Hide Successfully..."
+        });
+    }
+    catch (error) {
+        response.status(500).json({
+            status: 500,
+            message: error.message
+        });
+    }
+})
+
+
+
 module.exports = router;

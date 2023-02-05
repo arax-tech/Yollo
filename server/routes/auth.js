@@ -24,7 +24,7 @@ router.post('/login', async (request, response) => {
 
     try {
 
-        const { phone, email, type } = request.body;
+        const { phone, email, type, code } = request.body;
 
         // Phone Registration
         if (type == "phone") {
@@ -40,6 +40,7 @@ router.post('/login', async (request, response) => {
                     phone: phone,
                     email: null,
                     type: type,
+                    code: code,
                     message: "OTP Send Successfully...",
                 });
             } else {
@@ -60,6 +61,7 @@ router.post('/login', async (request, response) => {
                     phone: phone,
                     email: null,
                     type: type,
+                    code: code,
                     message: "OTP Send Successfully...",
                 });
             }
@@ -76,6 +78,7 @@ router.post('/login', async (request, response) => {
             // Email Registration
             const user = await User.findOne({ email: email });
 
+
             if (user) {
                 // Update Existing OTP
                 const _id = user.id;
@@ -86,17 +89,25 @@ router.post('/login', async (request, response) => {
                     email: email,
                     phone: null,
                     type: type,
+                    code: code,
                     message: "OTP Send Successfully...",
                 });
             } else {
                 // Save new User Email
                 await User.create({ email: request.body.email, otp: otp, status: 'Active' });
 
+                const user = await User.findOne({ email: email });
+                await Diamond.create({
+                    user: user._id,
+                    diamonds: 1000
+                });
+
                 response.status(200).json({
                     status: 200,
                     email: email,
                     phone: null,
                     type: type,
+                    code: code,
                     message: "OTP Send Successfully...",
                 });
             }
@@ -117,7 +128,7 @@ router.post('/verify', async (request, response) => {
 
     try {
 
-        const { otp, email, phone, type } = request.body;
+        const { otp, email, phone, type, code } = request.body;
         const loginUser = await User.findOne({ otp: otp });
 
 
@@ -132,6 +143,18 @@ router.post('/verify', async (request, response) => {
 
             const authuser = await User.findById(loginUser._id).select('-createAt -password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ");
 
+            // Add Ref Diamonds
+            if (code !== null) {
+                const diamond = await Diamond.findOne({ user: code });
+
+                await Diamond.findByIdAndUpdate(diamond._id, {
+                    $set: {
+                        diamonds: diamond.diamonds + 1000
+                    }
+                });
+
+
+            }
             response.status(200).json({
                 status: 202,
                 message: "Login Successfully...",

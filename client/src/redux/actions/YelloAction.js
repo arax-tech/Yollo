@@ -14,6 +14,10 @@ import {
     UNFOLLOW_SUCCESS,
     UNFOLLOW_FAIL,
 
+    HIDE_NOTIFICATION_REQUEST,
+    HIDE_NOTIFICATION_SUCCESS,
+    HIDE_NOTIFICATION_FAIL,
+
     CLEAR_ERRORS,
 } from "../constants/YelloConstant";
 
@@ -30,6 +34,23 @@ export const AllSuggessionAction = () => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: SUGGESSION_FAIL,
+            payload: error.response.data,
+        })
+
+    }
+}
+export const HideNotificationAction = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: HIDE_NOTIFICATION_REQUEST });
+
+        const { data } = await axios.get(`${APP_URL}/user/notification/hide/${id}`);
+        dispatch({
+            type: HIDE_NOTIFICATION_SUCCESS,
+            payload: data
+        });
+    } catch (error) {
+        dispatch({
+            type: HIDE_NOTIFICATION_FAIL,
             payload: error.response.data,
         })
 

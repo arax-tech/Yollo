@@ -89,24 +89,24 @@ const Comment = ({ onCloseFunction, post }) => {
     return (
         loading ? <Loading /> :
             <SafeAreaView>
-                <ScrollView>
-                    <View >
 
-                        <View style={[styles.userCommentContainer, { marginTop: -5, backgroundColor: Colors.white }]}>
-                            <View />
+                <View >
 
-                            <View>
-                                <Text style={styles.userComment}>Total - {comments?.length} </Text>
-                            </View>
+                    <View style={[styles.userCommentContainer, { marginTop: -5, backgroundColor: Colors.white }]}>
+                        <View />
 
-                            <View>
-                                <TouchableOpacity onPress={onCloseFunction}>
-                                    <IconAntDesign name='close' size={22} color={Colors.dark} style={{ marginBottom: 3 }} />
-
-                                </TouchableOpacity>
-                            </View>
+                        <View>
+                            <Text style={styles.userComment}>Total - {comments?.length} </Text>
                         </View>
 
+                        <View>
+                            <TouchableOpacity onPress={onCloseFunction}>
+                                <IconAntDesign name='close' size={22} color={Colors.dark} style={{ marginBottom: 3 }} />
+
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <ScrollView style={{ height: 230 }}>
 
                         {
                             post?.allow_comments === true ? (
@@ -148,7 +148,12 @@ const Comment = ({ onCloseFunction, post }) => {
                                                     <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingRight: 10 }} onPress={() => UnLikeCommentFunction(comment?._id)}>
                                                         <View style={{ flexDirection: "row", alignItems: "center" }}>
                                                             <IconAntDesign name={'heart'} size={16} color={"#FF2727"} />
-                                                            <Text style={styles.userComment}> {comment?.likes.length}</Text>
+                                                            {
+                                                                comment?.likes.length > 0 && (
+                                                                    <Text style={styles.userComment}> {comment?.likes.length}</Text>
+
+                                                                )
+                                                            }
                                                         </View>
                                                     </TouchableOpacity>
 
@@ -156,7 +161,7 @@ const Comment = ({ onCloseFunction, post }) => {
                                                     <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingRight: 10 }} onPress={() => LikeCommentFunction(comment?._id)}>
                                                         <View style={{ flexDirection: "row", alignItems: "center" }}>
                                                             <IconAntDesign name={'hearto'} size={16} color={Colors.dark} />
-                                                            <Text style={styles.userComment}> {comment?.likes.length}</Text>
+                                                            {/* <Text style={styles.userComment}> {comment?.likes.length}</Text> */}
                                                         </View>
                                                     </TouchableOpacity>
                                                 )
@@ -177,68 +182,69 @@ const Comment = ({ onCloseFunction, post }) => {
 
 
 
-                        {
-                            post?.allow_comments === true && (
-                                <>
-                                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
-                                        <TouchableOpacity onPress={() => handleEmojiesClick("Hello")}>
-                                            <View style={styles.commentEmojies}>
-                                                <Text style={{ color: Colors.dark }}>Hello</Text>
-                                            </View>
-                                        </TouchableOpacity>
 
-                                        <TouchableOpacity onPress={() => handleEmojiesClick("Wow")}>
-                                            <View style={styles.commentEmojies}>
-                                                <Text style={{ color: Colors.dark }}>Wow</Text>
-                                            </View>
-                                        </TouchableOpacity>
+                    </ScrollView>
+                    {
+                        post?.allow_comments === true && (
+                            <>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
+                                    <TouchableOpacity onPress={() => handleEmojiesClick("Hello")}>
+                                        <View style={styles.commentEmojies}>
+                                            <Text style={{ color: Colors.dark }}>Hello</Text>
+                                        </View>
+                                    </TouchableOpacity>
 
-                                        <TouchableOpacity onPress={() => handleEmojiesClick("😂")}>
-                                            <View style={styles.commentEmojies}>
-                                                <Text style={{ color: Colors.dark }}>😂</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => handleEmojiesClick("😍")}>
-                                            <View style={styles.commentEmojies}>
-                                                <Text style={{ color: Colors.dark }}>😍</Text>
-                                            </View>
-                                        </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => handleEmojiesClick("Wow")}>
+                                        <View style={styles.commentEmojies}>
+                                            <Text style={{ color: Colors.dark }}>Wow</Text>
+                                        </View>
+                                    </TouchableOpacity>
 
-                                        <TouchableOpacity onPress={() => handleEmojiesClick("🥰")}>
-                                            <View style={styles.commentEmojies}>
-                                                <Text style={{ color: Colors.dark }}>🥰</Text>
-                                            </View>
-                                        </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => handleEmojiesClick("😂")}>
+                                        <View style={styles.commentEmojies}>
+                                            <Text style={{ color: Colors.dark }}>😂</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => handleEmojiesClick("😍")}>
+                                        <View style={styles.commentEmojies}>
+                                            <Text style={{ color: Colors.dark }}>😍</Text>
+                                        </View>
+                                    </TouchableOpacity>
 
-                                        <TouchableOpacity onPress={() => handleEmojiesClick("👋")}>
-                                            <View style={styles.commentEmojies}>
-                                                <Text style={{ color: Colors.dark }}>👋</Text>
-                                            </View>
-                                        </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => handleEmojiesClick("🥰")}>
+                                        <View style={styles.commentEmojies}>
+                                            <Text style={{ color: Colors.dark }}>🥰</Text>
+                                        </View>
+                                    </TouchableOpacity>
 
-                                        <TouchableOpacity onPress={() => handleEmojiesClick("👋")}>
-                                            <View style={styles.commentEmojies}>
-                                                <Text style={{ color: Colors.dark }}>👋</Text>
-                                            </View>
-                                        </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => handleEmojiesClick("👋")}>
+                                        <View style={styles.commentEmojies}>
+                                            <Text style={{ color: Colors.dark }}>👋</Text>
+                                        </View>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity onPress={() => handleEmojiesClick("👋")}>
+                                        <View style={styles.commentEmojies}>
+                                            <Text style={{ color: Colors.dark }}>👋</Text>
+                                        </View>
+                                    </TouchableOpacity>
 
 
 
 
-                                    </View>
-                                    <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#464646", borderRadius: 26 }}>
+                                </View>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: "#464646", borderRadius: 26 }}>
 
-                                        <TextInput ref={ref} value={comment} onChangeText={setComment} style={{ width: '80%', borderBottomLeftRadius: 26, borderTopLeftRadius: 26, color: Colors.white, paddingLeft: 20 }} placeholder='Write your comment here....' placeholderTextColor={Colors.white} />
-                                        <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingRight: 10 }} onPress={CreateCommentFunction}>
-                                            <IconFeather name={'send'} size={20} color={Colors.white} />
-                                        </TouchableOpacity>
-                                    </View>
-                                </>
-                            )
-                        }
+                                    <TextInput ref={ref} value={comment} onChangeText={setComment} style={{ width: '80%', borderBottomLeftRadius: 26, borderTopLeftRadius: 26, color: Colors.white, paddingLeft: 20 }} placeholder='Write your comment here....' placeholderTextColor={Colors.white} />
+                                    <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingRight: 10 }} onPress={CreateCommentFunction}>
+                                        <IconFeather name={'send'} size={20} color={Colors.white} />
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        )
+                    }
+                </View>
 
-                    </View>
-                </ScrollView>
             </SafeAreaView>
     )
 }

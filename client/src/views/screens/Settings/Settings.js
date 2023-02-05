@@ -1,4 +1,4 @@
-import { Image, StatusBar, StyleSheet, TouchableOpacity, Text, View, SafeAreaView, Dimensions, ToastAndroid } from 'react-native'
+import { Image, StatusBar, StyleSheet, TouchableOpacity, Text, View, SafeAreaView, Dimensions, ToastAndroid, ScrollView } from 'react-native'
 import React, { useEffect } from 'react'
 import Colors from '../../../constants/Colors'
 import Fonts from '../../../constants/Fonts'
@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AuthLogoutAction } from '../../../redux/actions/AuthAction';
 import Loading from '../../components/Loading';
 import { IconAntDesign, IconEntypo, IconFeather, IconFontAwesome5, IconSimpleLineIcons } from '../../components/Icons';
-import { SVGSettingAccount, SVGSettingLogout, SVGSettingMemories, SVGSettingNotification, SVGSettingPrivacy, SVGSettingQuestion, SVGSettingShare, SVGSettingSupport, SVGSettingTerms } from '../../components/Svgs';
+import { SVGReferral, SVGSettingAccount, SVGSettingLogout, SVGSettingMemories, SVGSettingNotification, SVGSettingPrivacy, SVGSettingQuestion, SVGSettingShare, SVGSettingSupport, SVGSettingTerms } from '../../components/Svgs';
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -30,101 +30,113 @@ const Settings = ({ navigation }) => {
     return (
         loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F5F5' }}>
-                <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
+                <ScrollView>
+                    <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
 
 
 
-                <View style={[styles.headerContainer, { paddingBottom: 10 }]}>
+                    <View style={[styles.headerContainer, { paddingBottom: 10 }]}>
 
-                    <View style={{ flexDirection: 'row', padding: 15, justifyContent: 'center', alignItems: 'center' }}>
-                        <TouchableOpacity style={styles.settingBackButton} onPress={() => navigation.goBack()}>
-                            <IconAntDesign name='arrowleft' size={23} color={Colors.dark} />
-                        </TouchableOpacity>
-                        <View style={{ flex: 1, }}>
-                            <Text style={styles.headerTitle}>Settings</Text>
+                        <View style={{ flexDirection: 'row', padding: 15, justifyContent: 'center', alignItems: 'center' }}>
+                            <TouchableOpacity style={styles.settingBackButton} onPress={() => navigation.goBack()}>
+                                <IconAntDesign name='arrowleft' size={23} color={Colors.dark} />
+                            </TouchableOpacity>
+                            <View style={{ flex: 1, }}>
+                                <Text style={styles.headerTitle}>Settings</Text>
+                            </View>
                         </View>
+
                     </View>
 
-                </View>
 
 
 
 
 
 
-                <TouchableOpacity style={[styles.settingList, { marginTop: 1 }]} onPress={() => navigation.navigate('Account')}>
-                    {/* <Image style={styles.settingIcon} source={require('../../../assets/images/icons/settings/user-settings.png')} /> */}
-                    <SVGSettingAccount style={styles.settingIcon} />
-                    <Text style={styles.settingListTitle}>Account </Text>
-                    <View style={styles.contentRight}>
-                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
-                    </View>
-                </TouchableOpacity>
+                    <TouchableOpacity style={[styles.settingList, { marginTop: 1 }]} onPress={() => navigation.navigate('Account')}>
+                        {/* <Image style={styles.settingIcon} source={require('../../../assets/images/icons/settings/user-settings.png')} /> */}
+                        <SVGSettingAccount style={styles.settingIcon} />
+                        <Text style={styles.settingListTitle}>Account </Text>
+                        <View style={styles.contentRight}>
+                            <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
+                        </View>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={() => navigation.navigate("Memories")}>
-                    <SVGSettingMemories />
-                    <Text style={styles.settingListTitle}>Memories </Text>
-                    <View style={styles.contentRight}>
-                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
-                    </View>
-                </TouchableOpacity>
+                    <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={() => navigation.navigate("Memories")}>
+                        <SVGSettingMemories />
+                        <Text style={styles.settingListTitle}>Memories </Text>
+                        <View style={styles.contentRight}>
+                            <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
+                        </View>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={() => navigation.navigate('NotificationSettings')}>
-                    <SVGSettingNotification />
-                    <Text style={styles.settingListTitle}>Notification Setting </Text>
-                    <View style={styles.contentRight}>
-                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
-                    </View>
-                </TouchableOpacity>
+                    <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={() => navigation.navigate('NotificationSettings')}>
+                        <SVGSettingNotification />
+                        <Text style={styles.settingListTitle}>Notification Setting </Text>
+                        <View style={styles.contentRight}>
+                            <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
+                        </View>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
-                    <SVGSettingShare />
-                    <Text style={styles.settingListTitle}>Share Profile </Text>
-                    <View style={styles.contentRight}>
-                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
-                    </View>
-                </TouchableOpacity>
+                    <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
+                        <SVGSettingShare />
+                        <Text style={styles.settingListTitle}>Share Profile </Text>
+                        <View style={styles.contentRight}>
+                            <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
+                        </View>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
-                    <SVGSettingQuestion />
+                    <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={() => navigation.navigate("Referral")}>
+                        <SVGReferral style={{ width: 5, height: 5, marginBottom: 2, }} />
+                        {/* <Image style={{ width: 20 }} resizeMode='contain' source={require("../../../assets/images/referral.png")} /> */}
+                        <Text style={styles.settingListTitle}>Referral Code </Text>
+                        <View style={styles.contentRight}>
+                            <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
+                        </View>
+                    </TouchableOpacity>
 
-                    <Text style={styles.settingListTitle}>FAQ </Text>
-                    <View style={styles.contentRight}>
-                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
-                    </View>
-                </TouchableOpacity>
+                    <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
+                        <SVGSettingQuestion />
 
-                <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
-                    <SVGSettingTerms />
-                    <Text style={styles.settingListTitle}>Terms & Condition </Text>
-                    <View style={styles.contentRight}>
-                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
-                    </View>
-                </TouchableOpacity>
+                        <Text style={styles.settingListTitle}>FAQ </Text>
+                        <View style={styles.contentRight}>
+                            <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
+                        </View>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
-                    <SVGSettingPrivacy />
-                    <Text style={styles.settingListTitle}>Privacy Policy </Text>
-                    <View style={styles.contentRight}>
-                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
-                    </View>
-                </TouchableOpacity>
+                    <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
+                        <SVGSettingTerms />
+                        <Text style={styles.settingListTitle}>Terms & Condition </Text>
+                        <View style={styles.contentRight}>
+                            <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
+                        </View>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={() => navigation.navigate('SupportAndHelp')}>
-                    <SVGSettingSupport />
-                    <Text style={styles.settingListTitle}>Support & Help </Text>
-                    <View style={styles.contentRight}>
-                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
-                    </View>
-                </TouchableOpacity>
+                    <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
+                        <SVGSettingPrivacy />
+                        <Text style={styles.settingListTitle}>Privacy Policy </Text>
+                        <View style={styles.contentRight}>
+                            <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
+                        </View>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={LogoutFunction}>
-                    <SVGSettingLogout />
-                    <Text style={styles.settingListTitle}>Logout </Text>
-                    <View style={styles.contentRight}>
-                        <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
-                    </View>
-                </TouchableOpacity>
+                    <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={() => navigation.navigate('SupportAndHelp')}>
+                        <SVGSettingSupport />
+                        <Text style={styles.settingListTitle}>Support & Help </Text>
+                        <View style={styles.contentRight}>
+                            <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]} onPress={LogoutFunction}>
+                        <SVGSettingLogout />
+                        <Text style={styles.settingListTitle}>Logout </Text>
+                        <View style={styles.contentRight}>
+                            <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
+                        </View>
+                    </TouchableOpacity>
+                </ScrollView>
             </SafeAreaView >
 
     )

@@ -38,6 +38,11 @@ import ClockPlusFinal from "../../assets/images/icons/svg/clock-plus-final.svg";
 import ClockCheckFinal from "../../assets/images/icons/svg/clock-check-final.svg";
 import ClockCheckPrimaryFinal from "../../assets/images/icons/svg/clock-check-final-primary.svg";
 
+import ProfileTimeWhite from "../../assets/images/icons/svg/profile-time-white.svg";
+import ProfileTimePrimary from "../../assets/images/icons/svg/profile-time-primary.svg";
+
+import Referral from "../../assets/images/referral.svg";
+
 const SVGShare = ({ color, style }) => {
     return <Share color={color} style={style} />
 }
@@ -165,5 +170,16 @@ const SVGSettingLogout = ({ color, style }) => {
     return <SettingLogout color={color} style={style} />
 }
 
+const SVGProfileTimeWhite = ({ color, style }) => {
+    return <ProfileTimeWhite color={color} style={style} />
+}
 
-export { SVGShare, SVGHome, SVGNotification, SVGPostSuccess, SVGDiamondPage, SVGMenuGridOutline, SVGFavorite, SVGClockPlus, SVGSearchShare, SVGTag1, SVGTag2, SVGTag3, SVGTag4, SVGTag5, SVGTag6, SVGFollow, SVGPublicView, SVGSettings, SVGSettingAccount, SVGSettingMemories, SVGSettingNotification, SVGSettingQuestion, SVGSettingShare, SVGSettingTerms, SVGSettingPrivacy, SVGSettingSupport, SVGSettingLogout, SVGClockChecked, SVGClockPlusFinal, SVGClockCheckFinal, SVGClockCheckPrimaryFinal }
+const SVGProfileTimePrimary = ({ color, style }) => {
+    return <ProfileTimePrimary color={color} style={style} />
+}
+const SVGReferral = ({ color, style }) => {
+    return <Referral color={color} style={style} />
+}
+
+
+export { SVGShare, SVGHome, SVGNotification, SVGPostSuccess, SVGDiamondPage, SVGMenuGridOutline, SVGFavorite, SVGClockPlus, SVGSearchShare, SVGTag1, SVGTag2, SVGTag3, SVGTag4, SVGTag5, SVGTag6, SVGFollow, SVGPublicView, SVGSettings, SVGSettingAccount, SVGSettingMemories, SVGSettingNotification, SVGSettingQuestion, SVGSettingShare, SVGSettingTerms, SVGSettingPrivacy, SVGSettingSupport, SVGSettingLogout, SVGClockChecked, SVGClockPlusFinal, SVGClockCheckFinal, SVGClockCheckPrimaryFinal, SVGProfileTimeWhite, SVGProfileTimePrimary, SVGReferral }

@@ -45,7 +45,7 @@ const Post = ({ item, isActive }) => {
     useEffect(() => {
         setTimeout(() => {
             setShow(false)
-        }, 10000)
+        }, 3000)
 
     }, [show])
 
@@ -65,7 +65,6 @@ const Post = ({ item, isActive }) => {
             state: !currentLike.state,
             counter: currentLike.counter + (currentLike.state ? -1 : 1)
         })
-        setShow(true);
     }
 
 
@@ -408,7 +407,7 @@ const Post = ({ item, isActive }) => {
                             ) : (
                                 <TouchableOpacity onPress={() => likeHandel(currentLike.state)}>
                                     <View style={{ alignItems: 'center' }}>
-                                        {/* <Image style={styles.actionButton} resizeMode='contain' source={require('../../../assets/images/icons/heart.png')} /> */}
+
                                         <IconFontAwesome name='heart-o' size={21} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
                                         <Text style={styles.actionText}>{currentLike.counter}</Text>
                                     </View>
@@ -460,12 +459,13 @@ const Post = ({ item, isActive }) => {
                 {
                     show ? (
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-55%' }}>
-                            <TouchableOpacity style={{ width: 134, height: 42, borderRadius: 20, backgroundColor: Colors.likeButtonBackground }}>
+                            {/* <TouchableOpacity style={{ width: 134, height: 42, borderRadius: 20, backgroundColor: Colors.likeButtonBackground }}>
                                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                                     <IconFeather name='clock' size={20} color={Colors.dark} style={{ marginBottom: 3, marginRight: 3 }} />
                                     <Text style={{ color: Colors.dark, fontFamily: Fonts.primary, fontSize: 16, fontWeight: '700', marginTop: -3, marginLeft: 2 }}>10 Sec</Text>
                                 </View>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
+                            <Image style={{ width: "100%" }} resizeMode='contain' source={require('../../../assets/images/like-animation.gif')} />
                         </View>
                     )
                         :

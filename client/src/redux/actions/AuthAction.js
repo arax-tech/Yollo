@@ -50,12 +50,12 @@ import {
 } from "../constants/AuthConstant";
 
 
-export const LoginAction = (phone, email, type) => async (dispatch) => {
+export const LoginAction = (phone, email, type, code) => async (dispatch) => {
     try {
         dispatch({ type: LOGIN_REQUEST });
 
         const { data } = await axios.post(`${APP_URL}/auth/login`, {
-            phone, email, type,
+            phone, email, type, code,
             headers: {
                 "Content-Type": "application/json",
             }
@@ -76,12 +76,12 @@ export const LoginAction = (phone, email, type) => async (dispatch) => {
 
 
 
-export const VerificationAction = (otp, email, phone, type) => async (dispatch) => {
+export const VerificationAction = (otp, email, phone, type, code) => async (dispatch) => {
     try {
         dispatch({ type: VERIFY_REQUEST });
 
         const { data } = await axios.post(`${APP_URL}/auth/verify`, {
-            otp, email, phone, type,
+            otp, email, phone, type, code,
             headers: {
                 "Content-Type": "application/json",
             }

@@ -43,6 +43,7 @@ cloudinary.config({
 // Model
 
 const Post = require("./models/Post");
+const Notification = require("./models/Notification");
 const auth = require("./middleware/auth");
 
 
@@ -50,28 +51,39 @@ const auth = require("./middleware/auth");
 cron.schedule('0 */1 * * * *', async () => {
     const posts = await Post.find();
 
+    // Update Diamonds
     posts?.map(async (post) => (
         await Post.findByIdAndUpdate(post._id, {
             $set: {
                 post_diamonds: post.post_diamonds > 0 ? post.post_diamonds - 1 : 0,
             }
-        }, {
-            new: true,
-            useFindAndModify: false
         })
     ));
 
-    const NewPosts = await Post.find();
-
-    NewPosts?.map(async (post) => (
+    // Update Post Status According to Diamonds
+    const PostsStatus = await Post.find();
+    PostsStatus?.map(async (post) => (
         await Post.findByIdAndUpdate(post._id, {
             $set: {
                 status: post.post_diamonds > 0 ? "Active" : "InActive"
             }
-        }, {
-            new: true,
-            useFindAndModify: false
         })
+    ));
+
+
+    // Update Post Status According to Diamonds
+    const PostsNotifications = await Post.find();
+    PostsNotifications?.map(async (post) => (
+        post?.post_diamonds < 60 && (
+            await Notification.create({
+                user_id: post?.user.toString(),
+                user: post?.user.toString(),
+                description: `Your Post time ending soon-|-${post?.post_diamonds}`,
+                type: "PostTimeEnding"
+            })
+        )
+
+
     ));
 
 

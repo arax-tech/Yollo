@@ -7,7 +7,7 @@ import { IconAntDesign, IconEntypo, IconFeather, IconFontAwesome, IconIonicons, 
 import Loading from '../../components/Loading';
 import { AddDiamondPostAction, OpenSheetAction } from '../../../redux/actions/ReactionAction';
 import Fonts from '../../../constants/Fonts';
-import { SVGClockChecked, SVGClockCheckFinal, SVGClockCheckPrimaryFinal, SVGClockPlusFinal, SVGShare } from '../../components/Svgs';
+import { SVGClockChecked, SVGClockCheckFinal, SVGClockCheckPrimaryFinal, SVGClockPlusFinal, SVGProfileTimePrimary, SVGProfileTimeWhite, SVGShare } from '../../components/Svgs';
 
 import { Dropdown } from 'react-native-element-dropdown'
 
@@ -112,6 +112,20 @@ const SignlePost = ({ route, navigation }) => {
 
 
     }, [dispatch, updatedDaimonds, message, IsDeleted, msg])
+
+
+
+
+
+    function toHoursAndMinutes(totalMinutes) {
+        const minutes = totalMinutes % 60;
+        const hours = Math.floor(totalMinutes / 60);
+
+        return `${hours}h${minutes > 0 ? ` : ${minutes}m` : ''}`;
+    }
+
+
+    console.log(toHoursAndMinutes(115)); // 👉️ 1h 55m
 
     return (
         loading || postLoading ? <Loading /> :
@@ -268,12 +282,12 @@ const SignlePost = ({ route, navigation }) => {
                                         {
                                             show === true ? (
                                                 // <Image resizeMode='contain' source={require('../.././../assets/images/icons/clock-checked-primary.png')} style={{ width: 27, height: 27, padding: 5, marginTop: 10, marginBottom: 3 }} />
-                                                <SVGClockCheckPrimaryFinal style={[styles.actionButton, { width: 29, height: 29, marginBottom: 2, }]} />
+                                                <SVGProfileTimePrimary style={[styles.actionButton, { width: 29, height: 29, marginBottom: 2, }]} />
 
                                             ) : (
 
                                                 // <Image resizeMode='contain' source={require('../.././../assets/images/icons/clock-checked.png')} style={{ width: 27, height: 27, padding: 5, marginTop: 10, marginBottom: 3 }} />
-                                                <SVGClockCheckFinal style={[styles.actionButton, { width: 29, height: 29, marginBottom: 2, }]} />
+                                                <SVGProfileTimeWhite style={[styles.actionButton, { width: 29, height: 29, marginBottom: 2, }]} />
                                             )
                                         }
                                         <Text style={[styles.actionText, { color: show === true ? Colors.primary : Colors.white }]}>Time</Text>
@@ -337,17 +351,17 @@ const SignlePost = ({ route, navigation }) => {
                     </View>
 
 
-                    {/* Liked Notification */}
+                    {/* Time Reming */}
                     {
                         show ? (
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-60%' }}>
                                 <Text style={[styles.postTitle, { fontSize: 20, fontWeight: "700", marginBottom: 10 }]}>Time Remaining</Text>
-                                <TouchableOpacity style={{ width: 100, height: 60, borderRadius: 5, backgroundColor: '#FF2727', borderBottomColor: "#66DB34", borderBottomWidth: 5, marginLeft: -20 }}>
+                                <TouchableOpacity style={{ width: 150, height: 60, borderRadius: 5, backgroundColor: '#FF2727', borderBottomColor: "#66DB34", borderBottomWidth: 5, marginLeft: -20 }}>
                                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                        <Text style={{ color: Colors.white, fontFamily: Fonts.primary, fontSize: 25, fontWeight: '900' }}>{item?.post_diamonds.toFixed(2)}</Text>
+                                        <Text style={{ color: Colors.white, fontFamily: Fonts.primary, fontSize: 25, fontWeight: '900' }}>{toHoursAndMinutes(item?.post_diamonds.toFixed(0))}</Text>
                                     </View>
                                 </TouchableOpacity>
-                                <Text style={[styles.postTitle, { fontSize: 16, fontWeight: "700", }]}>Minutes</Text>
+                                {/* <Text style={[styles.postTitle, { fontSize: 16, fontWeight: "700", }]}>Minutes</Text> */}
                             </View>
                         )
                             :
