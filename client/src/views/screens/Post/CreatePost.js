@@ -16,6 +16,13 @@ import { CREATE_POST_RESET } from '../../../redux/constants/PostConstant'
 
 import { Avatar, Dialog } from 'react-native-paper';
 
+import ImgToBase64 from 'react-native-image-base64';
+
+
+
+
+import { PESDK } from "react-native-photoeditorsdk";
+
 
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
@@ -23,6 +30,8 @@ const deviceHeight = Dimensions.get('window').height;
 const CreatePost = ({ navigation }) => {
 
     const dispatch = useDispatch();
+
+
 
     const { loading, tags } = useSelector((state) => state.auth);
     const { loading: postLoading, status, message, isCreated } = useSelector((state) => state.post);
@@ -42,6 +51,7 @@ const CreatePost = ({ navigation }) => {
         { label: 'Followers', value: 'Followers' },
         { label: 'Only Me', value: 'Only Me' },
     ]
+
 
 
 
@@ -106,6 +116,31 @@ const CreatePost = ({ navigation }) => {
         } else return true;
     };
 
+
+    const showPhotoEditor = async (image) => {
+        try {
+            // Add a photo from the assets directory.
+            const photo = image;
+            console.log(photo)
+
+            // Open the photo editor and handle the export as well as any occuring errors.
+            const result = await PESDK.openEditor(photo);
+
+            if (result != null) {
+                // The user exported a new photo successfully and the newly generated photo is located at `result.image`.
+                const base64String = await ImgToBase64.getBase64String(result.image);
+                setImage(`data:image/jpeg;base64,${base64String}`);
+                setImagePreview(result.image);
+            } else {
+                // The user tapped on the cancel button within the editor.
+                return;
+            }
+        } catch (error) {
+            // There was an error generating the photo.
+            console.log(error);
+        }
+    }
+
     const captureImage = async (type) => {
         let options = {
             mediaType: type,
@@ -129,8 +164,7 @@ const CreatePost = ({ navigation }) => {
                     ToastAndroid.show(response.errorMessage, ToastAndroid.SHORT);
                     return;
                 }
-                setImage(`data:image/jpeg;base64,${response.assets[0].base64}`);
-                setImagePreview(response.assets[0].uri);
+                showPhotoEditor(response.assets[0].uri);
 
             });
         }
@@ -156,9 +190,7 @@ const CreatePost = ({ navigation }) => {
                 ToastAndroid.show(response.errorMessage, ToastAndroid.SHORT);
                 return;
             }
-            setImage(`data:image/jpeg;base64,${response.assets[0].base64}`);
-            setImagePreview(response.assets[0].uri);
-
+            showPhotoEditor(response.assets[0].uri);
         });
     };
 
@@ -179,8 +211,6 @@ const CreatePost = ({ navigation }) => {
             navigation.navigate('PostCreateSuccess')
             setCaption('');
             setImagePreview(null)
-
-
         }
 
     }, [dispatch, navigation, isCreated, message])

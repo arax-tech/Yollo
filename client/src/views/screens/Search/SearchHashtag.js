@@ -46,7 +46,7 @@ const SearchHashtag = ({ posts, start, text }) => {
                                         </View>
                                         <View style={{ padding: 10 }}>
                                             <Text style={[styles.text, { fontSize: 16, fontWeight: "700" }]}>#{text}</Text>
-                                            <Text style={[styles.text, { fontSize: 12, color: "gray" }]}>{posts?.length} Use</Text>
+                                            <Text style={[styles.text, { fontSize: 12, color: "gray" }]}>{posts?.length + 5} Views</Text>
                                         </View>
                                     </View>
 
