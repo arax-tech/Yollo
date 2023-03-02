@@ -19,6 +19,7 @@ import Reward from '../screens/Reward';
 import Profile from '../screens/Profile/Profile';
 import FollowingPost from '../screens/FollowingPost';
 import SearchTimeline from '../screens/Search/SearchTimeline';
+import ProfileReactedPostTimeline from '../screens/Profile/ProfileReactedPostTimeline';
 
 const Tab = createBottomTabNavigator();
 
@@ -39,13 +40,6 @@ const BottomNavigation = () => {
             <Tab.Screen
                 name="Home"
                 options={({ route }) => ({
-                    tabBarItemStyle: ((route) => {
-                        const routeName = getFocusedRouteNameFromRoute(route) ?? ""
-                        if (route.name === 'FollowingPost') {
-                            return { display: "none" }
-                        }
-                        return
-                    })(route),
                     tabBarIcon: ({ focused }) => (
                         <View style={{ alignItems: 'center', justifyContent: 'center', top: 3, }}>
                             <IconIonicons name='home-outline' size={20} color={focused ? Colors.dark : Colors.darkLight} style={{ marginBottom: 3 }} />
@@ -69,6 +63,18 @@ const BottomNavigation = () => {
                     )
                 })}
                 component={FollowingPost} />
+            <Tab.Screen
+                name="ProfileReactedPostTimeline"
+                options={({ route }) => ({
+                    tabBarItemStyle: { display: "none" },
+                    tabBarIcon: ({ focused }) => (
+                        <View style={{ alignItems: 'center', justifyContent: 'center', top: 3, }}>
+                            <IconIonicons name='home-outline' size={20} color={focused ? Colors.dark : Colors.darkLight} style={{ marginBottom: 3 }} />
+                            <Text style={{ fontSize: 10, color: focused ? Colors.dark : Colors.darkLight, fontWeight: focused ? '600' : '500', }}>Home</Text>
+                        </View>
+                    )
+                })}
+                component={ProfileReactedPostTimeline} />
 
             <Tab.Screen
                 name="SearchTimeline"

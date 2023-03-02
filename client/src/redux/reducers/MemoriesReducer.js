@@ -10,6 +10,7 @@ import {
     MEMORY_REPOST_RESET,
 
     CLEAR_ERRORS,
+    MEMORIES_TIMELINE,
 
 } from "../constants/MemoriesConstant";
 
@@ -81,6 +82,13 @@ export const memoriesReducer = (state = {}, action) => {
                 message: action.payload.message,
                 status: action.payload.status,
             };
+        case MEMORIES_TIMELINE:
+            return {
+                ...state,
+                loading: false,
+                posts: action.posts,
+            };
+
 
         case MEMORIES_FAIL:
         case MEMORY_REPOST_FAIL:

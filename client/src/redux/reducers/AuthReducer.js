@@ -86,6 +86,7 @@ export const AuthReducer = (state = { user: {} }, action) => {
                 profilePostLikes: action.payload.profilePostLikes,
                 profilePostYouLikes: action.payload.profilePostYouLikes,
                 token: action.payload.token,
+                authToken: action.payload.authToken,
             };
 
         case GET_USER_SUCCESS:

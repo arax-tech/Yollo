@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
     city: { type: String },
     bio: { type: String },
     profile_visibility: { type: String },
+    reaction_visibility: { type: String },
     new_user: { type: Boolean, default: true, },
     status: { type: String },
     image: {

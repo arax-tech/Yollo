@@ -56,6 +56,11 @@ const CommentSheet = () => {
                     <View style={{ padding: 20 }}>
                         {/* <Button title="Close" onPress={onCloseFunction} /> */}
                         <Text style={styles.postTitle}>{post?.caption}</Text>
+                        {
+                            post?.hashtag && (
+                                <Text style={styles.postTitle}>#{post?.hashtag}</Text>
+                            )
+                        }
                         <TouchableOpacity onPress={onCloseFunction} >
                             <Text style={styles.readMore}>Read Less</Text>
                         </TouchableOpacity>

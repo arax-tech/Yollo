@@ -47,7 +47,8 @@ router.get("/profile", auth, user, async (request, response) => {
             reactions: reactions,
             activePosts: activePosts,
             profilePostLikes: profilePostLikes,
-            profilePostYouLikes: profilePostYouLikes
+            profilePostYouLikes: profilePostYouLikes,
+            authToken: _id,
         });
     }
     catch (error) {

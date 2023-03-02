@@ -114,6 +114,6 @@ const styles = StyleSheet.create({
     buttonInfoText: { fontFamily: Fonts.primary, fontSize: 14, color: Colors.white, textAlign: 'center', fontWeight: '700' },
 
     postHeaderContainer: { flexDirection: 'row', alignItems: 'center', paddingTop: 10 },
-    postTitle: { fontFamily: Fonts.primary, fontSize: 22, fontWeight: '700', color: Colors.dark, textAlign: 'center', marginLeft: 80 },
+    postTitle: { fontFamily: Fonts.primary, fontSize: 18, fontWeight: '700', color: Colors.dark, textAlign: 'center', marginLeft: 80 },
     postBackButton: {},
 })

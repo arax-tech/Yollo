@@ -5,10 +5,10 @@ import { IconAntDesign, IconIonicons } from '../../components/Icons'
 import Colors from '../../../constants/Colors'
 import { useNavigation } from '@react-navigation/native'
 
-const ProfileSinglePost = ({ post }) => {
+const ProfileSinglePost = ({ post, navigate }) => {
     const navigation = useNavigation();
     return (
-        <TouchableOpacity style={styles.imageContainer} onPress={() => navigation.navigate("SignlePost", { postId: post?._id })}>
+        <TouchableOpacity style={styles.imageContainer} onPress={() => navigation.navigate(navigate)}>
 
             <View style={styles.iconContainer}>
 

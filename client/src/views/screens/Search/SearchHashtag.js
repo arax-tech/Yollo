@@ -13,6 +13,11 @@ const SearchHashtag = ({ posts, start, text }) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
+    let totalViews = 0;
+    posts && posts.forEach((post) => {
+        totalViews += post.views.length;
+    })
+
     const Box = ({ post }) => {
         return (
             <View key={post?.id} style={styles.box}>
@@ -46,7 +51,7 @@ const SearchHashtag = ({ posts, start, text }) => {
                                         </View>
                                         <View style={{ padding: 10 }}>
                                             <Text style={[styles.text, { fontSize: 16, fontWeight: "700" }]}>#{text}</Text>
-                                            <Text style={[styles.text, { fontSize: 12, color: "gray" }]}>{posts?.length + 5} Views</Text>
+                                            <Text style={[styles.text, { fontSize: 12, color: "gray" }]}>{totalViews} Views</Text>
                                         </View>
                                     </View>
 

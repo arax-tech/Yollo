@@ -52,7 +52,7 @@ const Followers = () => {
                                 </TouchableOpacity>
                                 <View style={styles.contentRight}>
                                     <TouchableOpacity style={styles.buttonLight} onPress={() => UnFollowFunction(user?.user._id)}>
-                                        <Text style={styles.buttonLightText}>Un Follow</Text>
+                                        <Text style={styles.buttonLightText}>Unfollow</Text>
                                     </TouchableOpacity>
 
                                 </View>

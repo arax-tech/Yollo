@@ -52,27 +52,27 @@ cron.schedule('0 */1 * * * *', async () => {
     const posts = await Post.find();
 
     // Update Diamonds
-    posts?.map(async (post) => (
+    /* posts?.map(async (post) => (
         await Post.findByIdAndUpdate(post._id, {
             $set: {
                 post_diamonds: post.post_diamonds > 0 ? post.post_diamonds - 1 : 0,
             }
         })
-    ));
+    )); */
 
     // Update Post Status According to Diamonds
-    const PostsStatus = await Post.find();
+    /* const PostsStatus = await Post.find();
     PostsStatus?.map(async (post) => (
         await Post.findByIdAndUpdate(post._id, {
             $set: {
                 status: post.post_diamonds > 0 ? "Active" : "InActive"
             }
         })
-    ));
+    )); */
 
 
     // Update Post Status According to Diamonds
-    const PostsNotifications = await Post.find();
+    /* const PostsNotifications = await Post.find();
     PostsNotifications?.map(async (post) => (
         post?.post_diamonds < 60 && (
             await Notification.create({
@@ -84,14 +84,14 @@ cron.schedule('0 */1 * * * *', async () => {
         )
 
 
-    ));
+    )); */
 
 
-    var currentdate = new Date();
-    var datetime = "Date & Time: " + currentdate.getDate() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getFullYear() + " | "
-        + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+    // var currentdate = new Date();
+    // var datetime = "Date & Time: " + currentdate.getDate() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getFullYear() + " | "
+    //     + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
 
-    console.log(`Diamonds Update at ${datetime}`);
+    // console.log(`Diamonds Update at ${datetime}`);
 });
 
 

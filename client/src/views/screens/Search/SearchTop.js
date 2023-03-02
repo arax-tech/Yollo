@@ -23,7 +23,7 @@ const SearchTop = ({ posts }) => {
                     }}>
                         <Image style={{ width: "100%", borderRadius: 10, height: 170 }} source={{ uri: post?.image?.url }} />
                     </TouchableOpacity>
-                    <Text style={styles.descText}>{post?.caption.length > 60 ? post?.caption.substring(0, 60) + "..." : post?.caption}</Text>
+                    <Text style={styles.descText}>{post?.caption.length > 27 ? post?.caption.substring(0, 27) + "..." : post?.caption}</Text>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 5 }}>
                         <View style={{ alignItems: "center" }}>
                             {

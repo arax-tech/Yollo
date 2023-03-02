@@ -41,6 +41,7 @@ const CreatePost = ({ navigation }) => {
     const [visibility, setVisibility] = useState('Everyone');
 
     const [caption, setCaption] = useState('');
+    const [hashtag, setHashtag] = useState('');
 
     const [comment, setComment] = useState(true);
     const [reaction, setReaction] = useState(true);
@@ -126,7 +127,7 @@ const CreatePost = ({ navigation }) => {
             // Open the photo editor and handle the export as well as any occuring errors.
             const result = await PESDK.openEditor(photo);
 
-            if (result != null) {
+            if (result !== null) {
                 // The user exported a new photo successfully and the newly generated photo is located at `result.image`.
                 const base64String = await ImgToBase64.getBase64String(result.image);
                 setImage(`data:image/jpeg;base64,${base64String}`);
@@ -201,7 +202,7 @@ const CreatePost = ({ navigation }) => {
         } else if (caption === null) {
             ToastAndroid.show('Caption is required...', ToastAndroid.SHORT);
         } else {
-            await dispatch(CreatePostAction(caption, image, visibility, comment, reaction, quality, 1440));
+            await dispatch(CreatePostAction(caption, hashtag, image, visibility, comment, reaction, quality, 1440));
         }
     }
 
@@ -270,12 +271,14 @@ const CreatePost = ({ navigation }) => {
 
                         <TextInput style={{ backgroundColor: "#F1F1F1", padding: 10, textAlignVertical: "top" }} ref={ref} multiline={true} numberOfLines={5} placeholder="Caption" value={caption} onChangeText={setCaption} />
                         <View style={{ borderWidth: 1, borderColor: "#F1F1F1", padding: 5, flex: 1, flexDirection: "row", alignItems: "flex-end", justifyContent: "flex-end" }}>
-                            <TouchableOpacity onPress={handleHashTagClick}>
+                            <TextInput style={{ backgroundColor: "#F1F1F1", padding: 10, width: "100%" }} placeholder="#Hashtag" value={hashtag} onChangeText={setHashtag} />
+
+                            {/* <TouchableOpacity onPress={handleHashTagClick}>
                                 <Text style={{ borderWidth: 1, borderColor: "#F1F1F1", marginRight: 10, padding: 2, color: Colors.dark }}># Hashtags</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={handleMentionClick}>
                                 <Text style={{ borderWidth: 1, borderColor: "#F1F1F1", padding: 2, color: Colors.dark }}>@ Mentions</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
 
 

@@ -4,11 +4,13 @@ const mongoose = require('mongoose')
 const postSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.ObjectId, ref: "User", required: true },
     caption: { type: String, required: true },
+    hashtag: { type: String },
     who_can_see: { type: String, required: true },
     allow_comments: { type: Boolean, required: true },
     allow_reactions: { type: Boolean, required: true },
     allow_high_quality: { type: Boolean, required: true },
-    post_diamonds: { type: Number, required: true },
+    post_diamonds: { type: Number, default: 1440 },
+    tranding_diamonds: { type: Number, default: 1440 },
     user_diamonds: { type: Number, default: 0 },
     status: { type: String, default: "Active" },
     image: {

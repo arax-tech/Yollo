@@ -18,7 +18,7 @@ import { ADD_DIAMOND_INTO_POST_RESET } from '../../../redux/constants/ReactionCo
 import { PrimaryButton } from '../../components/Button'
 import { DELETE_POST_RESET } from '../../../redux/constants/PostConstant';
 import { useNavigation } from '@react-navigation/native';
-const SignlePost = ({ item }) => {
+const InActiveSignlePost = ({ item }) => {
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
@@ -110,14 +110,11 @@ const SignlePost = ({ item }) => {
 
 
 
-
-
     function toHoursAndMinutes(time) {
         return (
             parseInt(time / 24 / 60) + " Days : " + parseInt(time / 60 % 24) + ' Hours : ' + parseInt(time % 60) + " Minutes"
         );
     }
-    // console.log(toHoursAndMinutes(115)); // 👉️ 1h 55m
 
     return (
         loading || postLoading ? <Loading /> :
@@ -273,11 +270,11 @@ const SignlePost = ({ item }) => {
                                     <View style={{ alignItems: 'center' }}>
                                         {
                                             show === true ? (
-                                                <SVGProfileTimePrimary style={{ width: 29, height: 29, marginBottom: 1, }} />
+                                                <SVGClockCheckPrimaryFinal style={{ width: 29, height: 29, marginBottom: 1, }} />
 
                                             ) : (
 
-                                                <SVGProfileTimeWhite style={{ width: 29, height: 29, marginBottom: 1, }} />
+                                                <SVGClockCheckFinal style={{ width: 29, height: 29, marginBottom: 1, }} />
                                             )
                                         }
                                         <Text style={[styles.actionText, { color: show === true ? Colors.primary : Colors.white }]}>Time</Text>
@@ -345,10 +342,10 @@ const SignlePost = ({ item }) => {
                     {
                         show ? (
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-60%' }}>
-                                <Text style={[styles.postTitle, { fontSize: 20, fontWeight: "700", marginBottom: 10 }]}>Time Remaining</Text>
+                                <Text style={[styles.postTitle, { fontSize: 20, fontWeight: "700", marginBottom: 10 }]}>Time for Tranding</Text>
                                 <TouchableOpacity style={{ width: 250, height: 60, borderRadius: 5, backgroundColor: '#FF2727', borderBottomColor: "#66DB34", borderBottomWidth: 5, marginLeft: -20 }}>
                                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                        <Text style={{ color: Colors.white, fontFamily: Fonts.primary, fontSize: 18, fontWeight: '900' }}>{toHoursAndMinutes(item?.post_diamonds.toFixed(0))}</Text>
+                                        <Text style={{ color: Colors.white, fontFamily: Fonts.primary, fontSize: 18, fontWeight: '900' }}>{toHoursAndMinutes(item?.tranding_diamonds.toFixed(0))}</Text>
                                     </View>
                                 </TouchableOpacity>
                                 {/* <Text style={[styles.postTitle, { fontSize: 16, fontWeight: "700", }]}>Minutes</Text> */}
@@ -362,7 +359,7 @@ const SignlePost = ({ item }) => {
     )
 }
 
-export default SignlePost
+export default InActiveSignlePost
 
 
 const styles = StyleSheet.create({
@@ -372,11 +369,10 @@ const styles = StyleSheet.create({
 
     followButton: { backgroundColor: Colors.white, padding: 5, borderRadius: 15, width: 75 },
     followText: { fontFamily: Fonts.primary, fontSize: 14, fontWeight: '700', color: Colors.red, textAlign: 'center' },
-
+    rightSideItem: { height: 50, marginBottom: 10 },
     followingButton: { backgroundColor: Colors.primary, padding: 5, borderRadius: 15, width: 75 },
     followingText: { fontFamily: Fonts.primary, fontSize: 14, fontWeight: '700', color: "#000080", textAlign: 'center' },
 
-    rightSideItem: { height: 50, marginBottom: 10 },
     postTitle: { fontFamily: Fonts.primary, fontSize: 12, fontWeight: '600', color: Colors.white, marginTop: 10, paddingRight: 30 },
     readMore: { fontFamily: Fonts.primary, fontSize: 10, fontWeight: '500', color: Colors.white, marginTop: 5 },
 

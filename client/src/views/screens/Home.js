@@ -1,5 +1,5 @@
 import { FlatList, StatusBar } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { PostsAction } from '../../redux/actions/PostAction'
@@ -9,6 +9,7 @@ import Loading from '../components/Loading'
 import Colors from '../../constants/Colors'
 import Post from './Post/Post'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { PostViewAction } from '../../redux/actions/ReactionAction'
 
 const Home = ({ navigation }) => {
 
@@ -42,18 +43,17 @@ const Home = ({ navigation }) => {
 
 
 
-    // const [viewabilityConfiguration, setViewabilityConfiguration] = useState({
-    //     waitForInteraction: true,
-    //     viewAreaCoveragePercentThreshold: 40,
-    // });
+    const [viewabilityConfiguration, setViewabilityConfiguration] = useState({
+        waitForInteraction: true,
+        viewAreaCoveragePercentThreshold: 40,
+    });
 
 
-    // const onViewFunction = useCallback(async (viewableItems) => {
-    //     const { changed } = viewableItems;
-    //     await dispatch(PostViewAction(changed[0]?.key))
-    // }, [])
-    // viewabilityConfig={viewabilityConfiguration}
-    // onViewableItemsChanged={onViewFunction}
+    const onViewFunction = useCallback(async (viewableItems) => {
+        const { changed } = viewableItems;
+        await dispatch(PostViewAction(changed[0]?.key))
+    }, [])
+
 
 
 
@@ -61,11 +61,13 @@ const Home = ({ navigation }) => {
     return (
         loading || postLoading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }} forceInset={{ top: 'always' }}>
-                <StatusBar hidden barStyle={'dark-content'} />
+                <StatusBar backgroundColor="rgba(0, 0, 0, 0.1)" barStyle={'dark-content'} />
                 <FlatList
                     data={posts}
                     pagingEnabled
                     keyExtractor={item => item._id.toString()}
+                    viewabilityConfig={viewabilityConfiguration}
+                    onViewableItemsChanged={onViewFunction}
                     renderItem={({ item }) => (
                         <Post key={item._id} item={item} isActive={"ForYou"} />
                     )}

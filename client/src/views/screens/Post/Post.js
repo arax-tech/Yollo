@@ -458,14 +458,14 @@ const Post = ({ item, isActive }) => {
                 {/* Liked Notification */}
                 {
                     show ? (
-                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-55%' }}>
-                            {/* <TouchableOpacity style={{ width: 134, height: 42, borderRadius: 20, backgroundColor: Colors.likeButtonBackground }}>
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-60%' }}>
+                            <Image style={{ width: "100%" }} resizeMode='contain' source={require('../../../assets/images/like-animation.gif')} />
+                            <TouchableOpacity style={{ width: 134, height: 42, borderRadius: 20, backgroundColor: Colors.likeButtonBackground, marginTop: -120 }}>
                                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                                     <IconFeather name='clock' size={20} color={Colors.dark} style={{ marginBottom: 3, marginRight: 3 }} />
                                     <Text style={{ color: Colors.dark, fontFamily: Fonts.primary, fontSize: 16, fontWeight: '700', marginTop: -3, marginLeft: 2 }}>10 Sec</Text>
                                 </View>
-                            </TouchableOpacity> */}
-                            <Image style={{ width: "100%" }} resizeMode='contain' source={require('../../../assets/images/like-animation.gif')} />
+                            </TouchableOpacity>
                         </View>
                     )
                         :

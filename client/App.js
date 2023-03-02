@@ -46,6 +46,12 @@ import PublicProfile from './src/views/screens/Profile/PublicProfile';
 import SignlePost from './src/views/screens/Profile/SignlePost';
 import MemorySignlePost from './src/views/screens/Memories/MemorySignlePost';
 import Referral from './src/views/screens/Settings/Referral';
+import MemoriesTimeline from './src/views/screens/Memories/MemoriesTimeline';
+import CreatePost from './src/views/screens/Post/CreatePost';
+import ProfileActivePostTimeline from './src/views/screens/Profile/ProfileActivePostTimeline';
+import ProfileReactedPostTimeline from './src/views/screens/Profile/ProfileReactedPostTimeline';
+import ProfileInActivePostTimeline from './src/views/screens/Profile/ProfileInActivePostTimeline';
+import InActiveSignlePost from './src/views/screens/Profile/InActiveSignlePost';
 
 
 
@@ -90,15 +96,20 @@ const App = () => {
                     <Stack.Screen options={{ headerShown: false }} name="Search" component={Search} />
 
                     <Stack.Screen options={{ headerShown: false }} name="Memories" component={Memories} />
+                    <Stack.Screen options={{ headerShown: false }} name="MemoriesTimeline" component={MemoriesTimeline} />
                     <Stack.Screen options={{ headerShown: false }} name="MemorySignlePost" component={MemorySignlePost} />
 
 
 
+                    <Stack.Screen options={{ headerShown: false }} name="Add" component={CreatePost} />
                     <Stack.Screen options={{ headerShown: false }} name="CreateSuccess" component={CreateSuccess} />
                     <Stack.Screen options={{ headerShown: false }} name="PostCreateSuccess" component={PostCreateSuccess} />
 
                     <Stack.Screen options={{ headerShown: false }} name="Profile" component={Profile} />
+                    <Stack.Screen options={{ headerShown: false }} name="ProfileActivePostTimeline" component={ProfileActivePostTimeline} />
+                    <Stack.Screen options={{ headerShown: false }} name="ProfileInActivePostTimeline" component={ProfileInActivePostTimeline} />
                     <Stack.Screen options={{ headerShown: false }} name="SignlePost" component={SignlePost} />
+                    <Stack.Screen options={{ headerShown: false }} name="InActiveSignlePost" component={InActiveSignlePost} />
                     <Stack.Screen options={{ headerShown: false }} name="PublicProfile" component={PublicProfile} />
                     <Stack.Screen options={{ headerShown: false }} name="ProfileTabs" component={ProfileTabs} />
                     <Stack.Screen options={{ headerShown: false }} name="ProfileEdit" component={ProfileEdit} />

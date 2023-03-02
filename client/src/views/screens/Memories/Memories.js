@@ -59,7 +59,7 @@ const Memories = ({ navigation }) => {
 
     // console.log(monthDay16Posts)
     let currentDate = new Date();
-    console.log(currentDate.getMonth() + 1)
+    // console.log(currentDate.getMonth() + 1)
     useEffect(() => {
         const getMemories = navigation.addListener('focus', async () => {
             await dispatch(MemoriesAction(currentDate.getMonth() + 1, currentDate.getFullYear()));
@@ -73,7 +73,7 @@ const Memories = ({ navigation }) => {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 
-    const [month, setMonth] = useState('January');
+    const [month, setMonth] = useState('March');
     const [day, setDay] = useState(15)
     const [year, setYear] = useState(2023)
 

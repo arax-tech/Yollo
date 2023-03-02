@@ -79,14 +79,14 @@ router.post("/store", auth, user, async (request, response) => {
         request.body.user = request.user.id;
 
 
-        const { caption, image, who_can_see, allow_comments, allow_reactions, allow_high_quality, post_diamonds } = request.body;
+        const { caption, hashtag, image, who_can_see, allow_comments, allow_reactions, allow_high_quality } = request.body;
 
 
 
         const myCloud = await cloudinary.v2.uploader.upload(image, { folder: "yello/posts" });
 
         const post = await Post.create({
-            user: request.user.id, caption, who_can_see, allow_comments, allow_reactions, allow_high_quality, post_diamonds,
+            user: request.user.id, caption, hashtag, who_can_see, allow_comments, allow_reactions, allow_high_quality,
             image: {
                 public_id: myCloud.public_id,
                 url: myCloud.secure_url
@@ -248,6 +248,7 @@ router.put("/comment/store/:post_id", auth, user, async (request, response) => {
         await Post.findByIdAndUpdate(request.params.post_id, {
             $set: {
                 post_diamonds: post.post_diamonds > 0 ? post.post_diamonds + .17 : 0,
+                tranding_diamonds: post.tranding_diamonds > 0 ? post.tranding_diamonds + .17 : 0,
             }
         })
 
@@ -428,6 +429,7 @@ router.put("/like/:post_id", auth, user, async (request, response) => {
         await Post.findByIdAndUpdate(request.params.post_id, {
             $set: {
                 post_diamonds: post.post_diamonds > 0 ? post.post_diamonds + .17 : 0,
+                tranding_diamonds: post.tranding_diamonds > 0 ? post.tranding_diamonds + .17 : 0,
             }
         })
 
@@ -493,6 +495,7 @@ router.put("/diamond/:post_id", auth, user, async (request, response) => {
             await Post.findByIdAndUpdate(request.params.post_id, {
                 $set: {
                     post_diamonds: post.post_diamonds + request.body.post_diamonds,
+                    tranding_diamonds: post.tranding_diamonds + request.body.post_diamonds,
                     user_diamonds: post.user_diamonds + request.body.post_diamonds,
                     status: "Active"
                 }
@@ -618,6 +621,7 @@ router.put("/share/:post_id", auth, user, async (request, response) => {
         await Post.findByIdAndUpdate(request.params.post_id, {
             $set: {
                 post_diamonds: post.post_diamonds > 0 ? post.post_diamonds + .17 : 0,
+                tranding_diamonds: post.tranding_diamonds > 0 ? post.tranding_diamonds + .17 : 0,
             }
         })
 

@@ -114,7 +114,7 @@ const OTPVerification = ({ navigation }) => {
                     <View>
                         <TextInput style={styles.TextInput} keyboardType='number-pad' maxLength={1} ref={Pin1Ref} value={Pin1} onChangeText={(pin1) => {
                             setPin1(pin1);
-                            if (pin1 != null) {
+                            if (pin1 !== "") {
                                 Pin2Ref.current.focus();
                             }
                         }} />
@@ -122,7 +122,7 @@ const OTPVerification = ({ navigation }) => {
                     <View>
                         <TextInput style={styles.TextInput} keyboardType='number-pad' maxLength={1} ref={Pin2Ref} value={Pin2} onChangeText={(pin2) => {
                             setPin2(pin2);
-                            if (pin2 != null) {
+                            if (pin2 !== "") {
                                 Pin3Ref.current.focus();
                             }
                         }} />
@@ -130,7 +130,7 @@ const OTPVerification = ({ navigation }) => {
                     <View>
                         <TextInput ref={Pin3Ref} style={styles.TextInput} keyboardType='number-pad' maxLength={1} value={Pin3} onChangeText={(pin3) => {
                             setPin3(pin3);
-                            if (pin3 != null) {
+                            if (pin3 !== "") {
                                 Pin4Ref.current.focus();
                             }
                         }} />

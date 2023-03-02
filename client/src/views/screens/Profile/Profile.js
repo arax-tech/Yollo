@@ -150,7 +150,7 @@ const Profile = ({ navigation }) => {
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
                             <TouchableOpacity style={{ flexDirection: 'column' }} onPress={() => navigation.navigate("ProfileTabs")}>
                                 <Text style={[styles.text, { fontSize: 25, fontWeight: 'bold' }]}>{user?.followers.length}</Text>
-                                <Text style={styles.text}>Followers</Text>
+                                <Text style={[styles.text, { color: "#939393" }]}>Followers</Text>
                             </TouchableOpacity>
                             {
                                 user?.image ? (
@@ -161,12 +161,12 @@ const Profile = ({ navigation }) => {
                             }
                             <View style={{ flexDirection: 'column' }}>
                                 <Text style={[styles.text, { fontSize: 25, fontWeight: 'bold' }]}>{reactions?.length}</Text>
-                                <Text style={styles.text}>Reactions</Text>
+                                <Text style={[styles.text, { color: "#939393" }]}>Reactions</Text>
                             </View>
                         </View>
                         <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                            <Text style={[styles.text, { fontSize: 16, fontWeight: '900', marginTop: 10 }]}>{user?.first_name} {user?.last_name}</Text>
-                            <Text style={[styles.text, { fontSize: 16, fontWeight: '600' }]}>{user?.username}</Text>
+                            <Text style={[styles.text, { fontSize: 20, fontWeight: '600', marginTop: 10 }]}>{user?.first_name} {user?.last_name}</Text>
+                            <Text style={[styles.text, { fontSize: 12, marginBottom: -5 }]}>{user?.username}</Text>
                             <TouchableOpacity style={styles.buttonInfo} onPress={() => navigation.navigate('ProfileEdit')}>
                                 <Text style={styles.buttonInfoText}>Edit Profile</Text>
                             </TouchableOpacity>

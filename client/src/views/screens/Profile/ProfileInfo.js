@@ -15,7 +15,7 @@ const ProfileInfo = () => {
                 <View style={[styles.container, { marginTop: -40, marginBottom: -5 }]}>
                     <Text style={styles.text}>{user?.bio}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', borderColor: '#E4E4E4', borderTopWidth: 1, borderBottomWidth: 1, padding: 5, alignItems: 'center', justifyContent: 'center', marginTop: -5 }}>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', borderColor: '#E4E4E4', borderBottomWidth: 1, padding: 5, alignItems: 'center', justifyContent: 'center', marginTop: -5 }}>
 
 
                     <TouchableOpacity style={styles.tagButton}>
@@ -71,6 +71,6 @@ export default ProfileInfo
 const styles = StyleSheet.create({
     container: { padding: 20 },
     tagButton: { backgroundColor: Colors.white, padding: 9, paddingHorizontal: 8, margin: 2, borderRadius: 20, borderColor: '#E4E4E4', borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
-    tagButtonText: { fontFamily: Fonts.primary, fontSize: 12, color: Colors.dark, textAlign: 'center', fontWeight: '700', paddingLeft: 3 },
+    tagButtonText: { fontFamily: Fonts.primary, fontSize: 12, color: Colors.dark, textAlign: 'center', fontWeight: '600', paddingLeft: 3 },
     text: { fontFamily: Fonts.primary, fontSize: 13, textAlign: "justify", color: "#939393", textAlign: 'center', fontWeight: '500', },
 })

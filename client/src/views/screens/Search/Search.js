@@ -38,6 +38,8 @@ const Search = ({ navigation }) => {
     const [searchPosts, setSearchPosts] = useState(posts);
     const [searchUsers, setSearchUsers] = useState(users);
     const [searchBadges, setSearchBadges] = useState(badges);
+    const [searchHashtags, setSearchHashtags] = useState(posts);
+
 
     const [search, setSearch] = useState('');
     const [start, setStart] = useState(true);
@@ -83,10 +85,19 @@ const Search = ({ navigation }) => {
 
             });
 
+            const newTagsData = searchHashtags?.filter((item) => {
+                const itemData = item.hashtag ? item.hashtag.toUpperCase() : ''.toUpperCase();
+                const textData = text.toUpperCase();
+                return itemData.indexOf(textData) > -1;
+
+            });
+
+
 
             setSearchPosts(newPostsData);
             setSearchUsers(newUsersData);
             setSearchBadges(newBadgesData);
+            setSearchHashtags(newTagsData);
             setSearch(text);
 
         } else {
@@ -94,6 +105,7 @@ const Search = ({ navigation }) => {
             setSearchPosts(posts);
             setSearchUsers(users);
             setSearchBadges(badges);
+            setSearchHashtags(posts);
             setSearch(text);
         }
     }
@@ -161,7 +173,7 @@ const Search = ({ navigation }) => {
                         </View>
                     </View>
                     {isActive === "Top" && <SearchTop posts={searchPosts} />}
-                    {isActive === "Hashtag" && <SearchHashtag posts={searchPosts} start={start} text={search} />}
+                    {isActive === "Hashtag" && <SearchHashtag posts={searchHashtags} start={start} text={search} />}
                     {/* {isActive === "NearYou" && <SearchNearYou />} */}
                     {isActive === "User" && <SearchUser users={searchUsers} start={start} />}
                     {isActive === "Badge" && <SearchBadge badges={searchBadges} start={start} />}

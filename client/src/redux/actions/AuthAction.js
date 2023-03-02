@@ -234,12 +234,12 @@ export const ProfileUpdateAction = (first_name, last_name, username, email, phon
 
 
 
-export const AccountUpdateAction = (email, recovery_email, phone, profile_visibility) => async (dispatch) => {
+export const AccountUpdateAction = (email, recovery_email, phone, profile_visibility, reaction_visibility) => async (dispatch) => {
     try {
         dispatch({ type: UPDATE_ACCOUNT_REQUEST });
 
         const { data } = await axios.put(`${APP_URL}/user/account/update`, {
-            email, recovery_email, phone, profile_visibility,
+            email, recovery_email, phone, profile_visibility, reaction_visibility,
             headers: {
                 "Content-Type": "application/json",
             }

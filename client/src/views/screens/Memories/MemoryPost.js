@@ -2,11 +2,11 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 
-const MemoryPost = ({ post }) => {
-    const navigation = useNavigation();
+const MemoryPost = ({ post, onPress }) => {
+
     return (
         <View key={post?._id} style={styles.box}>
-            <TouchableOpacity style={styles.boxInner} onPress={() => navigation.navigate("MemorySignlePost", { postId: post?._id })}>
+            <TouchableOpacity style={styles.boxInner} onPress={onPress}>
                 <Image style={{ width: "100%", borderRadius: 8, height: 110 }} source={{ uri: post?.image?.url }} />
             </TouchableOpacity>
         </View>

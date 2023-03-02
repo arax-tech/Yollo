@@ -118,12 +118,12 @@ export const FollowingPostsAction = () => async (dispatch) => {
     }
 }
 
-export const CreatePostAction = (caption, image, who_can_see, allow_comments, allow_reactions, allow_high_quality, post_diamonds) => async (dispatch) => {
+export const CreatePostAction = (caption, hashtag, image, who_can_see, allow_comments, allow_reactions, allow_high_quality) => async (dispatch) => {
     try {
         dispatch({ type: CREATE_POST_REQUEST });
 
         const { data } = await axios.post(`${APP_URL}/user/post/store`, {
-            caption, image, who_can_see, allow_comments, allow_reactions, allow_high_quality, post_diamonds,
+            caption, hashtag, image, who_can_see, allow_comments, allow_reactions, allow_high_quality,
             headers: {
                 "Content-Type": "application/json",
             }

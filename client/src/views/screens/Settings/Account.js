@@ -21,6 +21,7 @@ const Account = ({ navigation }) => {
 
 
     const [visibility, setVisibility] = useState(user?.profile_visibility ? user?.profile_visibility : null);
+    const [reactionVisibility, setReactionVisibility] = useState(user?.reaction_visibility ? user?.reaction_visibility : null);
     const [data, setData] = useState({
         email: user?.email ? user?.email : null,
         phone: user?.phone ? user?.phone : null,
@@ -41,7 +42,7 @@ const Account = ({ navigation }) => {
         } else if (visibility === null) {
             ToastAndroid.show('Profile Visibility is required...', ToastAndroid.SHORT);
         } else {
-            await dispatch(AccountUpdateAction(data.email, data.recovery_email, data.phone, visibility));
+            await dispatch(AccountUpdateAction(data.email, data.recovery_email, data.phone, visibility, reactionVisibility));
             await dispatch(AuthUserAction());
         }
     }
@@ -132,6 +133,24 @@ const Account = ({ navigation }) => {
                                 valueField="value"
                                 value={visibility}
                                 onChange={item => { setVisibility(item.value) }}
+                            />
+
+                        </View>
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.formLabel}>Reaction visibility</Text>
+
+                            <Dropdown
+                                style={styles.dropdown}
+                                placeholderStyle={styles.selectedTextStyle}
+                                selectedTextStyle={styles.selectedTextStyle}
+                                data={visibilityArrray}
+                                maxHeight={300}
+                                labelField="label"
+                                search={false}
+                                placeholder="Visibility"
+                                valueField="value"
+                                value={visibility}
+                                onChange={item => { setReactionVisibility(item.value) }}
                             />
 
                         </View>

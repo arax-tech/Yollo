@@ -3,8 +3,13 @@ import React from 'react'
 import Fonts from '../../../constants/Fonts';
 import Colors from '../../../constants/Colors';
 import MemoryPost from './MemoryPost';
+import { MemoriesTimelineAction } from '../../../redux/actions/MemoriesAction';
+import { useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 
 const MemoryByDay = ({ posts }) => {
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
     return (
         <SafeAreaView>
             {
@@ -12,13 +17,18 @@ const MemoryByDay = ({ posts }) => {
                     <View style={styles.boxContainer}>
                         {
                             posts?.map((post) => (
-                                <MemoryPost key={post._id} post={post} />
+                                <MemoryPost key={post._id} post={post} onPress={() => {
+                                    dispatch(MemoriesTimelineAction(posts))
+                                    navigation.navigate('MemoriesTimeline')
+
+                                }} />
                             ))
                         }
                     </View>
                 ) : (
                     <View style={styles.notFoundBox}>
-                        <Text style={styles.notFoundTitle}>No <Text style={{ color: Colors.primary }}>Yollo</Text> memories ...</Text>
+                        <Text style={styles.notFoundTitle}>No <Text style={{ color: Colors.primary }}>Yollo</Text> memories for the day...</Text>
+
                     </View>
                 )
             }

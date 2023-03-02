@@ -10,6 +10,8 @@ import {
     MEMORY_REPOST_SUCCESS,
     MEMORY_REPOST_FAIL,
 
+    MEMORIES_TIMELINE,
+
     CLEAR_ERRORS,
 
 } from "../constants/MemoriesConstant";
@@ -36,6 +38,12 @@ export const MemoriesAction = (month, year) => async (dispatch) => {
     }
 }
 
+export const MemoriesTimelineAction = (posts) => async (dispatch) => {
+    dispatch({
+        type: MEMORIES_TIMELINE,
+        posts
+    });
+}
 
 export const MemoryRepostAction = (id) => async (dispatch) => {
     try {

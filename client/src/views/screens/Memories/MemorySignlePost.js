@@ -1,101 +1,86 @@
-import { Dimensions, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
-import React, { useEffect } from 'react'
-import Colors from '../../../constants/Colors'
-import Fonts from '../../../constants/Fonts'
-import { useDispatch, useSelector } from 'react-redux'
-import { SinglePostAction } from '../../../redux/actions/PostAction'
-import Loading from '../../components/Loading'
-import { IconAntDesign } from '../../components/Icons'
-import { PrimaryButton } from '../../components/Button'
-import { OpenSheetAction } from '../../../redux/actions/ReactionAction'
-import { MemoryRepostAction } from '../../../redux/actions/MemoriesAction'
-import { MEMORY_REPOST_RESET } from '../../../redux/constants/MemoriesConstant'
+import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React from 'react'
+import { useDispatch } from 'react-redux';
+import Colors from '../../../constants/Colors';
+import { IconAntDesign, IconEntypo, IconFeather } from '../../components/Icons';
+import { OpenSheetAction } from '../../../redux/actions/ReactionAction';
+import Fonts from '../../../constants/Fonts';
+import { useNavigation } from '@react-navigation/native';
 
-const MemorySignlePost = ({ route, navigation }) => {
-
+const MemorySignlePost = ({ item }) => {
     const dispatch = useDispatch();
-    const { postId } = route.params;
-    const { loading, post } = useSelector((state) => state.post);
-    const { loading: memoryLoading, message, status } = useSelector((state) => state.memories)
-
-    useEffect(() => {
-        const getPost = navigation.addListener('focus', async () => {
-            await dispatch(SinglePostAction(postId));
-        });
-        return getPost;
-    }, [dispatch, navigation, postId])
-
-    useEffect(() => {
-        if (status && status === 422) {
-            ToastAndroid.show(message, ToastAndroid.SHORT);
-            dispatch({ type: MEMORY_REPOST_RESET })
-        }
-
-        if (status && status === 2001) {
-            ToastAndroid.show(message, ToastAndroid.SHORT);
-            dispatch({ type: MEMORY_REPOST_RESET });
-            navigation.goBack();
-        }
-    }, [dispatch, message, navigation])
-
+    const navigation = useNavigation();
     return (
-        loading || memoryLoading ? <Loading /> :
-            <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-                <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
+        <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }} forceInset={{ top: 'always' }}>
+            <View style={[{ flex: 1, height: Dimensions.get('window').height }]}>
+
+
+                {/* Top Bar */}
+                <View style={{ position: 'absolute', zIndex: 1, top: 0, paddingHorizontal: 25, paddingVertical: 20, width: Dimensions.get('window').width }}>
+
+                    <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'space-between' }}>
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <IconAntDesign name='arrowleft' size={23} color={Colors.white} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "flex-end", flexDirection: "row", }} onPress={() => navigation.goBack()}>
+                            <IconAntDesign name='heart' size={18} color={Colors.white} />
+                            <Text style={{ color: "#fff", fontSize: 16, marginLeft: 3, marginTop: -2 }}> {item?.likes.length + item?.shares.length + item?.comments.length}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
 
 
 
-                <ScrollView>
-                    <View style={[styles.headerContainer, { paddingBottom: 10 }]}>
-
-                        <View style={{ flexDirection: 'row', padding: 15, justifyContent: 'center', alignItems: 'center' }}>
-                            <TouchableOpacity onPress={() => navigation.goBack()}>
-                                <IconAntDesign name='arrowleft' size={23} color={Colors.dark} />
-                            </TouchableOpacity>
-                            <View style={{ flex: 1, }}>
-                                <Text style={styles.headerTitle}>Memory Details</Text>
-                            </View>
-                        </View>
+                {/* Post Detail With User Info */}
+                <View style={{ position: 'absolute', zIndex: 1, bottom: 15, padding: 15 }}>
 
 
 
+                    <View>
+                        <Text style={styles.postTitle}>{item?.caption.length > 35 ? item?.caption.substring(0, 35) + "..." : item?.caption}</Text>
+                        <TouchableOpacity onPress={() => dispatch(OpenSheetAction(true, item, 1))} >
+                            <Text style={styles.readMore}>Read More</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+
+                {/* Main Image */}
+                <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item?.image.url }} />
 
 
 
+                {/* Right Side Icons */}
+                <View style={styles.rightContainer}>
+                    <View style={{ flexGrow: 1, alignItems: "center", justifyContent: "center" }}>
 
 
+                        <TouchableOpacity style={{ backgroundColor: Colors.primary, padding: 10, borderRadius: 30, paddingHorizontal: 15, flexDirection: "row", alignItems: "center", justifyContent: "center" }} onPress={() => navigation.navigate('Add')}>
+                            <Text style={styles.userName}> Re-Post </Text>
+                            <IconFeather name='arrow-right' size={15} color={"#000080"} />
+                        </TouchableOpacity>
                     </View>
 
 
-                    <View style={styles.container}>
-                        <Image style={{ width: "100%", borderRadius: 8, height: Dimensions.get("window").height - 300 }} source={{ uri: post?.image?.url }} />
-
-                        <View>
-                            <Text style={styles.postTitle}>{post?.caption.length > 40 ? post?.caption.substring(0, 40) + "..." : post?.caption}</Text>
-                            <TouchableOpacity onPress={() => dispatch(OpenSheetAction(true, post, 1))} >
-                                <Text style={styles.readMore}>Read More</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <PrimaryButton title='Post Again' margintop={20} onPress={() => dispatch(MemoryRepostAction(post?._id))} />
-                    </View>
-
-
-
-                </ScrollView>
-            </SafeAreaView >
+                </View>
+            </View>
+        </SafeAreaView>
     )
 }
 
 export default MemorySignlePost
 
+
 const styles = StyleSheet.create({
-    container: { padding: 20, backgroundColor: Colors.white },
+    mainImage: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, height: Dimensions.get("window").height },
 
-    headerContainer: { flexDirection: 'row', alignItems: 'center', paddingTop: 10, backgroundColor: Colors.white, borderBottomWidth: 2, borderBottomColor: '#F5F5F5' },
-    headerTitle: { fontFamily: Fonts.primary, fontSize: 22, fontWeight: '700', color: Colors.dark, textAlign: 'center', justifyContent: 'center', alignItems: 'center', alignContent: 'center' },
+    postTitle: { fontFamily: Fonts.primary, fontSize: 12, fontWeight: '600', color: Colors.white, marginTop: 10, paddingRight: 30 },
+    readMore: { fontFamily: Fonts.primary, fontSize: 10, fontWeight: '500', color: Colors.white, marginTop: 5 },
 
-    postTitle: { fontFamily: Fonts.primary, fontSize: 16, fontWeight: '600', color: Colors.dark, marginTop: 10, paddingRight: 30 },
-    readMore: { fontFamily: Fonts.primary, fontSize: 14, fontWeight: '500', color: Colors.dark, marginTop: 5 },
+    topBarHeadings: { fontFamily: Fonts.primary, fontSize: 16, padding: 3, color: Colors.white },
+    pipe: { fontFamily: Fonts.primary, fontSize: 23, padding: 3, fontWeight: '500', color: Colors.white },
 
+    rightContainer: { alignItems: 'flex-end', justifyContent: 'flex-end', top: Dimensions.get('window').height - 90, padding: 20 },
+    actionButton: { padding: 10, marginTop: 20 },
 })
