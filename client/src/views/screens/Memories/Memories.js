@@ -67,6 +67,11 @@ const Memories = ({ navigation }) => {
         return getMemories;
     }, [dispatch, navigation, currentDate]);
 
+    // Set current date as inital focused date
+    useEffert(() => {
+        onChangeDate();
+    }, []);
+
 
     const [memeriesWeek, setMemeriesWeek] = useState();
 
