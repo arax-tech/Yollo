@@ -21,7 +21,7 @@ const SearchTop = ({ posts }) => {
                         navigation.navigate('SearchTimeline')
 
                     }}>
-                        <Image style={{ width: "100%", borderRadius: 10, height: 170 }} source={{ uri: post?.image?.url }} />
+                        <Image style={{ width: "100%", borderRadius: 10, height: 170 }} source={{ uri: post.images[0] ? post.images[0].url : "" }} />
                     </TouchableOpacity>
                     <Text style={styles.descText}>{post?.caption.length > 27 ? post?.caption.substring(0, 27) + "..." : post?.caption}</Text>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 5 }}>

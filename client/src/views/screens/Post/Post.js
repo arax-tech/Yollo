@@ -45,7 +45,7 @@ const Post = ({ item, isActive }) => {
     useEffect(() => {
         setTimeout(() => {
             setShow(false)
-        }, 3000)
+        }, 1000)
 
     }, [show])
 
@@ -181,6 +181,8 @@ const Post = ({ item, isActive }) => {
 
 
 
+
+    const [postActive, setPostActive] = useState(0)
 
 
     return (
@@ -327,9 +329,31 @@ const Post = ({ item, isActive }) => {
                             <Text style={isActive === "ForYou" ? [styles.topBarHeadings, { fontWeight: '900' }] : styles.topBarHeadings} >For You</Text>
                         </TouchableOpacity>
                         <Text style={{ color: 'transparent' }}>lorem isp dummy text</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('Search')}>
+                        <TouchableOpacity onPress={() => navigation.navigate("Search", {
+                            HashTag: ""
+                        })}>
                             <IconAntDesign name='search1' size={23} color={Colors.white} />
                         </TouchableOpacity>
+
+                    </View>
+                </View>
+
+                <View style={{ position: 'absolute', zIndex: 1, top: 40, paddingHorizontal: 25, paddingVertical: 20, width: Dimensions.get('window').width }}>
+
+                    <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'flex-end' }}>
+                        <View style={{ flex: 2, flexDirection: "row", justifyContent: "flex-end" }}>
+                            {
+                                item?.images.length > 1 && (
+                                    item.images[0] ? item.images.map((image, index) => (
+                                        <TouchableOpacity key={index} onPress={() => setPostActive(index)} style={{ borderBottomColor: index === postActive ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 20, height: 50, marginRight: 5 }}>
+                                            <Text>{` `}</Text>
+                                        </TouchableOpacity>
+
+                                    )) : ""
+                                )
+                            }
+                        </View>
+
                     </View>
                 </View>
 
@@ -384,7 +408,7 @@ const Post = ({ item, isActive }) => {
 
 
                 {/* Main Image */}
-                <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item?.image.url }} />
+                <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item.images[postActive].url }} />
 
                 {/* Right Side Icons */}
                 <View style={styles.rightContainer}>

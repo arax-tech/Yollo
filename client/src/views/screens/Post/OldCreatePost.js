@@ -1,4 +1,4 @@
-import { Dimensions, Image, KeyboardAvoidingView, PermissionsAndroid, ScrollView, StatusBar, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Image, PermissionsAndroid, ScrollView, StatusBar, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Colors from '../../../constants/Colors'
@@ -8,11 +8,21 @@ import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor"
 import { PrimaryButton } from '../../components/Button'
 import { IconAntDesign, IconEntypo } from '../../components/Icons'
 import { Dropdown } from 'react-native-element-dropdown'
-import { launchImageLibrary } from 'react-native-image-picker'
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../../components/Loading'
 import { CreatePostAction } from '../../../redux/actions/PostAction'
 import { CREATE_POST_RESET } from '../../../redux/constants/PostConstant'
+
+import { Avatar, Dialog } from 'react-native-paper';
+
+import ImgToBase64 from 'react-native-image-base64';
+
+
+
+
+import { PESDK } from "react-native-photoeditorsdk";
+
 
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
@@ -20,6 +30,8 @@ const deviceHeight = Dimensions.get('window').height;
 const CreatePost = ({ navigation }) => {
 
     const dispatch = useDispatch();
+
+
 
     const { loading, tags } = useSelector((state) => state.auth);
     const { loading: postLoading, status, message, isCreated } = useSelector((state) => state.post);
@@ -29,6 +41,7 @@ const CreatePost = ({ navigation }) => {
     const [visibility, setVisibility] = useState('Everyone');
 
     const [caption, setCaption] = useState('');
+    const [hashtag, setHashtag] = useState('');
 
     const [comment, setComment] = useState(true);
     const [reaction, setReaction] = useState(true);
@@ -39,6 +52,7 @@ const CreatePost = ({ navigation }) => {
         { label: 'Followers', value: 'Followers' },
         { label: 'Only Me', value: 'Only Me' },
     ]
+
 
 
 
@@ -59,48 +73,127 @@ const CreatePost = ({ navigation }) => {
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
 
-    const launchImagePicker = async () => {
 
-        const response = await launchImageLibrary({ mediaType: "photo", includeBase64: true });
+    const [model, setModel] = useState(false);
 
-        if (response.didCancel) {
-            ToastAndroid.show("Cancelled image picker...", ToastAndroid.SHORT);
-        } else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-        } else if (response.customButton) {
-            console.log(
-                'User tapped custom button: ',
-                response.customButton
-            );
-            alert(response.customButton);
-        } else {
 
-            setImage(`data:image/jpeg;base64,${response.assets[0].base64}`);
-            setImagePreview(response.assets[0].uri);
-        }
 
-    }
+    const requestCameraPermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.CAMERA,
+                    {
+                        title: 'Camera Permission',
+                        message: 'App needs camera permission',
+                    },
+                );
+                // If CAMERA Permission is granted
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } catch (err) {
+                console.warn(err);
+                return false;
+            }
+        } else return true;
+    };
 
-    const requestPermission = async () => {
+    const requestExternalWritePermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: 'External Storage Write Permission',
+                        message: 'App needs write permission',
+                    },
+                );
+                // If WRITE_EXTERNAL_STORAGE Permission is granted
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } catch (err) {
+                console.warn(err);
+                alert('Write permission err', err);
+            }
+            return false;
+        } else return true;
+    };
+
+
+    const showPhotoEditor = async (image) => {
         try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.CAMERA, {
-                title: "Yello App Camera Permission",
-                message: "Yello App take access to your pictures so you can select awesome pictures.",
-                buttonNeutral: "Ask Me Later",
-                buttonNegative: "Cancel",
-                buttonPositive: "Okay"
-            },);
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                launchImagePicker();
+            // Add a photo from the assets directory.
+            const photo = image;
+            console.log(photo)
+
+            // Open the photo editor and handle the export as well as any occuring errors.
+            const result = await PESDK.openEditor(photo);
+
+            if (result !== null) {
+                // The user exported a new photo successfully and the newly generated photo is located at `result.image`.
+                const base64String = await ImgToBase64.getBase64String(result.image);
+                setImage(`data:image/jpeg;base64,${base64String}`);
+                setImagePreview(result.image);
             } else {
-                ToastAndroid.show("Camera permission denied", ToastAndroid.SHORT);
+                // The user tapped on the cancel button within the editor.
+                return;
             }
         } catch (error) {
-            console.log(error)
+            // There was an error generating the photo.
+            console.log(error);
         }
     }
 
+    const captureImage = async (type) => {
+        let options = {
+            mediaType: type,
+            includeBase64: true,
+        };
+        let isCameraPermitted = await requestCameraPermission();
+        let isStoragePermitted = await requestExternalWritePermission();
+        if (isCameraPermitted && isStoragePermitted) {
+            launchCamera(options, (response) => {
+                setModel(false);
+                if (response.didCancel) {
+                    ToastAndroid.show('User cancelled camera picker', ToastAndroid.SHORT);
+                    return;
+                } else if (response.errorCode == 'camera_unavailable') {
+                    ToastAndroid.show('Camera not available on device', ToastAndroid.SHORT);
+                    return;
+                } else if (response.errorCode == 'permission') {
+                    ToastAndroid.show('Permission not satisfied', ToastAndroid.SHORT);
+                    return;
+                } else if (response.errorCode == 'others') {
+                    ToastAndroid.show(response.errorMessage, ToastAndroid.SHORT);
+                    return;
+                }
+                showPhotoEditor(response.assets[0].uri);
+
+            });
+        }
+    };
+
+    const chooseFile = (type) => {
+        let options = {
+            mediaType: type,
+            includeBase64: true
+        };
+        launchImageLibrary(options, (response) => {
+            setModel(false);
+            if (response.didCancel) {
+                ToastAndroid.show('User cancelled camera picker', ToastAndroid.SHORT);
+                return;
+            } else if (response.errorCode == 'camera_unavailable') {
+                ToastAndroid.show('Camera not available on device', ToastAndroid.SHORT);
+                return;
+            } else if (response.errorCode == 'permission') {
+                ToastAndroid.show('Permission not satisfied', ToastAndroid.SHORT);
+                return;
+            } else if (response.errorCode == 'others') {
+                ToastAndroid.show(response.errorMessage, ToastAndroid.SHORT);
+                return;
+            }
+            showPhotoEditor(response.assets[0].uri);
+        });
+    };
 
 
     const CreatePost = async () => {
@@ -109,7 +202,7 @@ const CreatePost = ({ navigation }) => {
         } else if (caption === null) {
             ToastAndroid.show('Caption is required...', ToastAndroid.SHORT);
         } else {
-            await dispatch(CreatePostAction(caption, image, visibility, comment, reaction, quality, 1440));
+            await dispatch(CreatePostAction(caption, hashtag, image, visibility, comment, reaction, quality, 1440));
         }
     }
 
@@ -119,8 +212,6 @@ const CreatePost = ({ navigation }) => {
             navigation.navigate('PostCreateSuccess')
             setCaption('');
             setImagePreview(null)
-
-
         }
 
     }, [dispatch, navigation, isCreated, message])
@@ -163,7 +254,7 @@ const CreatePost = ({ navigation }) => {
 
                                 {
                                     imagePreview && imagePreview !== null ? '' :
-                                        <TouchableOpacity onPress={requestPermission}>
+                                        <TouchableOpacity onPress={() => setModel(true)}>
                                             <Image style={{ width: 65 }} resizeMode='contain' source={require('../../../assets/images/2.png')} />
                                         </TouchableOpacity>
 
@@ -180,43 +271,18 @@ const CreatePost = ({ navigation }) => {
 
                         <TextInput style={{ backgroundColor: "#F1F1F1", padding: 10, textAlignVertical: "top" }} ref={ref} multiline={true} numberOfLines={5} placeholder="Caption" value={caption} onChangeText={setCaption} />
                         <View style={{ borderWidth: 1, borderColor: "#F1F1F1", padding: 5, flex: 1, flexDirection: "row", alignItems: "flex-end", justifyContent: "flex-end" }}>
-                            <TouchableOpacity onPress={handleHashTagClick}>
+                            <TextInput style={{ backgroundColor: "#F1F1F1", padding: 10, width: "100%" }} placeholder="#Hashtag" value={hashtag} onChangeText={setHashtag} />
+
+                            {/* <TouchableOpacity onPress={handleHashTagClick}>
                                 <Text style={{ borderWidth: 1, borderColor: "#F1F1F1", marginRight: 10, padding: 2, color: Colors.dark }}># Hashtags</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={handleMentionClick}>
                                 <Text style={{ borderWidth: 1, borderColor: "#F1F1F1", padding: 2, color: Colors.dark }}>@ Mentions</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
 
 
 
-
-
-                        {/* <RichToolbar
-                        style={{ backgroundColor: '#D9D9D9' }}
-                        editor={richText}
-                        actions={[
-                            actions.setBold,
-                            actions.setItalic,
-                            actions.insertBulletsList,
-                            actions.insertLink,
-                            actions.setUnderline,
-                            actions.removeFormat,
-                            actions.undo,
-                            actions.redo,
-                        ]}
-                        iconMap={{ [actions.heading1]: ({ tintColor }) => (<Text style={[{ color: tintColor }]}>H1</Text>), }}
-                    />
-
-                    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1, borderColor: '#D9D9D9', borderWidth: 1, backgroundColor: '#F1F1F1', padding: 10 }}>
-                        <RichEditor
-                            backgroundColor='#F1F1F1'
-                            ref={richText}
-                            onChange={descriptionText => {
-                                console.log("descriptionText:", descriptionText);
-                            }}
-                        />
-                    </KeyboardAvoidingView> */}
 
 
 
@@ -285,8 +351,30 @@ const CreatePost = ({ navigation }) => {
 
 
                     </View>
-                </ScrollView>
 
+
+                </ScrollView>
+                <Dialog visible={model} style={{ backgroundColor: "#fff" }} onDismiss={() => setModel(false)}>
+                    <Dialog.Content>
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                            <View>
+                                <Text style={{ fontSize: 20, fontWeight: '700', color: Colors.dark }}>Choose...</Text>
+                            </View>
+                            <TouchableOpacity onPress={() => setModel(false)}>
+                                <IconAntDesign name='close' size={22} color={Colors.dark} style={{ marginBottom: 0 }} />
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity style={styles.chooseType} onPress={() => chooseFile('photo')}>
+                            <Text style={styles.chooseTypeText}>From Gallery</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.chooseType} onPress={() => captureImage('photo')}>
+                            <Text style={styles.chooseTypeText}>From Camera </Text>
+                        </TouchableOpacity>
+
+                    </Dialog.Content>
+
+                </Dialog>
             </SafeAreaView >
     )
 }
@@ -316,4 +404,7 @@ const styles = StyleSheet.create({
 
     tagButton: { backgroundColor: Colors.white, padding: 5, paddingHorizontal: 5, marginHorizontal: 2, marginVertical: 5, borderRadius: 20, borderColor: '#E4E4E4', borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
     tagButtonText: { fontFamily: Fonts.primary, fontSize: 12, color: Colors.dark, textAlign: 'center', fontWeight: '600' },
+
+    chooseType: { backgroundColor: "#f2f2f2", padding: 15, marginBottom: 3, borderRadius: 20 },
+    chooseTypeText: { fontFamily: Fonts.primary, fontSize: 14, color: Colors.dark, },
 })

@@ -79,20 +79,31 @@ router.post("/store", auth, user, async (request, response) => {
         request.body.user = request.user.id;
 
 
-        const { caption, hashtag, image, who_can_see, allow_comments, allow_reactions, allow_high_quality } = request.body;
+        const { images } = request.body;
 
 
 
-        const myCloud = await cloudinary.v2.uploader.upload(image, { folder: "yello/posts" });
 
-        const post = await Post.create({
-            user: request.user.id, caption, hashtag, who_can_see, allow_comments, allow_reactions, allow_high_quality,
-            image: {
-                public_id: myCloud.public_id,
-                url: myCloud.secure_url
-            }
-        });
+        const imagesLinks = [];
 
+        for (let i = 0; i < images.length; i++) {
+            const result = await cloudinary.v2.uploader.upload(images[i], {
+                folder: "yello/posts"
+            });
+
+            imagesLinks.push({
+                public_id: result.public_id,
+                url: result.secure_url
+            });
+
+
+        }
+
+        request.body.images = imagesLinks;
+        request.body.user = request.user.id;
+
+        const createPost = new Post(request.body);
+        await createPost.save();
 
         // Diamonds  
         const diamond = await Diamond.findOne({ user: request.user.id });

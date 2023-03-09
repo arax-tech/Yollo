@@ -108,7 +108,7 @@ const SignlePost = ({ item }) => {
 
 
 
-
+    const [postActive, setPostActive] = useState(0)
 
 
 
@@ -238,9 +238,32 @@ const SignlePost = ({ item }) => {
                                 <IconAntDesign name='arrowleft' size={23} color={Colors.white} />
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => navigation.navigate('Search')}>
+                            <TouchableOpacity onPress={() => navigation.navigate("Search", {
+                                HashTag: ""
+                            })}>
                                 <IconAntDesign name='search1' size={23} color={Colors.white} />
                             </TouchableOpacity>
+                        </View>
+                    </View>
+
+
+
+                    <View style={{ position: 'absolute', zIndex: 1, top: 40, paddingHorizontal: 25, paddingVertical: 20, width: Dimensions.get('window').width }}>
+
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'flex-end' }}>
+                            <View style={{ flex: 2, flexDirection: "row", justifyContent: "flex-end" }}>
+                                {
+                                    item?.images.length > 1 && (
+                                        item.images[0] ? item.images.map((image, index) => (
+                                            <TouchableOpacity key={index} onPress={() => setPostActive(index)} style={{ borderBottomColor: index === postActive ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 20, height: 50, marginRight: 5 }}>
+                                                <Text>{` `}</Text>
+                                            </TouchableOpacity>
+
+                                        )) : ""
+                                    )
+                                }
+                            </View>
+
                         </View>
                     </View>
 
@@ -261,7 +284,7 @@ const SignlePost = ({ item }) => {
 
 
                     {/* Main Image */}
-                    <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item?.image.url }} />
+                    <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item.images[postActive].url }} />
 
 
 
@@ -345,10 +368,10 @@ const SignlePost = ({ item }) => {
                     {
                         show ? (
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-60%' }}>
-                                <Text style={[styles.postTitle, { fontSize: 20, fontWeight: "700", marginBottom: 10 }]}>Time Remaining</Text>
-                                <TouchableOpacity style={{ width: 250, height: 60, borderRadius: 5, backgroundColor: '#FF2727', borderBottomColor: "#66DB34", borderBottomWidth: 5, marginLeft: -20 }}>
+                                <Text style={[styles.postTitle, { fontSize: 20, fontWeight: "700", marginBottom: 10 }]}>Remaning Time</Text>
+                                <TouchableOpacity style={{ width: 260, height: 60, borderRadius: 5, backgroundColor: 'rgba(52, 52, 52, 0.4)', borderBottomColor: 'rgba(52, 52, 52, 0.6)', borderBottomWidth: 5, marginLeft: -20 }}>
                                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                        <Text style={{ color: Colors.white, fontFamily: Fonts.primary, fontSize: 18, fontWeight: '900' }}>{toHoursAndMinutes(item?.post_diamonds.toFixed(0))}</Text>
+                                        <Text style={{ color: Colors.white, fontFamily: Fonts.primary, fontSize: 17, fontWeight: '900' }}>{toHoursAndMinutes(item?.tranding_diamonds.toFixed(0))}</Text>
                                     </View>
                                 </TouchableOpacity>
                                 {/* <Text style={[styles.postTitle, { fontSize: 16, fontWeight: "700", }]}>Minutes</Text> */}

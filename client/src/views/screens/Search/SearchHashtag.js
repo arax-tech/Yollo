@@ -26,7 +26,7 @@ const SearchHashtag = ({ posts, start, text }) => {
                     navigation.navigate('SearchTimeline')
 
                 }}>
-                    <Image style={{ width: "100%", borderRadius: 10, height: 120 }} source={{ uri: post?.image?.url }} />
+                    <Image style={{ width: "100%", borderRadius: 10, height: 120 }} source={{ uri: post.images[0] ? post.images[0].url : "" }} />
                 </TouchableOpacity>
             </View>
         )

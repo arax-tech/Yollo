@@ -28,9 +28,10 @@ const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
 
-const Search = ({ navigation }) => {
+const Search = ({ route, navigation }) => {
     const dispatch = useDispatch();
 
+    const { HashTag } = route.params;
 
     const { loading: searchLoading, users, badges } = useSelector((state) => state.search);
     const { loading: postLoading, posts } = useSelector((state) => state.post);
@@ -53,9 +54,19 @@ const Search = ({ navigation }) => {
         return getSearchData;
     }, [dispatch, navigation])
 
+    useEffect(() => {
+
+        if (HashTag) {
+            setSearch(HashTag);
+            setIsActive("Hashtag");
+            searchFilter(HashTag)
+        }
+    }, [HashTag])
+
 
 
     const [isActive, setIsActive] = useState('Top')
+
     const setStatusFilter = (status) => {
         setIsActive(status);
     }

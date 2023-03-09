@@ -68,6 +68,13 @@ const Memories = ({ navigation }) => {
     }, [dispatch, navigation, currentDate]);
 
 
+    // Set current date as inital focused date
+    useEffect(() => {
+        onChangeDate();
+    }, [])
+
+
+
     const [memeriesWeek, setMemeriesWeek] = useState();
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -99,6 +106,12 @@ const Memories = ({ navigation }) => {
         await dispatch(MemoriesAction(tempDate.getMonth() + 1, tempDate.getFullYear()));
         setMemeriesWeek(fDate);
     };
+
+
+    useEffect(() => {
+        onChangeDate()
+    }, [])
+
 
     const showMode = (currentMode) => {
         setShow(true);

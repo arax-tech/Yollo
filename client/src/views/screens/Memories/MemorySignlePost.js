@@ -1,8 +1,8 @@
 import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import Colors from '../../../constants/Colors';
-import { IconAntDesign, IconEntypo, IconFeather } from '../../components/Icons';
+import { IconAntDesign, IconEntypo, IconFeather, IconFontisto } from '../../components/Icons';
 import { OpenSheetAction } from '../../../redux/actions/ReactionAction';
 import Fonts from '../../../constants/Fonts';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +10,9 @@ import { useNavigation } from '@react-navigation/native';
 const MemorySignlePost = ({ item }) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
+
+    const [postActive, setPostActive] = useState(0)
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }} forceInset={{ top: 'always' }}>
             <View style={[{ flex: 1, height: Dimensions.get('window').height }]}>
@@ -30,6 +33,25 @@ const MemorySignlePost = ({ item }) => {
                     </View>
                 </View>
 
+                <View style={{ position: 'absolute', zIndex: 1, top: 40, paddingHorizontal: 25, paddingVertical: 20, width: Dimensions.get('window').width }}>
+
+                    <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'flex-end' }}>
+                        <View style={{ flex: 2, flexDirection: "row", justifyContent: "flex-end" }}>
+                            {
+                                item?.images.length > 1 && (
+                                    item.images[0] ? item.images.map((image, index) => (
+                                        <TouchableOpacity key={index} onPress={() => setPostActive(index)} style={{ borderBottomColor: index === postActive ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 20, height: 50, marginRight: 5 }}>
+                                            <Text>{` `}</Text>
+                                        </TouchableOpacity>
+
+                                    )) : ""
+                                )
+                            }
+                        </View>
+
+                    </View>
+                </View>
+
 
 
                 {/* Post Detail With User Info */}
@@ -47,7 +69,7 @@ const MemorySignlePost = ({ item }) => {
 
 
                 {/* Main Image */}
-                <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item?.image.url }} />
+                <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item.images[postActive].url }} />
 
 
 
@@ -58,7 +80,7 @@ const MemorySignlePost = ({ item }) => {
 
                         <TouchableOpacity style={{ backgroundColor: Colors.primary, padding: 10, borderRadius: 30, paddingHorizontal: 15, flexDirection: "row", alignItems: "center", justifyContent: "center" }} onPress={() => navigation.navigate('Add')}>
                             <Text style={styles.userName}> Re-Post </Text>
-                            <IconFeather name='arrow-right' size={15} color={"#000080"} />
+                            <IconFontisto name='share-a' size={15} color={"#000080"} />
                         </TouchableOpacity>
                     </View>
 

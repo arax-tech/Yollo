@@ -6,12 +6,14 @@ import { CloseSheetAction } from '../../redux/actions/ReactionAction';
 import Comment from '../screens/Post/Comment';
 import Fonts from '../../constants/Fonts';
 import Colors from '../../constants/Colors';
+import { useNavigation } from '@react-navigation/native';
 
 
 const CommentSheet = () => {
 
 
     const dispatch = useDispatch();
+    const navigation = useNavigation();
     const { open, post, modelType } = useSelector((state) => state.commentModel);
 
 
@@ -58,7 +60,14 @@ const CommentSheet = () => {
                         <Text style={styles.postTitle}>{post?.caption}</Text>
                         {
                             post?.hashtag && (
-                                <Text style={styles.postTitle}>#{post?.hashtag}</Text>
+                                <TouchableOpacity onPress={() => {
+                                    navigation.navigate("Search", {
+                                        HashTag: post?.hashtag
+                                    });
+                                    onCloseFunction()
+                                }}>
+                                    <Text style={styles.postTitle}>#{post?.hashtag}</Text>
+                                </TouchableOpacity>
                             )
                         }
                         <TouchableOpacity onPress={onCloseFunction} >
