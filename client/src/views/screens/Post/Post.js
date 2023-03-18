@@ -1,4 +1,4 @@
-import { Dimensions, Image, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Image, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View, Animated } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Colors from '../../../constants/Colors'
@@ -19,6 +19,9 @@ import { ADD_DIAMOND_INTO_POST_RESET, SHARE_POST_RESET } from '../../../redux/co
 
 import Share from 'react-native-share';
 import RNFetchBlob from 'rn-fetch-blob';
+import { useRef } from 'react'
+
+
 
 
 const Post = ({ item, isActive }) => {
@@ -34,6 +37,26 @@ const Post = ({ item, isActive }) => {
 
 
     // Likes  & Unlikes Actions
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    const fadeIn = () => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    const fadeOut = () => {
+        Animated.timing(fadeAnim, {
+            toValue: 0,
+            duration: 1000,
+            useNativeDriver: true,
+        }).start();
+        // setShow(false)
+    };
+
+
     const userLike = item.likes.filter(function (item) {
         // console.log(item)
         return item.toString() === user?._id.toString();
@@ -44,7 +67,8 @@ const Post = ({ item, isActive }) => {
     const [show, setShow] = useState(false);
     useEffect(() => {
         setTimeout(() => {
-            setShow(false)
+            // setShow(false)
+            fadeOut()
         }, 1000)
 
     }, [show])
@@ -57,6 +81,8 @@ const Post = ({ item, isActive }) => {
             counter: currentLike.counter + (currentLike.state ? -1 : 1)
         })
         setShow(true);
+        fadeIn()
+        
     }
 
     const unlikeHandel = async () => {
@@ -338,14 +364,14 @@ const Post = ({ item, isActive }) => {
                     </View>
                 </View>
 
-                <View style={{ position: 'absolute', zIndex: 1, top: 40, paddingHorizontal: 25, paddingVertical: 20, width: Dimensions.get('window').width }}>
+                <View style={{ position: 'absolute', zIndex: 1, top: 10, right : 20, width: Dimensions.get('window').width }}>
 
                     <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'flex-end' }}>
                         <View style={{ flex: 2, flexDirection: "row", justifyContent: "flex-end" }}>
                             {
                                 item?.images.length > 1 && (
                                     item.images[0] ? item.images.map((image, index) => (
-                                        <TouchableOpacity key={index} onPress={() => setPostActive(index)} style={{ borderBottomColor: index === postActive ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 20, height: 50, marginRight: 5 }}>
+                                        <TouchableOpacity key={index} onPress={() => setPostActive(index)} style={{ borderBottomColor: index === postActive ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 15, paddingVertical : 24,  marginRight: 5 }}>
                                             <Text>{` `}</Text>
                                         </TouchableOpacity>
 
@@ -431,7 +457,6 @@ const Post = ({ item, isActive }) => {
                             ) : (
                                 <TouchableOpacity onPress={() => likeHandel(currentLike.state)}>
                                     <View style={{ alignItems: 'center' }}>
-
                                         <IconFontAwesome name='heart-o' size={21} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
                                         <Text style={styles.actionText}>{currentLike.counter}</Text>
                                     </View>
@@ -440,34 +465,25 @@ const Post = ({ item, isActive }) => {
                         }
 
 
-                        <TouchableOpacity onPress={() => dispatch(OpenSheetAction(true, item, 0))} >
+                        <TouchableOpacity onPress={() => dispatch(OpenSheetAction(true, item, 0))} style={{marginBottom : -7}}>
                             <View style={{ alignItems: 'center' }}>
-                                <IconAntDesign name='message1' size={21} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
-                                {/* <Image style={[styles.actionButton, { width: 25 }]} resizeMode='contain' source={require('../../../assets/images/icons/comment.png')} /> */}
+                                <IconAntDesign name='message1' size={21} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -2 }} />
                                 <Text style={styles.actionText}>{item?.comments.length}</Text>
                             </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={toggleRewardModal}>
                             <View style={{ alignItems: 'center' }}>
-                                {/* <IconMaterialCommunityIcons name='clock-plus-outline' size={26} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} /> */}
-                                {/* <Image style={[styles.actionButton, { width: 25, marginBottom: 2 }]} resizeMode='contain' source={require('../../../assets/images/icons/clock-plus.png')} /> */}
                                 <SVGClockPlusFinal style={[styles.actionButton, { width: 29, height: 29, marginBottom: 2, }]} />
-
                                 <Text style={styles.actionText}>{allDiamonds}</Text>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={sharePost} >
                             <View style={{ alignItems: 'center' }}>
-                                {/* <Image style={[styles.actionButton, { width: 25, marginBottom: 2 }]} resizeMode='contain' source={require('../../../assets/images/icons/share.png')} /> */}
-                                {/* <IconFontAwesome name='share-square-o' size={23} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -7 }} /> */}
                                 <SVGShare color={Colors.primary} style={{ padding: 10, marginTop: 20, marginBottom: 2 }} />
                                 <Text style={styles.actionText}>{shares}</Text>
                             </View>
                         </TouchableOpacity>
-
-
-
 
                         <TouchableOpacity onPress={toggleModal} >
                             <View style={{ alignItems: 'center' }}>
@@ -482,7 +498,7 @@ const Post = ({ item, isActive }) => {
                 {/* Liked Notification */}
                 {
                     show ? (
-                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-60%' }}>
+                        <Animated.View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-60%', opacity: fadeAnim, }}>
                             <Image style={{ width: "100%" }} resizeMode='contain' source={require('../../../assets/images/like-animation.gif')} />
                             <TouchableOpacity style={{ width: 134, height: 42, borderRadius: 20, backgroundColor: Colors.likeButtonBackground, marginTop: -120 }}>
                                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
@@ -490,7 +506,7 @@ const Post = ({ item, isActive }) => {
                                     <Text style={{ color: Colors.dark, fontFamily: Fonts.primary, fontSize: 16, fontWeight: '700', marginTop: -3, marginLeft: 2 }}>10 Sec</Text>
                                 </View>
                             </TouchableOpacity>
-                        </View>
+                        </Animated.View>
                     )
                         :
                         null

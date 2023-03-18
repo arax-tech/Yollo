@@ -13,9 +13,9 @@ const Login = ({ navigation }) => {
     const dispatch = useDispatch();
 
 
-    const [type, setType] = useState('phone')
-    const [phone, setPhone] = useState('+92-306-5831989');
-    const [email, setEmail] = useState(null);
+    const [type, setType] = useState('email')
+    const [phone, setPhone] = useState(null);
+    const [email, setEmail] = useState('arham@info.com');
     const [code, setCode] = useState(null);
     const [show, setShow] = useState(false);
 
@@ -133,7 +133,7 @@ const Login = ({ navigation }) => {
 
 
                                         <View style={styles.or_use}>
-                                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
                                                 {
 
                                                     show && show == true ?
@@ -145,12 +145,12 @@ const Login = ({ navigation }) => {
                                                             <Text>Referral Code ?</Text>
                                                         </TouchableOpacity>
                                                 }
-                                                <View style={{ flexDirection: "row" }}>
+                                                {/* <View style={{ flexDirection: "row" }}>
                                                     <Text>Or Use Your</Text>
                                                     <TouchableOpacity onPress={() => setType('phone')}>
                                                         <Text style={styles.instenet}>Mobile</Text>
                                                     </TouchableOpacity>
-                                                </View>
+                                                </View> */}
                                             </View>
                                         </View>
 

@@ -24,11 +24,14 @@ const Tab = createMaterialTopTabNavigator();
 import { Avatar, Dialog } from 'react-native-paper';
 import { AuthUserAction } from '../../../redux/actions/AuthAction';
 import { SVGFollow, SVGPublicView, SVGSettings } from '../../components/Svgs';
+import styles from './NewProfileStyle';
 
 
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
+
+
 
 
 const Profile = ({ navigation }) => {
@@ -60,7 +63,6 @@ const Profile = ({ navigation }) => {
     return (
         loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
-                {/* Report Model */}
                 <Modal
                     backdropColor='rgba(0,0,0,0.7)'
                     isVisible={isModalVisible}
@@ -122,21 +124,12 @@ const Profile = ({ navigation }) => {
                     </View>
 
                 </Modal>
-
-
-
-                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                <ScrollView>
                     <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
 
 
-
-
-
-
-
-
-                    <View style={styles.container}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: -65, marginBottom: -30 }}>
+                    <View style={[styles.container, { borderBottomColor: "#dee1e3", borderBottomWidth: 1 }]}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: -60 }}>
                             <TouchableOpacity onPress={() => setModel(true)}>
                                 <IconAntDesign name='adduser' size={22} color={Colors.dark} />
                             </TouchableOpacity>
@@ -147,38 +140,45 @@ const Profile = ({ navigation }) => {
                             </TouchableOpacity>
                         </View>
 
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                            <TouchableOpacity style={{ flexDirection: 'column' }} onPress={() => navigation.navigate("ProfileTabs")}>
-                                <Text style={[styles.text, { fontSize: 25, fontWeight: 'bold' }]}>{user?.followers.length}</Text>
-                                <Text style={[styles.text, { color: "#939393" }]}>Followers</Text>
-                            </TouchableOpacity>
-                            {
-                                user?.image ? (
-                                    <Image style={{ width: 102, height: 104, borderRadius: 7 }} resizeMode='contain' source={{ uri: user?.image.url }} />
-                                ) : (
-                                    <Image style={{ width: 120, height: 120, borderRadius: 7 }} resizeMode='contain' source={require('../../../assets/images/profile-placeholder.png')} />
-                                )
-                            }
-                            <View style={{ flexDirection: 'column' }}>
-                                <Text style={[styles.text, { fontSize: 25, fontWeight: 'bold' }]}>{reactions?.length}</Text>
-                                <Text style={[styles.text, { color: "#939393" }]}>Reactions</Text>
+                        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: -40, marginBottom: 5 }}>
+                            <View />
+                            <View style={{ alignItems: "center" }}>
+                                <Text style={[styles.figures]}>1.2 M</Text>
+                                <Text style={[styles.reactions]}>Followers</Text>
                             </View>
+                            <View />
+                            <Image
+                                style={styles.userImage}
+                                resizeMode="cover"
+                                source={require("./assets/rectangle-6586.png")}
+                            />
+                            <View />
+                            <View style={{ alignItems: "center" }}>
+                                <Text style={[styles.k, styles.figures]}>120K</Text>
+                                <Text style={[styles.reactions]}>{`Reactions `}</Text>
+                            </View>
+                            <View />
                         </View>
+                        <Text style={styles.username}>Boni twint Tylerr</Text>
+
+
+                        <Text style={styles.userName1}>@Bonitqas3</Text>
                         <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                            <Text style={[styles.text, { fontSize: 20, fontWeight: '600', marginTop: 10 }]}>{user?.first_name} {user?.last_name}</Text>
-                            <Text style={[styles.text, { fontSize: 12, marginBottom: -5 }]}>{user?.username}</Text>
                             <TouchableOpacity style={styles.buttonInfo} onPress={() => navigation.navigate('ProfileEdit')}>
                                 <Text style={styles.buttonInfoText}>Edit Profile</Text>
                             </TouchableOpacity>
                         </View>
-
+                        <Text
+                            style={[styles.description]}
+                        >{`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sit diam in augueii purus velit. Phasellus curabitur auctor ante scelerisque bibendum id. Vellkj hkornare pharetra a eros, erat. Condimentum nibh feugiat ante `}</Text>
 
 
                     </View>
 
+                    <View style={{ borderBottomColor: "#dee1e3", borderBottomWidth: 1, paddingVertical : 10, backgroundColor: Colors.white }}>
+                        <ProfileInfo />
+                    </View>
 
-
-                    <ProfileInfo />
                     <View style={styles.tabContainer}>
                         <View style={{ flexDirection: "row", backgroundColor: "#fff", padding: 0 }}>
                             <TouchableOpacity style={[styles.tabBtn, isActive === "ProfilePost" && styles.tabBtnActive]} onPress={() => setStatusFilter("ProfilePost")}>
@@ -209,27 +209,10 @@ const Profile = ({ navigation }) => {
 
                     {isActive === "ProfilePostYouReacted" && <ProfilePostYouReacted posts={profilePostYouLikes} />}
 
-
                 </ScrollView>
-            </SafeAreaView >
+            </SafeAreaView>
     )
 }
 
 export default Profile
 
-const styles = StyleSheet.create({
-    container: { padding: 20 },
-    text: { fontFamily: Fonts.primary, fontSize: 14, color: Colors.dark, textAlign: 'center' },
-
-    modelList: { flex: 1, flexDirection: 'row', alignItems: "center", borderBottomWidth: 2, borderBottomColor: Colors.borderGray },
-    modelInside: { flex: 1, flexDirection: 'row', alignItems: "center", paddingLeft: 20 },
-    modelImage: { height: 20, width: 20, marginRight: 10 },
-    modelTitle: { fontFamily: Fonts.primary, fontSize: 14, color: Colors.dark, },
-
-    buttonInfo: { backgroundColor: Colors.buttonInfo, paddingVertical: 10, paddingHorizontal: 20, margin: 10, borderRadius: 20, zIndex: 1 },
-    buttonInfoText: { fontFamily: Fonts.primary, fontSize: 14, color: Colors.white, textAlign: 'center', fontWeight: '700' },
-
-    tabContainer: { width: "100%", alignItems: "center", justifyContent: "center" },
-    tabBtn: { width: deviceWidth / 3, flexDirection: 'row', padding: 15, justifyContent: 'center' },
-    tabBtnActive: { borderBottomWidth: 2, borderColor: "#262626" }
-})

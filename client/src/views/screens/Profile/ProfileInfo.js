@@ -12,10 +12,10 @@ const ProfileInfo = () => {
     return (
         loading ? <Loading /> :
             <SafeAreaView>
-                <View style={[styles.container, { marginTop: -40, marginBottom: -5 }]}>
+                {/* <View style={[styles.container, { marginTop: -40, marginBottom: -5 }]}>
                     <Text style={styles.text}>{user?.bio}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', borderColor: '#E4E4E4', borderBottomWidth: 1, padding: 5, alignItems: 'center', justifyContent: 'center', marginTop: -5 }}>
+                </View> */}
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', padding: 5, alignItems: 'center', justifyContent: 'center', marginTop: -5 }}>
 
 
                     <TouchableOpacity style={styles.tagButton}>
@@ -49,7 +49,7 @@ const ProfileInfo = () => {
                     </TouchableOpacity>
 
 
-                    <TouchableOpacity style={styles.tagButton}>
+                    <TouchableOpacity style={[styles.tagButton, { backgroundColor: Colors.lightGray }]}>
                         <Text style={styles.tagButtonText}>Show More</Text>
                     </TouchableOpacity>
 

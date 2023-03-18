@@ -248,14 +248,16 @@ const SignlePost = ({ item }) => {
 
 
 
-                    <View style={{ position: 'absolute', zIndex: 1, top: 40, paddingHorizontal: 25, paddingVertical: 20, width: Dimensions.get('window').width }}>
+                   
+
+                    <View style={{ position: 'absolute', zIndex: 1, top: 10, right: 20, width: Dimensions.get('window').width }}>
 
                         <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'flex-end' }}>
                             <View style={{ flex: 2, flexDirection: "row", justifyContent: "flex-end" }}>
                                 {
                                     item?.images.length > 1 && (
                                         item.images[0] ? item.images.map((image, index) => (
-                                            <TouchableOpacity key={index} onPress={() => setPostActive(index)} style={{ borderBottomColor: index === postActive ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 20, height: 50, marginRight: 5 }}>
+                                            <TouchableOpacity key={index} onPress={() => setPostActive(index)} style={{ borderBottomColor: index === postActive ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 15, paddingVertical: 24, marginRight: 5 }}>
                                                 <Text>{` `}</Text>
                                             </TouchableOpacity>
 
@@ -367,10 +369,13 @@ const SignlePost = ({ item }) => {
                     {/* Time Reming */}
                     {
                         show ? (
+
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-60%' }}>
-                                <Text style={[styles.postTitle, { fontSize: 20, fontWeight: "700", marginBottom: 10 }]}>Remaning Time</Text>
-                                <TouchableOpacity style={{ width: 260, height: 60, borderRadius: 5, backgroundColor: 'rgba(52, 52, 52, 0.4)', borderBottomColor: 'rgba(52, 52, 52, 0.6)', borderBottomWidth: 5, marginLeft: -20 }}>
-                                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                <TouchableOpacity style={{ width: "70%", height: 90, borderRadius: 5, backgroundColor: 'rgba(52, 52, 52, 0.3)', borderBottomColor: 'rgba(52, 52, 52, 0.4)', borderBottomWidth: 5, display : "flex", alignItems:"center", justifyContent:"center" }}>
+                                    <View>
+                                        <Text style={[styles.postTitle, { fontSize: 20, fontWeight: "700", marginRight : -30, marginBottom: 10 }]}>Remaning Time</Text>
+                                    </View>
+                                    <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom  : 10 }}>
                                         <Text style={{ color: Colors.white, fontFamily: Fonts.primary, fontSize: 17, fontWeight: '900' }}>{toHoursAndMinutes(item?.tranding_diamonds.toFixed(0))}</Text>
                                     </View>
                                 </TouchableOpacity>

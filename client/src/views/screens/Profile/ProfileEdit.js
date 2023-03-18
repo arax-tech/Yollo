@@ -5,7 +5,7 @@ import Fonts from '../../../constants/Fonts'
 import { PrimaryButton } from '../../components/Button'
 import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../../components/Loading'
-import { AuthUserAction, CreatetagAction, ProfileUpdateAction } from '../../../redux/actions/AuthAction'
+import { CreatetagAction, ProfileUpdateAction } from '../../../redux/actions/AuthAction'
 import { CREATE_TAG_RESET, UPDATE_PROFILE_RESET } from '../../../redux/constants/AuthConstant'
 
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -201,7 +201,7 @@ const ProfileEdit = ({ navigation }) => {
                     </View>
 
                     <View style={styles.container}>
-                        <Text style={[styles.formLabel, { fontSize: 20 }]}>Set up your profile details</Text>
+                        {/* <Text style={[styles.formLabel, { fontSize: 20 }]}>Set up your profile details</Text> */}
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
                             {
                                 imagePreview !== null ? (
