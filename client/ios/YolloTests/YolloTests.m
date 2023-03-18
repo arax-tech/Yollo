@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface YelloTests : XCTestCase
+@interface YolloTests : XCTestCase
 
 @end
 
-@implementation YelloTests
+@implementation YolloTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {

@@ -141,10 +141,10 @@ router.post('/verify', async (request, response) => {
                 httpOnly: true
             });
 
-            const authuser = await User.findById(loginUser._id).select('-createAt -password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ");
+            const authuser = await User.findById(loginUser?._id).select('-createAt -password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ");
 
             // Add Ref Diamonds
-            if (code !== null) {
+            if (code && code !== null) {
                 const diamond = await Diamond.findOne({ user: code });
 
                 await Diamond.findByIdAndUpdate(diamond._id, {

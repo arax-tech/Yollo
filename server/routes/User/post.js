@@ -381,6 +381,20 @@ router.put("/view/:post_id", auth, user, async (request, response) => {
 
             await post.save();
 
+            // Reaction
+            await Reaction.create({
+                user: post?.user.toString(),
+                reaction_user: request.user.id,
+                description: "View",
+            });
+            // Diamonds
+            await Post.findByIdAndUpdate(request.params.post_id, {
+                $set: {
+                    post_diamonds: post.post_diamonds > 0 ? post.post_diamonds + .17 : 0,
+                    tranding_diamonds: post.tranding_diamonds > 0 ? post.tranding_diamonds + .17 : 0,
+                }
+            })
+
             response.status(200).json({
                 status: 200,
                 message: "View Successfully...",
