@@ -4,11 +4,16 @@ import Colors from '../../../constants/Colors'
 import Fonts from '../../../constants/Fonts'
 import { useSelector } from 'react-redux'
 import Loading from '../../components/Loading'
-import { IconAntDesign } from '../../components/Icons'
-import { SVGTag1, SVGTag2, SVGTag3, SVGTag4, SVGTag5, SVGTag6 } from '../../components/Svgs'
+import { IconFontisto, IconIonicons, IconFeather, IconSimpleLineIcons, IconAntDesign, IconFontAwesome, IconFontAwesome5, IconEntypo, IconOcticons, IconMaterialIcons, IconMaterialCommunityIcons, IconEvilIcons, IconFoundation, IconZocial } from '../../components/Icons'
+import IcomComponent from './IcomComponent'
 
-const ProfileInfo = () => {
-    const { loading, user, tags } = useSelector((state) => state.auth);
+
+
+
+
+const ProfileInfo = ({ modelHande }) => {
+    const { loading, user } = useSelector((state) => state.auth);
+
     return (
         loading ? <Loading /> :
             <SafeAreaView>
@@ -18,40 +23,22 @@ const ProfileInfo = () => {
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', padding: 5, alignItems: 'center', justifyContent: 'center', marginTop: -5 }}>
 
 
-                    <TouchableOpacity style={styles.tagButton}>
-                        <SVGTag1 />
-                        <Text style={styles.tagButtonText}>Home Barista</Text>
-                    </TouchableOpacity>
+                    {
+                        user?.badges?.slice(0, 6).map((bad) => (
+                            <View key={bad?._id} style={styles.tagButton}>
+                                <IcomComponent type={`Icon${bad?.badge?.type}`} name={bad?.badge?.icon} size={15} color={bad?.badge?.color} />
+                                <Text style={styles.tagButtonText}>{bad?.badge?.name}</Text>
+                            </View>
+                        ))
+                    }
 
-                    <TouchableOpacity style={styles.tagButton}>
-                        <SVGTag2 />
-                        <Text style={styles.tagButtonText}>Traveler</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.tagButton}>
-                        <SVGTag3 />
-                        <Text style={styles.tagButtonText}>Excel Nerd</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.tagButton}>
-                        <SVGTag4 />
-                        <Text style={styles.tagButtonText}>Hiker</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.tagButton}>
-                        <SVGTag5 />
-                        <Text style={styles.tagButtonText}>Nature Lover</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.tagButton}>
-                        <SVGTag6 />
-                        <Text style={styles.tagButtonText}>Writer</Text>
-                    </TouchableOpacity>
-
-
-                    <TouchableOpacity style={[styles.tagButton, { backgroundColor: Colors.lightGray }]}>
-                        <Text style={styles.tagButtonText}>Show More</Text>
-                    </TouchableOpacity>
+                    {
+                        user?.badges?.length > 6 && (
+                            <TouchableOpacity onPress={() => modelHande()} style={[styles.tagButton, { backgroundColor: Colors.lightGray }]}>
+                                <Text style={styles.tagButtonText}>Show More</Text>
+                            </TouchableOpacity>
+                        )
+                    }
 
 
                     {/* 
@@ -62,6 +49,8 @@ const ProfileInfo = () => {
                             */}
 
                 </View>
+
+
             </SafeAreaView>
     )
 }

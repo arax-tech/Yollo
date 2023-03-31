@@ -20,6 +20,7 @@ import { ADD_DIAMOND_INTO_POST_RESET, SHARE_POST_RESET } from '../../../redux/co
 import Share from 'react-native-share';
 import RNFetchBlob from 'rn-fetch-blob';
 import { useRef } from 'react'
+import { AuthUserAction } from '../../../redux/actions/AuthAction'
 
 
 
@@ -196,6 +197,7 @@ const Post = ({ item, isActive }) => {
         if (message && message === "Post Share Successfully...") {
             // ToastAndroid.show(message, ToastAndroid.SHORT);
             dispatch({ type: SHARE_POST_RESET });
+            dispatch(AuthUserAction());
         }
 
         if (status && status === 2010) {
@@ -231,7 +233,7 @@ const Post = ({ item, isActive }) => {
                     transparent={true}>
 
                     <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ width: 300, height: 350, backgroundColor: Colors.white, padding: 20 }}>
+                        <View style={{ width: 300, height: 350, backgroundColor: Colors.white, padding: 20, borderRadius: 20 }}>
 
 
                             <TouchableOpacity onPress={toggleRewardModal} style={{ flex: 1, alignItems: 'flex-end' }}>
@@ -289,7 +291,8 @@ const Post = ({ item, isActive }) => {
                         <View style={{
                             width: 300,
                             height: 250,
-                            backgroundColor: Colors.white
+                            backgroundColor: Colors.white,
+                            borderRadius: 20
                         }}>
 
 
@@ -320,7 +323,7 @@ const Post = ({ item, isActive }) => {
                             <TouchableOpacity style={styles.modelList}>
                                 <View style={styles.modelInside}>
                                     <IconIonicons name='eye-off-outline' size={23} color={Colors.dark} style={{ marginRight: 10 }} />
-                                    <Text style={styles.modelTitle}>Hide post from andrew mate</Text>
+                                    <Text style={styles.modelTitle}>Hide post from {item?.user?.first_name} {item?.user?.last_name}</Text>
                                 </View>
                             </TouchableOpacity>
 
@@ -364,14 +367,14 @@ const Post = ({ item, isActive }) => {
                     </View>
                 </View>
 
-                <View style={{ position: 'absolute', zIndex: 1, top: 10, right : 20, width: Dimensions.get('window').width }}>
+                <View style={{ position: 'absolute', zIndex: 1, top: 60, right : 20, width: Dimensions.get('window').width }}>
 
                     <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'flex-end' }}>
                         <View style={{ flex: 2, flexDirection: "row", justifyContent: "flex-end" }}>
                             {
                                 item?.images.length > 1 && (
                                     item.images[0] ? item.images.map((image, index) => (
-                                        <TouchableOpacity key={index} onPress={() => setPostActive(index)} style={{ borderBottomColor: index === postActive ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 15, paddingVertical : 24,  marginRight: 5 }}>
+                                        <TouchableOpacity key={index} onPress={() => setPostActive(index)} style={{ borderBottomColor: index === postActive ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 15, paddingVertical : 0,  marginRight: 5 }}>
                                             <Text>{` `}</Text>
                                         </TouchableOpacity>
 
@@ -396,8 +399,8 @@ const Post = ({ item, isActive }) => {
 
                         <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} onPress={() => navigation.navigate("PublicProfile", { userId: item?.user?._id, authUser: user })}>
                             {
-                                item?.user.image?.url ? (
-                                    <Image style={styles.userImage} source={{ uri: item?.user.image?.url }} />
+                                item?.user.image ? (
+                                    <Image style={styles.userImage} source={{ uri: item?.user.image }} />
                                 ) : (
                                     <Image style={styles.userImage} source={require('../../../assets/images/placeholder.jpg')} />
                                 )
@@ -434,7 +437,7 @@ const Post = ({ item, isActive }) => {
 
 
                 {/* Main Image */}
-                <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item.images[postActive].url }} />
+                <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item.images[postActive].image }} />
 
                 {/* Right Side Icons */}
                 <View style={styles.rightContainer}>

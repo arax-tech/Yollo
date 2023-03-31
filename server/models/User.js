@@ -22,10 +22,11 @@ const userSchema = new mongoose.Schema({
     reaction_visibility: { type: String },
     new_user: { type: Boolean, default: true, },
     status: { type: String },
-    image: {
-        public_id: { type: String },
-        url: { type: String }
-    },
+    image: { type: String },
+    // image: {
+    //     public_id: { type: String },
+    //     url: { type: String }
+    // },
     role: { type: String, default: "User", },
     notification_settings: [
         {
@@ -34,6 +35,7 @@ const userSchema = new mongoose.Schema({
             name: { type: String },
         }
     ],
+    badges: [{ badge: { type: mongoose.Schema.ObjectId, ref: "Badge", required: true } }],
     followers: [{ user: { type: mongoose.Schema.ObjectId, ref: "User", required: true } }],
     following: [{ user: { type: mongoose.Schema.ObjectId, ref: "User", required: true } }],
     resetPasswordToken: String,

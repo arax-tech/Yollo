@@ -19,6 +19,9 @@ import {
     HIDE_NOTIFICATION_FAIL,
     HIDE_NOTIFICATION_RESET,
 
+    PROMPT_OPEN,
+    PROMPT_CLOSE,
+
     CLEAR_ERRORS,
 
 } from "../constants/YelloConstant";
@@ -82,6 +85,35 @@ export const yelloReducer = (state = {}, action) => {
                 ...state,
                 errors: null,
                 status: null
+            };
+
+        default:
+            return state;
+    }
+}
+
+
+const initialState = {
+    open: false,
+    heading: null,
+    message: null,
+}
+export const promptsReducer = (state = initialState, action) => {
+    switch (action.type) {
+        case PROMPT_OPEN:
+            return {
+                ...state,
+                open: action.open,
+                heading: action.heading,
+                message: action.message,
+            };
+
+        case PROMPT_CLOSE:
+            return {
+                ...state,
+                open: false,
+                heading: null,
+                message: null,
             };
 
         default:

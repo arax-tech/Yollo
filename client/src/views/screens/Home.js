@@ -43,16 +43,19 @@ const Home = ({ navigation }) => {
 
 
 
-    const [viewabilityConfiguration, setViewabilityConfiguration] = useState({
-        waitForInteraction: true,
-        viewAreaCoveragePercentThreshold: 40,
-    });
+    // const [viewabilityConfiguration, setViewabilityConfiguration] = useState({
+    //     waitForInteraction: true,
+    //     viewAreaCoveragePercentThreshold: 40,
+    // });
 
 
-    const onViewFunction = useCallback(async (viewableItems) => {
-        const { changed } = viewableItems;
-        await dispatch(PostViewAction(changed[0]?.key))
-    }, [])
+    // const onViewFunction = useCallback(async (viewableItems) => {
+    //     const { changed } = viewableItems;
+    //     await dispatch(PostViewAction(changed[0]?.key))
+    // }, [])
+
+    // viewabilityConfig = { viewabilityConfiguration }
+    // onViewableItemsChanged = { onViewFunction }
    
 
 
@@ -62,13 +65,12 @@ const Home = ({ navigation }) => {
     return (
         loading || postLoading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }} forceInset={{ top: 'always' }}>
-                <StatusBar hidden backgroundColor="rgba(0, 0, 0, 0.1)" barStyle={'dark-content'} />
+                <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
                 <FlatList
                     data={posts}
                     pagingEnabled
                     keyExtractor={item => item._id.toString()}
-                    viewabilityConfig={viewabilityConfiguration}
-                    onViewableItemsChanged={onViewFunction}
+                    
                     renderItem={({ item }) => (
                         <Post key={item._id} item={item} isActive={"ForYou"} />
                     )}

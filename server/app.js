@@ -5,7 +5,6 @@ const cloudinary = require("cloudinary")
 const express = require("express")
 const cors = require("cors")
 const cookie = require("cookie-parser")
-const fileUpload = require("express-fileupload")
 const bodyParser = require("body-parser")
 const morgan = require("morgan")
 
@@ -16,11 +15,10 @@ const PORT = process.env.PORT || 8000;
 
 
 // Middlewares
+app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
 app.use(express.json({ limit: '100mb' }));
 app.use(cors());
 app.use(cookie());
-app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
-app.use(fileUpload());
 app.use(morgan("dev"));
 
 app.use(express.static("public"));

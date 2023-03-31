@@ -140,7 +140,8 @@ const SignlePost = ({ item }) => {
                             <View style={{
                                 width: 300,
                                 height: 130,
-                                backgroundColor: Colors.white
+                                backgroundColor: Colors.white,
+                                borderRadius: 20
                             }}>
 
 
@@ -286,7 +287,7 @@ const SignlePost = ({ item }) => {
 
 
                     {/* Main Image */}
-                    <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item.images[postActive].url }} />
+                    <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item.images[postActive].image }} />
 
 
 

@@ -77,8 +77,8 @@ const Reward = ({ navigation }) => {
                         diamonds && diamonds?.transactions?.map((transaction) => (
                             <View key={transaction?._id} style={styles.rewardList}>
                                 {
-                                    transaction?.user.image?.url ? (
-                                        <Image style={styles.transactionImage} source={{ uri: transaction?.user.image?.url }} />
+                                    transaction?.user.image ? (
+                                        <Image style={styles.transactionImage} source={{ uri: transaction?.user.image }} />
                                     ) : (
                                         <Image style={styles.transactionImage} source={require('../../assets/images/placeholder.jpg')} />
                                     )

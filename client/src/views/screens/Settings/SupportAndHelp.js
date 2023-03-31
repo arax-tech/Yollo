@@ -71,14 +71,14 @@ const SupportAndHelp = ({ navigation }) => {
                     </View>
 
 
-                    <TouchableOpacity style={[styles.settingList, { marginTop: 1, borderBottomWidth: 10, borderColor: '#F5F5F5', paddingTop: 40 }]} onPress={() => navigation.navigate('Account')}>
+                    {/* <TouchableOpacity style={[styles.settingList, { marginTop: 1, borderBottomWidth: 10, borderColor: '#F5F5F5', paddingTop: 40 }]} onPress={() => navigation.navigate('Account')}>
                         <IconFeather name='phone' size={20} color={Colors.dark} />
                         <Text style={styles.settingListTitle}>+351 210 935 394 </Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                     <TouchableOpacity style={[styles.settingList, { marginTop: 1, borderBottomWidth: 10, borderColor: '#F5F5F5' }]} onPress={() => navigation.navigate('Account')}>
                         <IconFeather name='mail' size={20} color={Colors.dark} />
-                        <Text style={styles.settingListTitle}>info@yello.com </Text>
+                        <Text style={styles.settingListTitle}>admin@yolloverse.com </Text>
                     </TouchableOpacity>
 
 

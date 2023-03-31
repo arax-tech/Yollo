@@ -69,7 +69,7 @@ const MemorySignlePost = ({ item }) => {
 
 
                 {/* Main Image */}
-                <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item.images[postActive].url }} />
+                <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item.images[postActive].image }} />
 
 
 

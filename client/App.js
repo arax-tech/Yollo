@@ -52,6 +52,8 @@ import ProfileActivePostTimeline from './src/views/screens/Profile/ProfileActive
 import ProfileReactedPostTimeline from './src/views/screens/Profile/ProfileReactedPostTimeline';
 import ProfileInActivePostTimeline from './src/views/screens/Profile/ProfileInActivePostTimeline';
 import InActiveSignlePost from './src/views/screens/Profile/InActiveSignlePost';
+import Prompts from './src/views/components/Prompts';
+import Suggested from './src/views/screens/Profile/Suggested';
 
 
 
@@ -112,6 +114,7 @@ const App = () => {
                     <Stack.Screen options={{ headerShown: false }} name="InActiveSignlePost" component={InActiveSignlePost} />
                     <Stack.Screen options={{ headerShown: false }} name="PublicProfile" component={PublicProfile} />
                     <Stack.Screen options={{ headerShown: false }} name="ProfileTabs" component={ProfileTabs} />
+                    <Stack.Screen options={{ headerShown: false }} name="Suggested" component={Suggested} />
                     <Stack.Screen options={{ headerShown: false }} name="ProfileEdit" component={ProfileEdit} />
 
                     <Stack.Screen options={{ headerShown: false }} name="Settings" component={Settings} />
@@ -128,6 +131,7 @@ const App = () => {
                     <Stack.Screen name="Notification" component={Notification} />
                 </Stack.Navigator>
                 <CommentSheet />
+                <Prompts />
             </NavigationContainer>
         </Provider>
     )

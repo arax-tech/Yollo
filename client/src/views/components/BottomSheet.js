@@ -19,7 +19,8 @@ const CommentSheet = () => {
 
 
 
-    const snapPoints = useMemo(() => ["25%", "60%"], []);
+    // console.log(modelType)
+    const snapPoints = useMemo(() => ["25%", modelType && modelType === 1 ? "30%" : "70%"], []);
     const bootmSheerRef = useRef(null);
     useEffect(() => {
         if (open && bootmSheerRef.current) {
@@ -44,6 +45,8 @@ const CommentSheet = () => {
 
         return () => backHandler.remove();
     }, []);
+
+    
 
     const renderContent = () => {
         switch (modelType) {

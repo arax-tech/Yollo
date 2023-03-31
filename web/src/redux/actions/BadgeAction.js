@@ -44,12 +44,12 @@ export const BadgesAction = () => async (dispatch) => {
 }
 
 
-export const CreateBadgeAction = (name, icon) => async (dispatch) => {
+export const CreateBadgeAction = (type, name, icon, color) => async (dispatch) => {
     try {
         dispatch({ type: CREATE_BADGE_REQUEST });
 
         const { data } = await axios.post(`/api/admin/badge/store`, {
-            name, icon,
+            type, name, icon, color,
             headers: {
                 "Content-Type": "application/json",
             }

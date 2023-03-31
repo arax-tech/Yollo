@@ -56,8 +56,8 @@ const Notification = ({ navigation }) => {
 
 
                                 {
-                                    notification?.user.image?.url ? (
-                                        <Image style={styles.notificationImage} source={{ uri: notification?.user.image?.url }} />
+                                    notification?.user.image ? (
+                                        <Image style={styles.notificationImage} source={{ uri: notification?.user.image }} />
                                     ) : (
                                         <Image style={styles.notificationImage} source={require('../../assets/images/placeholder.jpg')} />
                                     )

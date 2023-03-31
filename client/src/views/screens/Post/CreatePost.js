@@ -19,13 +19,14 @@ import { Dialog } from 'react-native-paper';
 import ImgToBase64 from 'react-native-image-base64';
 
 
+import PhotoEditor from "@baronha/react-native-photo-editor";
 
 
 import { PESDK } from "react-native-photoeditorsdk";
 
 
-const deviceWidth = Dimensions.get('window').width;
-const deviceHeight = Dimensions.get('window').height;
+const deviceWidth = Dimensions.get('screen').width;
+const deviceHeight = Dimensions.get('screen').height;
 
 const CreatePost = ({ navigation }) => {
 
@@ -33,8 +34,7 @@ const CreatePost = ({ navigation }) => {
 
 
 
-    const { loading, tags } = useSelector((state) => state.auth);
-    const { loading: postLoading, status, message, isCreated } = useSelector((state) => state.post);
+    const { loading, message, isCreated } = useSelector((state) => state.post);
 
     const richText = React.useRef();
 
@@ -82,6 +82,7 @@ const CreatePost = ({ navigation }) => {
     const [image3, setImage3] = useState(null);
     const [image3Preview, setImage3Preview] = useState(null);
 
+    // const [images, setImages] = useState([]);
 
     const [model, setModel] = useState(false);
 
@@ -129,36 +130,80 @@ const CreatePost = ({ navigation }) => {
 
     const showPhotoEditor = async (image) => {
         try {
-            // Add a photo from the assets directory.
-            const photo = image;
-
-            // Open the photo editor and handle the export as well as any occuring errors.
-            const result = await PESDK.openEditor(photo);
-
+            const Options = {
+                path: image,
+            }
+            const result = await PhotoEditor.open(Options);
             if (result !== null) {
-                // The user exported a new photo successfully and the newly generated photo is located at `result.image`.
                 if (image1 === null) {
-                    const base64String1 = await ImgToBase64.getBase64String(result.image);
+                    const base64String1 = await ImgToBase64.getBase64String(result);
                     setImage1(`data:image/jpeg;base64,${base64String1}`);
-                    setImage1Preview(result.image);
+                    setImage1Preview(result);
                 } else if (image2 === null) {
-                    const base64String2 = await ImgToBase64.getBase64String(result.image);
+                    const base64String2 = await ImgToBase64.getBase64String(result);
                     setImage2(`data:image/jpeg;base64,${base64String2}`);
-                    setImage2Preview(result.image);
+                    setImage2Preview(result);
                 } else if (image3 === null) {
-                    const base64String3 = await ImgToBase64.getBase64String(result.image);
+                    const base64String3 = await ImgToBase64.getBase64String(result);
                     setImage3(`data:image/jpeg;base64,${base64String3}`);
-                    setImage3Preview(result.image);
+                    setImage3Preview(result);
                 }
             } else {
-                // The user tapped on the cancel button within the editor.
                 return;
             }
+
         } catch (error) {
-            // There was an error generating the photo.
             console.log(error);
         }
     }
+    // const showPhotoEditor = async (image) => {
+    //     try {
+    //         // Add a photo.
+    //         const photo = image;
+
+    //         // Open the photo editor and handle the export as well as any occuring errors.
+    //         const result = await PESDK.openEditor(photo);
+
+    //         if (result !== null) {
+    //             console.log(result)
+    //             // The user exported a new photo successfully and the newly generated photo is located at `result.image`.
+    //             if (image1 === null) {
+    //                 // const base64String1 = await ImgToBase64.getBase64String(result.image);
+    //                 // setImage1(`data:image/jpeg;base64,${base64String1}`);
+    //                 setImage1({
+    //                     uri: image,
+    //                     name: 'image1.jpg',
+    //                     type: 'image/jpg',
+    //                 });
+    //                 setImage1Preview(result.image);
+    //             } else if (image2 === null) {
+    //                 // const base64String2 = await ImgToBase64.getBase64String(result.image);
+    //                 // setImage2(`data:image/jpeg;base64,${base64String2}`);
+    //                 setImage2({
+    //                     uri: image,
+    //                     name: 'image2.jpg',
+    //                     type: 'image/jpg',
+    //                 });
+    //                 setImage2Preview(result.image);
+    //             } else if (image3 === null) {
+    //                 // const base64String3 = await ImgToBase64.getBase64String(result.image);
+    //                 // setImage3(`data:image/jpeg;base64,${base64String3}`);
+    //                 setImage3({
+    //                     uri: result.image,
+    //                     name: 'image3.jpg',
+    //                     type: 'image/jpg',
+    //                 });
+    //                 setImage3Preview(result.image);
+    //             }
+    //         } else {
+    //             // The user tapped on the cancel button within the editor.
+    //             return;
+    //         }
+    //     } catch (error) {
+    //         // There was an error generating the photo.
+    //         console.log(error);
+    //     }
+    // }
 
     const captureImage = async (type) => {
         let options = {
@@ -219,6 +264,7 @@ const CreatePost = ({ navigation }) => {
     image2 !== null && images.push(image2);
     image3 !== null && images.push(image3);
 
+
     const CreatePost = async () => {
         if (image1 === null) {
             ToastAndroid.show('Image is required...', ToastAndroid.SHORT);
@@ -249,7 +295,7 @@ const CreatePost = ({ navigation }) => {
 
 
     return (
-        loading || postLoading ? <Loading /> :
+        loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
                 <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
 

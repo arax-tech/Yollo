@@ -20,6 +20,7 @@ import Profile from '../screens/Profile/Profile';
 import FollowingPost from '../screens/FollowingPost';
 import SearchTimeline from '../screens/Search/SearchTimeline';
 import ProfileReactedPostTimeline from '../screens/Profile/ProfileReactedPostTimeline';
+import FindFirends from '../screens/Profile/FindFirends';
 
 const Tab = createBottomTabNavigator();
 
@@ -51,18 +52,11 @@ const BottomNavigation = () => {
 
 
 
-            <Tab.Screen
-                name="FollowingPost"
-                options={({ route }) => ({
-                    tabBarItemStyle: { display: "none" },
-                    tabBarIcon: ({ focused }) => (
-                        <View style={{ alignItems: 'center', justifyContent: 'center', top: 3, }}>
-                            <IconIonicons name='home-outline' size={20} color={focused ? Colors.dark : Colors.darkLight} style={{ marginBottom: 3 }} />
-                            <Text style={{ fontSize: 10, color: focused ? Colors.dark : Colors.darkLight, fontWeight: focused ? '600' : '500', }}>Home</Text>
-                        </View>
-                    )
-                })}
-                component={FollowingPost} />
+       
+       
+            <Tab.Screen name="FollowingPost" options={() => ({tabBarItemStyle: { display: "none" }})} component={FollowingPost} />
+            <Tab.Screen name="FindFirends" options={() => ({tabBarItemStyle: { display: "none" }})} component={FindFirends} />
+            
             <Tab.Screen
                 name="ProfileReactedPostTimeline"
                 options={({ route }) => ({

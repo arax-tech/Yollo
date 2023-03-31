@@ -26,8 +26,10 @@ const AdminBadge = () => {
 
 
     const [badge, setBadge] = useState({
-        name: "",
-        icon: ""
+        type: "Entypo",
+        name: "Lorem",
+        icon: "chat",
+        color: "#31353d"
     })
 
     const inpChnage = (event) => {
@@ -36,7 +38,7 @@ const AdminBadge = () => {
 
     const CreateBadgeFunction = async (event) => {
         event.preventDefault();
-        await dispatch(CreateBadgeAction(badge.name, badge.icon));
+        await dispatch(CreateBadgeAction(badge.type, badge.name, badge.icon, badge.color));
     }
 
     useEffect(() => {
@@ -79,12 +81,21 @@ const AdminBadge = () => {
                                         <div className="modal-body">
                                             <div className="row">
                                                 <div className="col-12">
+                                                    <label>Type</label>
+                                                    <input type="text" name='type' className='form-control' autoFocus onChange={inpChnage} value={badge.type} required />
+                                                </div>
+                                                <div className="col-6">
                                                     <label>Name</label>
-                                                    <input type="text" name='name' className='form-control' autoFocus onChange={inpChnage} value={badge.name} required />
+                                                    <input type="text" name='name' className='form-control' onChange={inpChnage} value={badge.name} required />
+                                                </div>
+                                                <div className="col-6">
+                                                    <label>Color</label>
+                                                    <input type="color" name='color' className='form-control' onChange={inpChnage} value={badge.color} required />
                                                 </div>
                                                 <div className="col-12">
                                                     <label>Icon</label>
-                                                    <input type="text" name='icon' className='form-control' autoFocus onChange={inpChnage} value={badge.icon} required />
+                                                    <input type="text" name='icon' className='form-control' onChange={inpChnage} value={badge.icon} required />
+                                                    <a className='text-primary' target={'_blank'} href="https://oblador.github.io/react-native-vector-icons/">Find Icons</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -106,8 +117,10 @@ const AdminBadge = () => {
                             <table className='table table-striped'>
                                 <thead>
                                     <tr>
+                                        <th>Type</th>
                                         <th>Icon</th>
                                         <th>Name</th>
+                                        <th>Color</th>
                                         <th>CreateAt</th>
                                         <th className=' text-center'>Action</th>
                                     </tr>
@@ -117,10 +130,11 @@ const AdminBadge = () => {
                                         badges?.map((badge) => (
                                             <tr key={badge?._id}>
 
-                                                <td>
-                                                    <button className='btn btn-light rounded-circle'><i class={`fa fa-${badge?.icon}`} style={{ fontSize: 20 }}></i></button>
-                                                </td>
+                                                
+                                                <td>{badge?.type}</td>
+                                                <td>{badge?.icon}</td>
                                                 <td>{badge?.name}</td>
+                                                <td>{badge?.color}</td>
                                                 <td>{dateFormat(badge?.createAt, "dd mmmm yyyy, h:MM:ss TT")}</td>
                                                 <td className='text-center'>
                                                     <div className='btn-group'>

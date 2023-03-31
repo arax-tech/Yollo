@@ -1,4 +1,5 @@
-import axios from 'axios'
+import axios from 'axios';
+
 import { APP_URL } from '../constants/App';
 
 import {
@@ -211,12 +212,12 @@ export const CreatetagAction = (name) => async (dispatch) => {
 }
 
 
-export const ProfileUpdateAction = (first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user, image) => async (dispatch) => {
+export const ProfileUpdateAction = (first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user, image = null, fileName = null, badges) => async (dispatch) => {
     try {
         dispatch({ type: UPDATE_PROFILE_REQUEST });
 
         const { data } = await axios.put(`${APP_URL}/user/profile`, {
-            first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user, image
+            first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user, image, fileName, badges
         });
         dispatch({
             type: UPDATE_PROFILE_SUCCESS,

@@ -1,8 +1,27 @@
 const express = require("express")
 const cloudinary = require("cloudinary")
 
+const multer = require("multer")
+const fs = require("fs")
+const path = require("path")
+
 const router = express.Router()
 
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/users/profile')
+    },
+    filename: function (req, file, cb) {
+        console.log(file)
+        let extArray = file.mimetype.split("/");
+        let extension = extArray[extArray.length - 1];
+
+        cb(null, "user" + '-' + Date.now() + '-' + file.originalname)
+    }
+})
+
+const upload = multer({ storage: storage })
 
 // Middlewares
 const auth = require("../../middleware/auth")
@@ -25,7 +44,7 @@ router.get("/profile", auth, user, async (request, response) => {
     try {
         const _id = request.user.id;
         const tags = await Tag.find({ user: _id });
-        const user = await User.findById(_id).select('-password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ");;
+        const user = await User.findById(_id).select('-password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ").populate('badges.badge', 'type name icon color');
 
         const activePosts = await Post.find({ status: "Active", user: _id }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes", "first_name last_name image");
 
@@ -86,12 +105,6 @@ router.get("/single/:id", auth, user, async (request, response) => {
     }
 })
 
-
-
-
-
-
-
 router.put("/account/update", auth, user, async (request, response) => {
 
     try {
@@ -110,7 +123,6 @@ router.put("/account/update", auth, user, async (request, response) => {
     }
 
 });
-
 
 router.put("/account/update/notification/settings", auth, user, async (request, response) => {
 
@@ -132,39 +144,84 @@ router.put("/account/update/notification/settings", auth, user, async (request, 
 
 });
 
+// old
+// router.put("/profile", auth, user, upload.single('image'), async (request, response) => {
+
+//     try {
+//         console.log(request.body);
+//         console.log(request.body.badges);
+//         console.log(request.file);
+
+//         // if (request.body.badges){
+//         //     request.body?.badges?.map((badge) => (
+//         //         console.log(badge)
+//         //     ))
+//         // }
+
+//         const _id = request.user.id;
+//         await User.findByIdAndUpdate({ _id }, {$pull: { badges: { } }}, { new: true });
+
+//         const badges = [{ "badge": "641825c69f6622763f69ff55" }]
+//         request.body.badges = badges;
+//         const user = await User.findById(_id);
+//         if (request.file) {
+//             if (user.image && user.image.length > 0) {
+//                 const oldImage = `users${user.image.split("/users")[1]}`
+//                 fs.unlinkSync(path.join(__dirname, "../../public/" + oldImage))
+//             }
+//             request.body.image = `${request.protocol}://${request.get('host')}/users/profile/${request.file.filename}`;
+//         } else {
+//             request.body.image = user.image
+
+//         }
+
+
+//         await User.findByIdAndUpdate(_id, request.body, { new: true });
+
+
+//         response.status(200).json({
+//             status: 200,
+//             message: "Profile Updated Successfully..."
+//         });
+//     }
+//     catch (error) {
+//         console.log(error)
+//         response.status(500).json({
+//             status: 500,
+//             message: error.message
+//         });
+//     }
+
+// });
+
 
 
 router.put("/profile", auth, user, async (request, response) => {
 
     try {
-        // console.log(request.body);
         const _id = request.user.id;
+        const { image, fileName } = request.body;        
+        const user = await User.findById(_id);
 
-        const { first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user, image } = request.body;
+        await User.findByIdAndUpdate({ _id }, { $pull: { badges: {} } }, { new: true });
 
-        if (image == null) {
-            const user = await User.findByIdAndUpdate(_id);
-            request.body.image = user?.image;
-            await User.findByIdAndUpdate(_id, request.body, { new: true });
-        } else {
-            const user = await User.findByIdAndUpdate(_id);
-            if (user?.image.public_id) {
-                const imageUrl = user.image.public_id;
-                await cloudinary.v2.uploader.destroy(imageUrl);
+        if (image) {
+            if (user.image && user.image.length > 0) {
+                const oldImage = `users${user.image.split("/users")[1]}`
+                fs.unlinkSync(path.join(__dirname, "../../public/" + oldImage))
             }
 
-            const myCloud = await cloudinary.v2.uploader.upload(image, { folder: "yello/avatars" });
+            let filePath = `../../public/users/profile/${fileName}`;
+            let buffer = Buffer.from(image.split(",")[1], 'base64');
+            fs.writeFileSync(path.join(__dirname, filePath), buffer);
+            request.body.image = `${request.protocol}://${request.get('host')}/users/profile/${fileName}`;
 
-            await User.findByIdAndUpdate(_id, {
-                first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user,
-                image: {
-                    public_id: myCloud.public_id,
-                    url: myCloud.secure_url
-                }
-            });
+        } else {
+            request.body.image = user.image
         }
 
 
+        await User.findByIdAndUpdate(_id, request.body, { new: true });
         response.status(200).json({
             status: 200,
             message: "Profile Updated Successfully..."
@@ -179,6 +236,7 @@ router.put("/profile", auth, user, async (request, response) => {
     }
 
 });
+
 
 router.put("/follow", auth, user, async (request, response) => {
 

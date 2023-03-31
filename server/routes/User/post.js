@@ -1,8 +1,10 @@
 const express = require("express")
 const cloudinary = require("cloudinary")
 
-const router = express.Router()
+const fs = require("fs")
+const path = require("path")
 
+const router = express.Router()
 
 // Middlewares
 const auth = require("../../middleware/auth")
@@ -74,30 +76,23 @@ router.get("/my-following-posts", auth, user, async (request, response) => {
 
 
 
-router.post("/store", auth, user, async (request, response) => {
+router.post("/store", auth, user,async (request, response) => {
     try {
-        request.body.user = request.user.id;
-
-
         const { images } = request.body;
-
-
-
 
         const imagesLinks = [];
 
         for (let i = 0; i < images.length; i++) {
-            const result = await cloudinary.v2.uploader.upload(images[i], {
-                folder: "yello/posts"
-            });
-
+            const fileName = `${Date.now()}.jpg`;
+            let filePath = `../../public/images/posts/${fileName}`;
+            let buffer = Buffer.from(images[i].split(",")[1], 'base64');
+            fs.writeFileSync(path.join(__dirname, filePath), buffer);
             imagesLinks.push({
-                public_id: result.public_id,
-                url: result.secure_url
+                image: `${request.protocol}://${request.get('host')}/images/posts/${fileName}`
             });
-
-
         }
+
+        // console.log(imagesLinks)
 
         request.body.images = imagesLinks;
         request.body.user = request.user.id;
@@ -180,7 +175,16 @@ router.post("/remove/diamonds", auth, user, async (request, response) => {
 
 router.delete("/delete/:id", auth, user, async (request, response) => {
     try {
-        const posts = await Post.findByIdAndDelete({ _id: request.params.id });
+
+        await Post.findByIdAndUpdate(request.params.id, {
+            $set: {
+                status: "InActive"
+            }
+        }, {
+            new: true,
+            useFindAndModify: false
+        })
+
         response.status(200).json({
             status: 200,
             message: "Post Delete Successfuly..."
@@ -256,12 +260,14 @@ router.put("/comment/store/:post_id", auth, user, async (request, response) => {
 
 
         // Diamonds
-        await Post.findByIdAndUpdate(request.params.post_id, {
-            $set: {
-                post_diamonds: post.post_diamonds > 0 ? post.post_diamonds + .17 : 0,
-                tranding_diamonds: post.tranding_diamonds > 0 ? post.tranding_diamonds + .17 : 0,
-            }
-        })
+        if (request.user?._id.toString() !== post?.user?._id.toString()) {
+            await Post.findByIdAndUpdate(request.params.post_id, {
+                $set: {
+                    post_diamonds: post.post_diamonds > 0 ? post.post_diamonds + .17 : 0,
+                    tranding_diamonds: post.tranding_diamonds > 0 ? post.tranding_diamonds + .17 : 0,
+                }
+            })
+        }
 
 
         const newPost = await Post.findById(request.params.post_id).populate("comments.user", "first_name last_name image");
@@ -292,7 +298,21 @@ router.put("/comment/like/:post_id/:comment_id", auth, user, async (request, res
 
         const newPost = await Post.findById(post_id).populate("comments.user", "first_name last_name image");
 
+        // Reaction
+        const post = await Post.findById(post_id);
+        await Reaction.create({
+            user: post?.user.toString(),
+            reaction_user: request.user.id,
+            description: "liked post comment",
+        });
 
+        // Diamonds
+        await Post.findByIdAndUpdate(request.params.post_id, {
+            $set: {
+                post_diamonds: post.post_diamonds > 0 ? post.post_diamonds + .17 : 0,
+                tranding_diamonds: post.tranding_diamonds > 0 ? post.tranding_diamonds + .17 : 0,
+            }
+        })
 
         response.status(200).json({
             status: 200,
@@ -318,6 +338,16 @@ router.put("/comment/unlike/:post_id/:comment_id", auth, user, async (request, r
             { _id: post_id, "comments._id": comment_id },
             { $pull: { "comments.$.likes": request.user._id } });
         const newPost = await Post.findById(post_id).populate("comments.user", "first_name last_name image");
+        
+        // Diamonds
+        const post = await Post.findById(post_id);
+        await Post.findByIdAndUpdate(request.params.post_id, {
+            $set: {
+                post_diamonds: post.post_diamonds > 0 ? post.post_diamonds - .17 : 0,
+                tranding_diamonds: post.tranding_diamonds > 0 ? post.tranding_diamonds - .17 : 0,
+            }
+        })
+        
         response.status(200).json({
             status: 200,
             updatedComments: newPost.comments,
@@ -345,6 +375,16 @@ router.delete("/comment/delete/:post_id/:comment_id", auth, async (request, resp
 
         await post.save();
         const newPost = await Post.findById(request.params.post_id).populate("comments.user", "first_name last_name image");
+
+        // Diamonds
+        if (request.user?._id.toString() !== post?.user?._id.toString()){
+            await Post.findByIdAndUpdate(request.params.post_id, {
+                $set: {
+                    post_diamonds: post.post_diamonds > 0 ? post.post_diamonds - .17 : 0,
+                    tranding_diamonds: post.tranding_diamonds > 0 ? post.tranding_diamonds - .17 : 0,
+                }
+            })
+        }
 
         response.status(200).json({
             status: 200,
@@ -485,6 +525,15 @@ router.put("/unlike/:post_id", auth, user, async (request, response) => {
         const likeCounts = await Post.findById(request.params.post_id);
         likeCounts.numbersOfLikes = likeCounts.likes.length;
         await likeCounts.save();
+
+
+        // Diamonds
+        await Post.findByIdAndUpdate(request.params.post_id, {
+            $set: {
+                post_diamonds: post.post_diamonds > 0 ? post.post_diamonds - .17 : 0,
+                tranding_diamonds: post.tranding_diamonds > 0 ? post.tranding_diamonds - .17 : 0,
+            }
+        })
 
         response.status(200).json({
             status: 200,

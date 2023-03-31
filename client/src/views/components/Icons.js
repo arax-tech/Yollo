@@ -12,6 +12,9 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Foundation from 'react-native-vector-icons/Foundation';
+import Zocial from 'react-native-vector-icons/Zocial';
 
 const IconFontisto = ({ name, size, color, style }) => {
     return <Fontisto name={name} size={size} color={color} style={style} />
@@ -52,6 +55,16 @@ const IconMaterialCommunityIcons = ({ name, size, color, style }) => {
 const IconMaterialIcons = ({ name, size, color, style }) => {
     return <MaterialIcons name={name} size={size} color={color} style={style} />
 }
+const IconEvilIcons = ({ name, size, color, style }) => {
+    return <EvilIcons name={name} size={size} color={color} style={style} />
+}
+
+const IconFoundation = ({ name, size, color, style }) => {
+    return <Foundation name={name} size={size} color={color} style={style} />
+}
+const IconZocial = ({ name, size, color, style }) => {
+    return <Zocial name={name} size={size} color={color} style={style} />
+}
 
 
-export { IconFontisto, IconIonicons, IconFeather, IconSimpleLineIcons, IconAntDesign, IconFontAwesome, IconFontAwesome5, IconEntypo, IconOcticons, IconMaterialIcons, IconMaterialCommunityIcons }
+export { IconFontisto, IconIonicons, IconFeather, IconSimpleLineIcons, IconAntDesign, IconFontAwesome, IconFontAwesome5, IconEntypo, IconOcticons, IconMaterialIcons, IconMaterialCommunityIcons, IconEvilIcons, IconFoundation, IconZocial }

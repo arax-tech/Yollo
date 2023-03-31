@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
 import Loading from '../../../components/Loading'
@@ -8,13 +8,15 @@ import AdminLayout from '../layouts/AdminLayout'
 import dateFormat from 'dateformat';
 const AdminPostView = () => {
     const dispatch = useDispatch();
-    const params = useParams();
+    const { id } = useParams();
 
     useEffect(() => {
-        dispatch(SinglePostAction(params.id));
-    }, [dispatch, params])
+        dispatch(SinglePostAction(id));
+        setMainImage(null)
+    }, [dispatch, id])
 
     const { loading, post } = useSelector((state) => state.post);
+    const [mainImage, setMainImage] = useState(post?.images[0]?.url)
     return (
         loading ? <Loading /> :
             <AdminLayout>
@@ -26,7 +28,18 @@ const AdminPostView = () => {
                         <div className="row">
                             <div className="col-lg-8 feature-blog-one width-lg blog-details-post-v1">
                                 <div className="post-meta">
-                                    <img src={post?.image.url} alt="" className="image-meta" />
+                                    <img src={mainImage || post?.images[0].url} alt="" className="image-meta" />
+                                    <div style={{ display: "flex", flexDirection: "row", marginTop: 10 }}>
+
+                                        {
+                                            post?.images.map((image) => (
+                                                <a href='javascript::' onClick={() => setMainImage(image?.url)}>
+                                                    <img style={{ height: 100, width: 100, borderRadius: 10, marginRight: 10 }} src={image?.url} alt="" />
+                                                </a>
+
+                                            ))
+                                        }
+                                    </div>
                                     <div className="tag">{dateFormat(post?.createAt, "dd mmmm yyyy, h:MM:ss TT")}</div>
                                     <p>{post?.caption}</p> <br />
 
@@ -68,7 +81,8 @@ const AdminPostView = () => {
                                             <li><Link to="#">Likes <span>({post?.likes.length})</span></Link></li>
                                             <li><Link to="#">Comments <span>({post?.comments.length})</span></Link></li>
                                             <li><Link to="#">Share <span>({post?.shares.length})</span></Link></li>
-                                            <li><Link to="#">Post Diamonds<span>({post?.post_diamonds})</span></Link></li>
+                                            <li><Link to="#">Post Diamonds<span>({post?.post_diamonds.toFixed(0)})</span></Link></li>
+                                            <li><Link to="#">Tranding For<span>({post?.tranding_diamonds.toFixed(0)})</span></Link></li>
                                             <li><Link to="#">User Diamonds <span>({post?.user_diamonds})</span></Link></li>
                                             <li><Link to="#">Who Can See <span>({post?.who_can_see})</span></Link></li>
                                             <li><Link to="#">Allow Comments <span>({post?.allow_comments === true ? 'true' : 'false'})</span></Link></li>

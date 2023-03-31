@@ -7,7 +7,7 @@ const MemoryPost = ({ post, onPress }) => {
     return (
         <View key={post?._id} style={styles.box}>
             <TouchableOpacity style={styles.boxInner} onPress={onPress}>
-                <Image style={{ width: "100%", borderRadius: 8, height: 110 }} source={{ uri: post.images[0] ? post.images[0].url : "" }} />
+                <Image style={{ width: "100%", borderRadius: 8, height: 110 }} source={{ uri: post.images[0] ? post.images[0].image : "" }} />
             </TouchableOpacity>
         </View>
 

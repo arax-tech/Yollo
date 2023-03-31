@@ -158,6 +158,7 @@ export const AuthReducer = (state = { user: {} }, action) => {
 
 
 export const updateProfileReducer = (state = {}, action) => {
+    // console.log(action.type)
     switch (action.type) {
         case UPDATE_PROFILE_REQUEST:
         case UPDATE_ACCOUNT_REQUEST:
@@ -189,6 +190,7 @@ export const updateProfileReducer = (state = {}, action) => {
             };
 
 
+        case UPDATE_PROFILE_FAIL:
         case UPDATE_PROFILE_FAIL:
         case UPDATE_ACCOUNT_FAIL:
         case UPDATE_NOTIFICATION_SETTING_FAIL:

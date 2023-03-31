@@ -22,8 +22,8 @@ const SearchUser = ({ users, start }) => {
                                     <View key={user?._id} style={[styles.userList, { marginTop: 10 }]}>
                                         <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate("PublicProfile", { userId: user?._id, authUser: authUser })}>
                                             {
-                                                user?.image?.url ? (
-                                                    <Image style={styles.userImage} source={{ uri: user?.image?.url }} />
+                                                user?.image ? (
+                                                    <Image style={styles.userImage} source={{ uri: user?.image }} />
                                                 ) : (
                                                     <Image style={styles.userImage} source={require('../../../assets/images/placeholder.jpg')} />
                                                 )

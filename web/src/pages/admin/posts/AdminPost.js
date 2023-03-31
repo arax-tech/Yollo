@@ -43,7 +43,7 @@ const AdminPost = () => {
                             <table className='table table-striped'>
                                 <thead>
                                     <tr>
-                                        <th>Image</th>
+                                        <th>Images</th>
                                         <th>Caption</th>
                                         <th>Likes</th>
                                         <th>Comments</th>
@@ -55,8 +55,13 @@ const AdminPost = () => {
                                     {
                                         posts?.map((post) => (
                                             <tr key={post?._id}>
-                                                <td>
-                                                    <img style={{ height: 40, width: 40, borderRadius: 10 }} src={post?.image?.url} alt="" />
+                                                <td style={{display : "flex", flexDirection:"row"}}>
+                                                    {
+                                                        post?.images.map((image) => (
+                                                            <img style={{ height: 40, width: 40, borderRadius: 10, marginRight : 3 }} src={image?.url} alt="" />
+
+                                                        ))
+                                                    }
                                                 </td>
                                                 <td>{post?.caption.length > 40 ? post?.caption.substring(0, 40) + "..." : post?.caption}</td>
                                                 <td>{post?.likes.length}</td>

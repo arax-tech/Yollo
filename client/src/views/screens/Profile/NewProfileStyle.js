@@ -68,6 +68,9 @@ const styles = StyleSheet.create({
 
     tabContainer: { width: "100%", alignItems: "center", justifyContent: "center" },
     tabBtn: { width: deviceWidth / 3, flexDirection: 'row', padding: 15, justifyContent: 'center' },
-    tabBtnActive: { borderBottomWidth: 2, borderColor: "#262626" }
+    tabBtnActive: { borderBottomWidth: 2, borderColor: "#262626" },
+
+    tagButton: { backgroundColor: Colors.white, padding: 9, paddingHorizontal: 8, margin: 2, borderRadius: 20, borderColor: '#E4E4E4', borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
+    tagButtonText: { fontFamily: Fonts.primary, fontSize: 12, color: Colors.dark, textAlign: 'center', fontWeight: '600', paddingLeft: 3 },
 });
 export default styles

@@ -13,12 +13,13 @@ const postSchema = new mongoose.Schema({
     tranding_diamonds: { type: Number, default: 1440 },
     user_diamonds: { type: Number, default: 0 },
     status: { type: String, default: "Active" },
-    images: [
-        {
-            url: { type: String },
-            public_id: { type: String },
-        }
-    ],
+    // images: [
+    //     {
+    //         url: { type: String },
+    //         public_id: { type: String },
+    //     }
+    // ],
+    images: [{ image: { type: String } }],
     likes: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     numbersOfLikes: { type: Number, default: 0 },
     comments: [{

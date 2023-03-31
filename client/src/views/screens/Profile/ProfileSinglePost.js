@@ -30,7 +30,7 @@ const ProfileSinglePost = ({ post, navigate }) => {
                 </View>
             </View>
 
-            <Image style={styles.mainImage} source={{ uri: post.images[0] ? post.images[0].url : "" }} resizeMode='contain' />
+            <Image style={styles.mainImage} source={{ uri: post.images[0] ? post.images[0].image : "" }} resizeMode='contain' />
         </TouchableOpacity>
     )
 }

@@ -18,6 +18,9 @@ import {
     HIDE_NOTIFICATION_SUCCESS,
     HIDE_NOTIFICATION_FAIL,
 
+    PROMPT_OPEN,
+    PROMPT_CLOSE,
+
     CLEAR_ERRORS,
 } from "../constants/YelloConstant";
 
@@ -101,6 +104,21 @@ export const UnFollowAction = (unfollow_user_id) => async (dispatch) => {
 }
 
 
+export const OpenPromptAction = (open, heading, message) => (dispatch) => {
+    dispatch({
+        open,
+        heading,
+        message,
+        type: PROMPT_OPEN,
+    });
+}
+
+
+export const ClosePromptAction = () => (dispatch) => {
+    dispatch({
+        type: PROMPT_CLOSE,
+    });
+}
 
 
 
