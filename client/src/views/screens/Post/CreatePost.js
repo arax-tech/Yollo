@@ -22,7 +22,6 @@ import ImgToBase64 from 'react-native-image-base64';
 import PhotoEditor from "@baronha/react-native-photo-editor";
 
 
-import { PESDK } from "react-native-photoeditorsdk";
 
 
 const deviceWidth = Dimensions.get('screen').width;
@@ -55,23 +54,9 @@ const CreatePost = ({ navigation }) => {
 
 
 
-
-
     const ref = useRef(null);
-    const handleHashTagClick = () => {
-        setCaption(`${caption} #`)
-        ref.current.focus();
-    };
 
-    const handleMentionClick = () => {
-        setCaption(`${caption} @`)
-        ref.current.focus();
-    };
-
-
-
-    // const [image, setImage] = useState(null);
-    // const [imagePreview, setImagePreview] = useState(null);
+    
 
     const [image1, setImage1] = useState(null);
     const [image1Preview, setImage1Preview] = useState(null);
@@ -82,7 +67,6 @@ const CreatePost = ({ navigation }) => {
     const [image3, setImage3] = useState(null);
     const [image3Preview, setImage3Preview] = useState(null);
 
-    // const [images, setImages] = useState([]);
 
     const [model, setModel] = useState(false);
 
@@ -156,54 +140,6 @@ const CreatePost = ({ navigation }) => {
             console.log(error);
         }
     }
-    // const showPhotoEditor = async (image) => {
-    //     try {
-    //         // Add a photo.
-    //         const photo = image;
-
-    //         // Open the photo editor and handle the export as well as any occuring errors.
-    //         const result = await PESDK.openEditor(photo);
-
-    //         if (result !== null) {
-    //             console.log(result)
-    //             // The user exported a new photo successfully and the newly generated photo is located at `result.image`.
-    //             if (image1 === null) {
-    //                 // const base64String1 = await ImgToBase64.getBase64String(result.image);
-    //                 // setImage1(`data:image/jpeg;base64,${base64String1}`);
-    //                 setImage1({
-    //                     uri: image,
-    //                     name: 'image1.jpg',
-    //                     type: 'image/jpg',
-    //                 });
-    //                 setImage1Preview(result.image);
-    //             } else if (image2 === null) {
-    //                 // const base64String2 = await ImgToBase64.getBase64String(result.image);
-    //                 // setImage2(`data:image/jpeg;base64,${base64String2}`);
-    //                 setImage2({
-    //                     uri: image,
-    //                     name: 'image2.jpg',
-    //                     type: 'image/jpg',
-    //                 });
-    //                 setImage2Preview(result.image);
-    //             } else if (image3 === null) {
-    //                 // const base64String3 = await ImgToBase64.getBase64String(result.image);
-    //                 // setImage3(`data:image/jpeg;base64,${base64String3}`);
-    //                 setImage3({
-    //                     uri: result.image,
-    //                     name: 'image3.jpg',
-    //                     type: 'image/jpg',
-    //                 });
-    //                 setImage3Preview(result.image);
-    //             }
-    //         } else {
-    //             // The user tapped on the cancel button within the editor.
-    //             return;
-    //         }
-    //     } catch (error) {
-    //         // There was an error generating the photo.
-    //         console.log(error);
-    //     }
-    // }
 
     const captureImage = async (type) => {
         let options = {

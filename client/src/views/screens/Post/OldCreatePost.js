@@ -14,18 +14,19 @@ import Loading from '../../components/Loading'
 import { CreatePostAction } from '../../../redux/actions/PostAction'
 import { CREATE_POST_RESET } from '../../../redux/constants/PostConstant'
 
-import { Avatar, Dialog } from 'react-native-paper';
+import { Dialog } from 'react-native-paper';
 
 import ImgToBase64 from 'react-native-image-base64';
 
 
+import PhotoEditor from "@baronha/react-native-photo-editor";
 
 
 import { PESDK } from "react-native-photoeditorsdk";
 
 
-const deviceWidth = Dimensions.get('window').width;
-const deviceHeight = Dimensions.get('window').height;
+const deviceWidth = Dimensions.get('screen').width;
+const deviceHeight = Dimensions.get('screen').height;
 
 const CreatePost = ({ navigation }) => {
 
@@ -33,8 +34,7 @@ const CreatePost = ({ navigation }) => {
 
 
 
-    const { loading, tags } = useSelector((state) => state.auth);
-    const { loading: postLoading, status, message, isCreated } = useSelector((state) => state.post);
+    const { loading, message, isCreated } = useSelector((state) => state.post);
 
     const richText = React.useRef();
 
@@ -70,9 +70,19 @@ const CreatePost = ({ navigation }) => {
 
 
 
-    const [image, setImage] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
+    // const [image, setImage] = useState(null);
+    // const [imagePreview, setImagePreview] = useState(null);
 
+    const [image1, setImage1] = useState(null);
+    const [image1Preview, setImage1Preview] = useState(null);
+
+    const [image2, setImage2] = useState(null);
+    const [image2Preview, setImage2Preview] = useState(null);
+
+    const [image3, setImage3] = useState(null);
+    const [image3Preview, setImage3Preview] = useState(null);
+
+    // const [images, setImages] = useState([]);
 
     const [model, setModel] = useState(false);
 
@@ -120,27 +130,80 @@ const CreatePost = ({ navigation }) => {
 
     const showPhotoEditor = async (image) => {
         try {
-            // Add a photo from the assets directory.
-            const photo = image;
-            console.log(photo)
-
-            // Open the photo editor and handle the export as well as any occuring errors.
-            const result = await PESDK.openEditor(photo);
-
+            const Options = {
+                path: image,
+            }
+            const result = await PhotoEditor.open(Options);
             if (result !== null) {
-                // The user exported a new photo successfully and the newly generated photo is located at `result.image`.
-                const base64String = await ImgToBase64.getBase64String(result.image);
-                setImage(`data:image/jpeg;base64,${base64String}`);
-                setImagePreview(result.image);
+                if (image1 === null) {
+                    const base64String1 = await ImgToBase64.getBase64String(result);
+                    setImage1(`data:image/jpeg;base64,${base64String1}`);
+                    setImage1Preview(result);
+                } else if (image2 === null) {
+                    const base64String2 = await ImgToBase64.getBase64String(result);
+                    setImage2(`data:image/jpeg;base64,${base64String2}`);
+                    setImage2Preview(result);
+                } else if (image3 === null) {
+                    const base64String3 = await ImgToBase64.getBase64String(result);
+                    setImage3(`data:image/jpeg;base64,${base64String3}`);
+                    setImage3Preview(result);
+                }
             } else {
-                // The user tapped on the cancel button within the editor.
                 return;
             }
+
         } catch (error) {
-            // There was an error generating the photo.
             console.log(error);
         }
     }
+    // const showPhotoEditor = async (image) => {
+    //     try {
+    //         // Add a photo.
+    //         const photo = image;
+
+    //         // Open the photo editor and handle the export as well as any occuring errors.
+    //         const result = await PESDK.openEditor(photo);
+
+    //         if (result !== null) {
+    //             console.log(result)
+    //             // The user exported a new photo successfully and the newly generated photo is located at `result.image`.
+    //             if (image1 === null) {
+    //                 // const base64String1 = await ImgToBase64.getBase64String(result.image);
+    //                 // setImage1(`data:image/jpeg;base64,${base64String1}`);
+    //                 setImage1({
+    //                     uri: image,
+    //                     name: 'image1.jpg',
+    //                     type: 'image/jpg',
+    //                 });
+    //                 setImage1Preview(result.image);
+    //             } else if (image2 === null) {
+    //                 // const base64String2 = await ImgToBase64.getBase64String(result.image);
+    //                 // setImage2(`data:image/jpeg;base64,${base64String2}`);
+    //                 setImage2({
+    //                     uri: image,
+    //                     name: 'image2.jpg',
+    //                     type: 'image/jpg',
+    //                 });
+    //                 setImage2Preview(result.image);
+    //             } else if (image3 === null) {
+    //                 // const base64String3 = await ImgToBase64.getBase64String(result.image);
+    //                 // setImage3(`data:image/jpeg;base64,${base64String3}`);
+    //                 setImage3({
+    //                     uri: result.image,
+    //                     name: 'image3.jpg',
+    //                     type: 'image/jpg',
+    //                 });
+    //                 setImage3Preview(result.image);
+    //             }
+    //         } else {
+    //             // The user tapped on the cancel button within the editor.
+    //             return;
+    //         }
+    //     } catch (error) {
+    //         // There was an error generating the photo.
+    //         console.log(error);
+    //     }
+    // }
 
     const captureImage = async (type) => {
         let options = {
@@ -172,6 +235,7 @@ const CreatePost = ({ navigation }) => {
     };
 
     const chooseFile = (type) => {
+
         let options = {
             mediaType: type,
             includeBase64: true
@@ -195,14 +259,19 @@ const CreatePost = ({ navigation }) => {
         });
     };
 
+    let images = [];
+    image1 !== null && images.push(image1);
+    image2 !== null && images.push(image2);
+    image3 !== null && images.push(image3);
+
 
     const CreatePost = async () => {
-        if (image === null) {
+        if (image1 === null) {
             ToastAndroid.show('Image is required...', ToastAndroid.SHORT);
         } else if (caption === null) {
             ToastAndroid.show('Caption is required...', ToastAndroid.SHORT);
         } else {
-            await dispatch(CreatePostAction(caption, hashtag, image, visibility, comment, reaction, quality, 1440));
+            await dispatch(CreatePostAction(caption, hashtag, images, visibility, comment, reaction, quality));
         }
     }
 
@@ -211,14 +280,22 @@ const CreatePost = ({ navigation }) => {
             dispatch({ type: CREATE_POST_RESET });
             navigation.navigate('PostCreateSuccess')
             setCaption('');
-            setImagePreview(null)
+
+            setImage1(null)
+            setImage1Preview(null)
+
+            setImage2(null)
+            setImage2Preview(null)
+
+            setImage3(null)
+            setImage3Preview(null)
         }
 
     }, [dispatch, navigation, isCreated, message])
 
 
     return (
-        loading || postLoading ? <Loading /> :
+        loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
                 <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
 
@@ -238,27 +315,60 @@ const CreatePost = ({ navigation }) => {
                         <View style={styles.postPhotoList}>
                             <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', marginLeft: 0, marginTop: 20, }}>
                                 {
-                                    imagePreview && (
+                                    image1Preview && (
                                         <>
-                                            <Image style={{ width: 67, height: 67, marginBottom: 10, borderRadius: 10 }} resizeMode='contain' source={{ uri: imagePreview }} />
+                                            <Image style={{ width: 67, height: 67, marginBottom: 10, borderRadius: 10 }} resizeMode='contain' source={{ uri: image1Preview }} />
 
 
-                                            <TouchableOpacity onPress={() => setImagePreview(null)}>
+                                            <TouchableOpacity onPress={() => {
+                                                setImage1Preview(null)
+                                                setImage1(null)
+                                            }}>
+                                                <IconAntDesign name='closecircle' size={18} color='#6C63FF' style={{ marginLeft: -11, marginTop: -10 }} />
+                                            </TouchableOpacity>
+                                        </>
+                                    )
+                                }
+                                {
+                                    image2Preview && (
+                                        <>
+                                            <Image style={{ width: 67, height: 67, marginBottom: 10, borderRadius: 10 }} resizeMode='contain' source={{ uri: image2Preview }} />
+
+
+                                            <TouchableOpacity onPress={() => {
+                                                setImage2Preview(null)
+                                                setImage2(null)
+                                            }}>
+                                                <IconAntDesign name='closecircle' size={18} color='#6C63FF' style={{ marginLeft: -11, marginTop: -10 }} />
+                                            </TouchableOpacity>
+                                        </>
+                                    )
+                                }
+                                {
+                                    image3Preview && (
+                                        <>
+                                            <Image style={{ width: 67, height: 67, marginBottom: 10, borderRadius: 10 }} resizeMode='contain' source={{ uri: image3Preview }} />
+
+
+                                            <TouchableOpacity onPress={() => {
+                                                setImage3Preview(null)
+                                                setImage3(null)
+                                            }}>
                                                 <IconAntDesign name='closecircle' size={18} color='#6C63FF' style={{ marginLeft: -11, marginTop: -10 }} />
                                             </TouchableOpacity>
                                         </>
                                     )
                                 }
 
-
-
                                 {
-                                    imagePreview && imagePreview !== null ? '' :
+                                    image1 === null || image2 === null || image3 === null ? (
+
                                         <TouchableOpacity onPress={() => setModel(true)}>
                                             <Image style={{ width: 65 }} resizeMode='contain' source={require('../../../assets/images/2.png')} />
                                         </TouchableOpacity>
-
+                                    ) : ""
                                 }
+
 
 
 

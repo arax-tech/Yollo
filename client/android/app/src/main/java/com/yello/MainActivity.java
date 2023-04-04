@@ -1,4 +1,4 @@
-package com.yello;
+package com.yollo;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

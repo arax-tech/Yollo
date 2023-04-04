@@ -1,4 +1,4 @@
-package com.yello.newarchitecture.modules;
+package com.yollo.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

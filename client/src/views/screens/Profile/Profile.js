@@ -36,8 +36,6 @@ const deviceHeight = Dimensions.get("window").height;
 const Profile = ({ navigation }) => {
     const dispatch = useDispatch();
 
-
-
     useEffect(() => {
         const getUser = navigation.addListener('focus', async () => {
             await dispatch(AuthUserAction());
@@ -139,10 +137,10 @@ const Profile = ({ navigation }) => {
 
                     <View style={[styles.container, { borderBottomColor: "#dee1e3", borderBottomWidth: 1 }]}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: -14 }}>
-                            <Image style={{ width: 35, height: 35 }} resizeMode='contain' source={require('../../../assets/logo0.png')} />
+                            <Image style={{ width: 30, height: 30 }} resizeMode='contain' source={require('../../../assets/logo0.png')} />
                             <View style={{flexDirection:"row"}}>
                                 <TouchableOpacity style={{width : 30}} onPress={() => navigation.navigate("FindFirends")}>
-                                    <IconAntDesign name='adduser' size={22} color={Colors.dark} />
+                                    <IconAntDesign name='adduser' size={20} color={Colors.dark} />
                                 </TouchableOpacity>
 
                                 <TouchableOpacity style={{width : 30}} onPress={toggleModal}>

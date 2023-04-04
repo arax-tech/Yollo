@@ -69,7 +69,7 @@ const SingleComment = ({ post, comment }) => {
         setModalVisible(!isModalVisible);
     };
 
-    console.log(isModalVisible)
+    // console.log(isModalVisible)
 
     return (
         loading ? <Text>Loading...</Text> :

@@ -4,15 +4,18 @@ import { IconAntDesign, IconFeather, IconIonicons } from '../../components/Icons
 import Colors from '../../../constants/Colors'
 import Fonts from '../../../constants/Fonts'
 import { useDispatch, useSelector } from 'react-redux'
-import { CreateCommentAction, DeleteCommentAction, LikeCommentAction, UnLikeCommentAction } from '../../../redux/actions/ReactionAction'
+import { CloseSheetAction, CreateCommentAction, DeleteCommentAction, LikeCommentAction, UnLikeCommentAction } from '../../../redux/actions/ReactionAction'
 import { CREATE_COMMENT_RESET, DELETE_COMMENT_RESET, LIKE_COMMENT_RESET, UNLIKE_COMMENT_RESET } from '../../../redux/constants/ReactionConstant'
 import Loading from '../../components/Loading'
 
 import moment from 'moment';
 import { Dialog } from 'react-native-paper'
 
+import { useNavigation } from '@react-navigation/native';
+
 const Comment = ({ onCloseFunction, post }) => {
     const dispatch = useDispatch();
+    const navigation = useNavigation();
     const { loading, user, authToken } = useSelector((state) => state.auth);
     // console.log(user?._id)
     const { message, updatedComments } = useSelector((state) => state.reaction);
@@ -38,7 +41,7 @@ const Comment = ({ onCloseFunction, post }) => {
 
     const DeleteCommentFunction = async (comment_id) => {
         await dispatch(DeleteCommentAction(post?._id, comment_id));
-        
+
     }
 
     const [liked, setLiked] = useState(false);
@@ -316,7 +319,7 @@ const Comment = ({ onCloseFunction, post }) => {
                     }
                 </ScrollView>
 
-                <Dialog theme={{colors: {backdrop: 'transparent'}}} visible={model0} style={{ backgroundColor: "#fff", borderRadius : 20 }} onDismiss={() => modelHande()}>
+                <Dialog theme={{ colors: { backdrop: 'transparent' } }} visible={model0} style={{ backgroundColor: "#fff", borderRadius: 20 }} onDismiss={() => modelHande()}>
                     <Dialog.Content>
 
 
@@ -324,7 +327,13 @@ const Comment = ({ onCloseFunction, post }) => {
 
 
 
-                            <TouchableOpacity style={[styles.modelList, { marginTop: -10 }]} >
+                            <TouchableOpacity style={[styles.modelList, { marginTop: -10 }]} onPress={() => {
+                                modelHande();
+                                dispatch(CloseSheetAction());
+                                onCloseFunction();
+                                navigation.navigate('Report', { post_id: post?._id })
+
+                            }}>
                                 <View style={styles.modelInside}>
                                     <IconAntDesign name='exclamationcircleo' size={23} color={Colors.primary} style={{ marginRight: 10 }} />
                                     <Text style={styles.modelTitle}>Report</Text>

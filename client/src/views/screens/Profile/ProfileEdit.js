@@ -20,6 +20,10 @@ import { OpenPromptAction } from '../../../redux/actions/YelloAction'
 import IcomComponent from './IcomComponent'
 
 
+import ImgToBase64 from 'react-native-image-base64';
+
+
+import PhotoEditor from "@baronha/react-native-photo-editor";
 
 const ProfileEdit = ({ navigation }) => {
 
@@ -44,9 +48,10 @@ const ProfileEdit = ({ navigation }) => {
     const [fileName, setFileName] = useState('');
     const launchImagePicker = async () => {
         const result = await launchImageLibrary({ mediaType: "photo", includeBase64: true });
-        setFileName(result.assets[0].fileName.split("_lib_temp_")[1])
-        setImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
-        setImagePreview(result.assets[0].uri);
+        // setFileName(result.assets[0].fileName.split("_lib_temp_")[1])
+        // setImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
+        // setImagePreview(result.assets[0].uri);
+        showPhotoEditor(result.assets[0].uri)
     }
 
     const requestPermission = async () => {
@@ -66,6 +71,28 @@ const ProfileEdit = ({ navigation }) => {
             }
         } catch (error) {
             console.log(error)
+        }
+    }
+
+   
+    const showPhotoEditor = async (image) => {
+        try {
+            const Options = {
+                path: image,
+            }
+            const result = await PhotoEditor.open(Options);
+            if (result !== null) {                
+                const base64String1 = await ImgToBase64.getBase64String(result);
+                console.log(result.split("/Pictures/")[1])
+                setImage(`data:image/jpeg;base64,${base64String1}`);
+                setFileName(result.split("/Pictures/")[1]);
+                setImagePreview(result);
+            } else {
+                return;
+            }
+
+        } catch (error) {
+            console.log(error);
         }
     }
 
