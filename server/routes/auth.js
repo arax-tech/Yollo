@@ -49,17 +49,12 @@ router.post('/login', async (request, response) => {
                 });
             } else {
                 // Save new User Phone
-
                 await User.create({ phone: request.body.phone, otp: otp, status: 'Active' });
                 const user = await User.findOne({ email: email });
                 await Diamond.create({
                     user: user._id,
                     diamonds: 1000
                 });
-
-
-
-
                 response.status(200).json({
                     status: 200,
                     phone: phone,

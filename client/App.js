@@ -56,6 +56,8 @@ import Prompts from './src/views/components/Prompts';
 import Suggested from './src/views/screens/Profile/Suggested';
 
 
+import { requestUserPermission, NotificationListner } from "./src/utils/PushNotificationHelpers";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -78,6 +80,12 @@ const App = () => {
         }
         setInterval(getReward, 60000);
     }, [Store.dispatch])
+
+    useEffect(() => {
+        requestUserPermission();
+        NotificationListner();
+    }, [])
+
 
     return (
         <Provider store={Store}>

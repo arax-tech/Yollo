@@ -303,9 +303,8 @@ const Post = ({ item, isActive }) => {
                             </TouchableOpacity>
 
 
-                            <TouchableOpacity style={[styles.modelList, { marginTop: -40 }]} >
+                            {/* <TouchableOpacity style={[styles.modelList, { marginTop: -40 }]} >
                                 <View style={styles.modelInside}>
-                                    {/* <Image source={require('../../../assets/images/icons/model-see-more.png')} resizeMode='contain' style={styles.modelImage} /> */}
                                     <IconIonicons name='md-ellipsis-horizontal-circle' size={23} color={Colors.dark} style={{ marginRight: 10 }} />
 
                                     <Text style={styles.modelTitle}>See more like this</Text>
@@ -320,6 +319,7 @@ const Post = ({ item, isActive }) => {
                                     <Text style={styles.modelTitle}>Why you seeing this post</Text>
                                 </View>
                             </TouchableOpacity>
+                             */}
                             <TouchableOpacity style={styles.modelList}>
                                 <View style={styles.modelInside}>
                                     <IconIonicons name='eye-off-outline' size={23} color={Colors.dark} style={{ marginRight: 10 }} />

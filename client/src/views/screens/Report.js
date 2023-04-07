@@ -28,17 +28,7 @@ const Report = ({ route, navigation }) => {
     ]);
     const getValue = (id) => {
 
-        let newItems = [
-            { id: 1, checked: false, name: "Minor safety", },
-            { id: 2, checked: false, name: "Dangerous acts and challenges", },
-            { id: 3, checked: false, name: "Sucide, self-harm, and discordered eating", },
-            { id: 4, checked: false, name: "Bullying and harassment", },
-            { id: 5, checked: false, name: "Hatefill behavoir", },
-            { id: 6, checked: false, name: "Violent extremism", },
-            { id: 7, checked: false, name: "Harmfull misinformation", },
-            { id: 8, checked: false, name: "Illegal activities and regulated goods", },
-            { id: 9, checked: false, name: "Other", },
-        ];
+        let newItems = [...items];
         let index = newItems.findIndex(el => el.id === id);
         newItems[index] = { ...newItems[index], checked: true };
         // alert(newItems[index].name);
