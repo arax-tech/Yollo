@@ -18,12 +18,40 @@ import {
     HIDE_NOTIFICATION_SUCCESS,
     HIDE_NOTIFICATION_FAIL,
 
+    UPDATE_FCM_REQUEST,
+    UPDATE_FCM_SUCCESS,
+    UPDATE_FCM_FAIL,
+
     PROMPT_OPEN,
     PROMPT_CLOSE,
 
     CLEAR_ERRORS,
 } from "../constants/YelloConstant";
 
+
+export const UpdateFCMAction = (fcm_token) => async (dispatch) => {
+    try {
+        dispatch({ type: UPDATE_FCM_REQUEST });
+
+        const { data } = await axios.put(`${APP_URL}/user/update/fcm/token`, {
+            fcm_token,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        dispatch({
+            type: UPDATE_FCM_SUCCESS,
+            payload: data
+        });
+    } catch (error) {
+        console.log(error);
+        dispatch({
+            type: UPDATE_FCM_FAIL,
+            payload: error.response.data,
+        })
+
+    }
+}
 
 export const AllSuggessionAction = () => async (dispatch) => {
     try {

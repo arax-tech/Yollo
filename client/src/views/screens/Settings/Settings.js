@@ -7,6 +7,7 @@ import { AuthLogoutAction } from '../../../redux/actions/AuthAction';
 import Loading from '../../components/Loading';
 import { IconAntDesign, IconEntypo, IconFeather, IconFontAwesome5, IconSimpleLineIcons } from '../../components/Icons';
 import { SVGReferral, SVGSettingAccount, SVGSettingLogout, SVGSettingMemories, SVGSettingNotification, SVGSettingPrivacy, SVGSettingQuestion, SVGSettingShare, SVGSettingSupport, SVGSettingTerms } from '../../components/Svgs';
+import { StackActions } from '@react-navigation/native';
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -24,9 +25,9 @@ const Settings = ({ navigation }) => {
     useEffect(() => {
         if (status && status === 203) {
             ToastAndroid.show(message, ToastAndroid.SHORT);
-            navigation.navigate("Login");
+            navigation.replace('Login');
         }
-    }, [navigation, status, message])
+    }, [dispatch, navigation, status, message])
     return (
         loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F5F5' }}>

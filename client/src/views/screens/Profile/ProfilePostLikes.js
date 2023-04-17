@@ -20,7 +20,7 @@ const ProfilePostLikes = ({ posts }) => {
                         </View>
                     ) : (
                         <View style={{ padding: 30 }}>
-                            <Text style={{ color: "#000", textAlign: "center" }}>User has not posted anything yet</Text>
+                            <Text style={{ color: "#000", textAlign: "center" }}>You don't have InActive posts yet.</Text>
                         </View>
                     )
                 }

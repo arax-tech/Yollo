@@ -205,9 +205,14 @@ export const updateProfileReducer = (state = {}, action) => {
         case UPDATE_PROFILE_RESET:
         case UPDATE_ACCOUNT_RESET:
         case UPDATE_NOTIFICATION_SETTING_RESET:
+        case CREATE_TAG_RESET:
             return {
                 ...state,
                 isUpdated: false,
+                isCreated: false,
+                errors: null,
+                status: null,
+                message: null
             };
 
         case CREATE_TAG_RESET:

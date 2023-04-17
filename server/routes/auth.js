@@ -14,10 +14,6 @@ const auth = require("../middleware/auth")
 // Models 
 const Diamond = require("../models/Diamond");
 const User = require("../models/User");
-const Tag = require("../models/Badge")
-const Notification = require("../models/Notification")
-const Reaction = require("../models/Reaction")
-const Post = require("../models/Post")
 
 
 
@@ -98,7 +94,13 @@ router.post('/login', async (request, response) => {
                 const user = await User.findOne({ email: email });
                 await Diamond.create({
                     user: user._id,
-                    diamonds: 1000
+                    diamonds: 1000,
+                    transactions: {
+                        user: user._id,
+                        diamonds: "1000",
+                        type: "Reciver",
+                        tranAt: new Date(Date.now()),
+                    }
                 });
 
                 response.status(200).json({
@@ -139,21 +141,7 @@ router.post('/verify', async (request, response) => {
                 expires: new Date(Date.now() + process.env.JWT_EXPIRE_TOKEN * 24 * 60 * 60 * 1000),
                 httpOnly: true
             });
-            const _id = loginUser?._id;
 
-            const tags = await Tag.find({ user: _id });
-            const user = await User.findById(_id).select('-password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ").populate('badges.badge', 'type name icon color');
-
-            const activePosts = await Post.find({ status: "Active", user: _id }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes", "first_name last_name image");
-
-            const profilePostYouLikes = await Post.find({ likes: { $in: _id } }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
-
-            const profilePostLikes = await Post.find({ user: _id, numbersOfLikes: { $gt: 0 } }).sort({ numbersOfLikes: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
-            ;
-            const diamonds = await Diamond.find({ user: _id }).sort({ createAt: -1 }).populate("transactions.user", "first_name last_name image");
-
-            const notifications = await Notification.find({ user_id: _id, status: "Show" }).populate("user", "first_name last_name image").populate("post", "first_name last_name image");
-            const reactions = await Reaction.find({ user: _id }).populate("reaction_user", "first_name last_name image");
 
             // Add Ref Diamonds
             if (code && code !== null) {
@@ -164,22 +152,11 @@ router.post('/verify', async (request, response) => {
                         diamonds: diamond.diamonds + 1000
                     }
                 });
-
-
             }
             response.status(200).json({
                 status: 202,
                 message: "Login Successfully...",
                 token: token,
-                user: user,
-                tags: tags,
-                diamonds: diamonds && diamonds[0],
-                notifications: notifications,
-                reactions: reactions,
-                activePosts: activePosts,
-                profilePostLikes: profilePostLikes,
-                profilePostYouLikes: profilePostYouLikes,
-                authToken: _id,
             })
         }
         else {

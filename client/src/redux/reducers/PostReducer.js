@@ -9,6 +9,11 @@ import {
     POSTS_FAIL,
     POSTS_RESET,
 
+    UPDATE_POST_REQUEST,
+    UPDATE_POST_SUCCESS,
+    UPDATE_POST_FAIL,
+    UPDATE_POST_RESET,
+
     SINGLE_POST_REQUEST,
     SINGLE_POST_SUCCESS,
     SINGLE_POST_FAIL,
@@ -38,6 +43,7 @@ export const postReducer = (state = {}, action) => {
         case POSTS_REQUEST:
         case FOLLOWING_POSTS_REQUEST:
         case CREATE_POST_REQUEST:
+        case UPDATE_POST_REQUEST:
         case SINGLE_POST_REQUEST:
         case DELETE_POST_REQUEST:
             return {
@@ -56,6 +62,14 @@ export const postReducer = (state = {}, action) => {
                 message: action.payload.message,
                 status: action.payload.status,
                 isCreated: true,
+            };
+        case UPDATE_POST_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                message: action.payload.message,
+                status: action.payload.status,
+                IsUpdated: true,
             };
         case DELETE_POST_SUCCESS:
             return {
@@ -84,6 +98,7 @@ export const postReducer = (state = {}, action) => {
 
 
         case CREATE_POST_FAIL:
+        case UPDATE_POST_FAIL:
         case POSTS_FAIL:
         case FOLLOWING_POSTS_FAIL:
         case SINGLE_POST_FAIL:
@@ -113,9 +128,11 @@ export const postReducer = (state = {}, action) => {
         case POSTS_RESET:
         case FOLLOWING_POSTS_RESET:
         case SINGLE_POST_RESET:
+        case UPDATE_POST_RESET:
             return {
                 ...state,
                 errors: null,
+                IsUpdated: null,
                 status: null
             };
 

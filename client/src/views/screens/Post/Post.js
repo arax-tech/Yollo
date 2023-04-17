@@ -21,18 +21,63 @@ import Share from 'react-native-share';
 import RNFetchBlob from 'rn-fetch-blob';
 import { useRef } from 'react'
 import { AuthUserAction } from '../../../redux/actions/AuthAction'
+import { FollowAction, OpenPromptAction, UnFollowAction } from '../../../redux/actions/YelloAction'
+import { FOLLOW_RESET, UNFOLLOW_RESET } from '../../../redux/constants/YelloConstant'
+import Loading from '../../components/Loading'
 
 
 
 
-const Post = ({ item, isActive }) => {
+const Post = ({ item, isActive, RemoveFormTimeline }) => {
 
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    const { user, diamonds } = useSelector((state) => state.auth);
+    const { user, diamonds, authToken } = useSelector((state) => state.auth);
     const { message, status, updatedDaimonds } = useSelector((state) => state.reaction);
+    const { loading: yelloLoading, users, status: Fstatus, message: fmessage } = useSelector((state) => state.yello);
 
+    const FollowFunction = async (follow_user_id) => {
+        await dispatch(FollowAction(follow_user_id));
+
+    }
+    const UnFollowFunction = async (unfollow_user_id) => {
+        await dispatch(UnFollowAction(unfollow_user_id));
+    }
+
+    useEffect(() => {
+        if (Fstatus && Fstatus === 220) {
+            dispatch(OpenPromptAction(true, 'Success', fmessage && fmessage))
+            dispatch({ type: FOLLOW_RESET })
+            setFollower(true)
+        }
+        if (Fstatus && Fstatus === 230) {
+            dispatch(OpenPromptAction(true, 'Success', fmessage && fmessage))
+            dispatch({ type: UNFOLLOW_RESET })
+            setFollower(false)
+        }
+    }, [dispatch, Fstatus, fmessage])
+
+
+    const userFollowers = user?.following.filter(function (data) {
+        return data?.user?._id.toString() === item?.user?._id.toString()
+    });
+    const [follower, setFollower] = useState(userFollowers?.length === 0 ? false : true);
+
+
+
+    useEffect(() => {
+        const getFollowers = navigation.addListener('focus', async () => {
+            user?.following?.map((data) => {
+                if (data?.user?._id === item?.user._id) {
+                    setFollower(true)
+                } else {
+                    setFollower(false)
+                }
+            })
+        });
+        return getFollowers
+    }, [navigation, dispatch])
 
 
 
@@ -83,7 +128,7 @@ const Post = ({ item, isActive }) => {
         })
         setShow(true);
         fadeIn()
-        
+
     }
 
     const unlikeHandel = async () => {
@@ -101,7 +146,7 @@ const Post = ({ item, isActive }) => {
 
 
 
-
+    const [postActive, setPostActive] = useState(0)
 
     const [shares, setShares] = useState(item?.shares?.length);
     const fs = RNFetchBlob.fs;
@@ -109,7 +154,7 @@ const Post = ({ item, isActive }) => {
     const sharePost = () => {
 
         RNFetchBlob.config({ fileCache: true })
-            .fetch('GET', item?.image.url)
+            .fetch('GET', item?.images[postActive]?.image)
             .then((resp) => {
                 imagePath = resp.path();
                 return resp.readFile('base64');
@@ -210,316 +255,309 @@ const Post = ({ item, isActive }) => {
 
 
 
-    const [postActive, setPostActive] = useState(0)
+
 
 
     return (
-        <SafeAreaView>
+        yelloLoading ? <Loading /> :
+            <SafeAreaView>
 
 
-            <View style={[{ flex: 1, height: Dimensions.get('window').height - 53 }]}>
-
-
-
-
-                {/* Reward Model */}
-                <Modal
-                    backdropColor='rgba(0,0,0,0.7)'
-                    isVisible={isRewardModalVisible}
-                    deviceWidth={deviceWidth}
-                    deviceHeight={deviceHeight}
-                    animationType={"slide"}
-                    coverScreen={false}
-                    transparent={true}>
-
-                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ width: 300, height: 350, backgroundColor: Colors.white, padding: 20, borderRadius: 20 }}>
-
-
-                            <TouchableOpacity onPress={toggleRewardModal} style={{ flex: 1, alignItems: 'flex-end' }}>
-                                <Image source={require('../../../assets/images/icons/model-close.png')} resizeMode='contain' style={{ height: 15, width: 15, marginBottom: 3 }} />
-                            </TouchableOpacity>
+                <View style={[{ flex: 1, height: Dimensions.get('window').height - 53 }]}>
 
 
 
-                            <Text style={styles.rewardHeadingTitle}>Select the time you want to add</Text>
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                <TextInput style={styles.rewardModelInput} keyboardType={'numeric'} value={diamondtoAdd} onChangeText={setDiamondToAdd} placeholder='Enter...' />
-                                {/* <TouchableOpacity style={styles.rewardModelButton}>
+
+                    {/* Reward Model */}
+                    <Modal
+                        backdropColor='rgba(0,0,0,0.7)'
+                        isVisible={isRewardModalVisible}
+                        deviceWidth={deviceWidth}
+                        deviceHeight={deviceHeight}
+                        animationType={"slide"}
+                        coverScreen={false}
+                        transparent={true}>
+
+                        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ width: 300, height: 350, backgroundColor: Colors.white, padding: 20, borderRadius: 20 }}>
+
+
+                                <TouchableOpacity onPress={toggleRewardModal} style={{ flex: 1, alignItems: 'flex-end' }}>
+                                    <Image source={require('../../../assets/images/icons/model-close.png')} resizeMode='contain' style={{ height: 15, width: 15, marginBottom: 3 }} />
+                                </TouchableOpacity>
+
+
+
+                                <Text style={styles.rewardHeadingTitle}>Select the time you want to add</Text>
+                                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                                    <TextInput style={styles.rewardModelInput} keyboardType={'numeric'} value={diamondtoAdd} onChangeText={setDiamondToAdd} placeholder='Enter...' />
+                                    {/* <TouchableOpacity style={styles.rewardModelButton}>
                                     <Text style={styles.rewardModelButtonText}>Minutes</Text>
                                 </TouchableOpacity> */}
-                                <Dropdown
-                                    style={styles.dropdown}
-                                    placeholderStyle={styles.selectedTextStyle}
-                                    selectedTextStyle={styles.selectedTextStyle}
-                                    itemContainerStyle={styles.itemContainerStyle}
-                                    itemTextStyle={styles.itemTextStyle}
-                                    data={diamondArrray}
-                                    maxHeight={300}
-                                    labelField="label"
-                                    search={false}
-                                    placeholder="Minutes"
-                                    valueField="value"
-                                    value={diamondType}
-                                    onChange={item => { setDiamondType(item.value) }}
-                                />
-                            </View>
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-                                <Image source={require('../../../assets/images/reward/icon.png')} resizeMode='contain' style={{ height: 80, width: 80, marginBottom: 3 }} />
-                            </View>
-                            <Text style={styles.rewardHeadingTitle}>You have <Text style={{ fontWeight: '800' }}>{diamonds?.diamonds} diamonds</Text></Text>
-                            <PrimaryButton title='Send' onPress={addDiamonIntoPost} />
+                                    <Dropdown
+                                        style={styles.dropdown}
+                                        placeholderStyle={styles.selectedTextStyle}
+                                        selectedTextStyle={styles.selectedTextStyle}
+                                        itemContainerStyle={styles.itemContainerStyle}
+                                        itemTextStyle={styles.itemTextStyle}
+                                        data={diamondArrray}
+                                        maxHeight={300}
+                                        labelField="label"
+                                        search={false}
+                                        placeholder="Minutes"
+                                        valueField="value"
+                                        value={diamondType}
+                                        onChange={item => { setDiamondType(item.value) }}
+                                    />
+                                </View>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+                                    <Image source={require('../../../assets/images/reward/icon.png')} resizeMode='contain' style={{ height: 80, width: 80, marginBottom: 3 }} />
+                                </View>
+                                <Text style={styles.rewardHeadingTitle}>You have <Text style={{ fontWeight: '800' }}>{diamonds?.diamonds} diamonds</Text></Text>
+                                <PrimaryButton title='Send' onPress={addDiamonIntoPost} />
 
+
+                            </View>
+                        </View>
+
+                    </Modal>
+
+
+                    {/* Report Model */}
+                    <Modal
+                        backdropColor='rgba(0,0,0,0.7)'
+                        isVisible={isModalVisible}
+                        deviceWidth={deviceWidth}
+                        deviceHeight={deviceHeight}
+                        animationType={"slide"}
+                        coverScreen={false}
+                        transparent={true}>
+
+                        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{
+                                width: 300,
+                                height: 130,
+                                backgroundColor: Colors.white,
+                                borderRadius: 20
+                            }}>
+
+
+                                <TouchableOpacity onPress={toggleModal} style={{ flex: 1, alignItems: 'flex-end', paddingTop: 15, paddingRight: 15, marginBottom: -30 }}>
+                                    {/* <Image source={require('../../../assets/images/icons/model-close.png')} resizeMode='contain' style={{ height: 15, width: 15, marginBottom: 3 }} /> */}
+                                    <IconAntDesign name='close' size={22} color={Colors.dark} style={{ marginBottom: 3 }} />
+
+                                </TouchableOpacity>
+
+
+                                <TouchableOpacity style={styles.modelList} onPress={() => RemoveFormTimeline(item?._id)}>
+                                    <View style={styles.modelInside}>
+                                        <IconIonicons name='eye-off-outline' size={23} color={Colors.dark} style={{ marginRight: 10 }} />
+                                        <Text style={styles.modelTitle}>Hide post from {item?.user?.first_name} {item?.user?.last_name}</Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity onPress={() => {
+                                    navigation.navigate('Report', { post_id: item?._id })
+                                    toggleModal()
+                                }} style={[styles.modelList, { borderBottomColor: 'transparent' }]} >
+                                    <View style={styles.modelInside}>
+                                        <IconIonicons name='alert-circle-outline' size={23} color={"#FF375F"} style={{ marginRight: 10 }} />
+                                        <Text style={styles.modelTitle}>Report</Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                            </View>
+                        </View>
+
+                    </Modal>
+
+
+
+
+
+                    {/* Top Bar */}
+                    <View style={{ position: 'absolute', zIndex: 1, top: 0, paddingHorizontal: 25, paddingVertical: 20, width: Dimensions.get('window').width }}>
+
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'flex-end' }}>
+                            <TouchableOpacity onPress={() => navigation.navigate("FollowingPost")}>
+                                <Text style={isActive === "Following" ? [styles.topBarHeadings, { fontWeight: '900' }] : styles.topBarHeadings}>Following</Text>
+                            </TouchableOpacity>
+                            <Text style={styles.pipe}>|</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+                                <Text style={isActive === "ForYou" ? [styles.topBarHeadings, { fontWeight: '900' }] : styles.topBarHeadings} >For You</Text>
+                            </TouchableOpacity>
+                            <Text style={{ color: 'transparent' }}>lorem isp dummy text</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate("Search", {
+                                HashTag: ""
+                            })}>
+                                <IconAntDesign name='search1' size={23} color={Colors.white} />
+                            </TouchableOpacity>
 
                         </View>
                     </View>
 
-                </Modal>
+                    <View style={{ position: 'absolute', zIndex: 1, top: 60, right: 20, width: Dimensions.get('window').width }}>
 
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'flex-end' }}>
+                            <View style={{ flex: 2, flexDirection: "row", justifyContent: "flex-end" }}>
+                                {
+                                    item?.images.length > 1 && (
+                                        item.images[0] ? item.images.map((image, index) => (
+                                            <TouchableOpacity key={index} onPress={() => setPostActive(index)} style={{ borderBottomColor: index === postActive ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 15, paddingVertical: 0, marginRight: 5 }}>
+                                                <Text>{` `}</Text>
+                                            </TouchableOpacity>
 
-                {/* Report Model */}
-                <Modal
-                    backdropColor='rgba(0,0,0,0.7)'
-                    isVisible={isModalVisible}
-                    deviceWidth={deviceWidth}
-                    deviceHeight={deviceHeight}
-                    animationType={"slide"}
-                    coverScreen={false}
-                    transparent={true}>
-
-                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{
-                            width: 300,
-                            height: 250,
-                            backgroundColor: Colors.white,
-                            borderRadius: 20
-                        }}>
-
-
-                            <TouchableOpacity onPress={toggleModal} style={{ flex: 1, alignItems: 'flex-end', padding: 15 }}>
-                                {/* <Image source={require('../../../assets/images/icons/model-close.png')} resizeMode='contain' style={{ height: 15, width: 15, marginBottom: 3 }} /> */}
-                                <IconAntDesign name='close' size={22} color={Colors.dark} style={{ marginBottom: 3 }} />
-
-                            </TouchableOpacity>
-
-
-                            {/* <TouchableOpacity style={[styles.modelList, { marginTop: -40 }]} >
-                                <View style={styles.modelInside}>
-                                    <IconIonicons name='md-ellipsis-horizontal-circle' size={23} color={Colors.dark} style={{ marginRight: 10 }} />
-
-                                    <Text style={styles.modelTitle}>See more like this</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.modelList}>
-                                <View style={styles.modelInside}>
-                                    <IconIonicons name='md-help-circle-outline' size={23} color={Colors.dark} style={{ marginRight: 10 }} />
-
-
-
-                                    <Text style={styles.modelTitle}>Why you seeing this post</Text>
-                                </View>
-                            </TouchableOpacity>
-                             */}
-                            <TouchableOpacity style={styles.modelList}>
-                                <View style={styles.modelInside}>
-                                    <IconIonicons name='eye-off-outline' size={23} color={Colors.dark} style={{ marginRight: 10 }} />
-                                    <Text style={styles.modelTitle}>Hide post from {item?.user?.first_name} {item?.user?.last_name}</Text>
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => {
-                                navigation.navigate('Report', { post_id: item?._id })
-                                toggleModal()
-                            }} style={[styles.modelList, { borderBottomColor: 'transparent' }]} >
-                                <View style={styles.modelInside}>
-                                    <IconIonicons name='alert-circle-outline' size={23} color={"#FF375F"} style={{ marginRight: 10 }} />
-                                    <Text style={styles.modelTitle}>Report</Text>
-                                </View>
-                            </TouchableOpacity>
+                                        )) : ""
+                                    )
+                                }
+                            </View>
 
                         </View>
                     </View>
 
-                </Modal>
 
 
 
 
 
-                {/* Top Bar */}
-                <View style={{ position: 'absolute', zIndex: 1, top: 0, paddingHorizontal: 25, paddingVertical: 20, width: Dimensions.get('window').width }}>
 
-                    <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'flex-end' }}>
-                        <TouchableOpacity onPress={() => navigation.navigate("FollowingPost")}>
-                            <Text style={isActive === "Following" ? [styles.topBarHeadings, { fontWeight: '900' }] : styles.topBarHeadings}>Following</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.pipe}>|</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-                            <Text style={isActive === "ForYou" ? [styles.topBarHeadings, { fontWeight: '900' }] : styles.topBarHeadings} >For You</Text>
-                        </TouchableOpacity>
-                        <Text style={{ color: 'transparent' }}>lorem isp dummy text</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate("Search", {
-                            HashTag: ""
-                        })}>
-                            <IconAntDesign name='search1' size={23} color={Colors.white} />
-                        </TouchableOpacity>
+                    {/* Post Detail With User Info */}
+                    <View style={{ position: 'absolute', zIndex: 1, bottom: 0, padding: 25 }}>
 
-                    </View>
-                </View>
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: "center" }}>
 
-                <View style={{ position: 'absolute', zIndex: 1, top: 60, right : 20, width: Dimensions.get('window').width }}>
-
-                    <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'flex-end' }}>
-                        <View style={{ flex: 2, flexDirection: "row", justifyContent: "flex-end" }}>
+                            <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} onPress={() => navigation.navigate("PublicProfile", { userId: item?.user?._id, authUser: user })}>
+                                {
+                                    item?.user.image ? (
+                                        <Image style={styles.userImage} source={{ uri: item?.user.image }} />
+                                    ) : (
+                                        <Image style={styles.userImage} source={require('../../../assets/images/placeholder.jpg')} />
+                                    )
+                                }
+                                <Text style={styles.userName}>{item?.user.first_name} {item?.user.last_name}</Text>
+                            </TouchableOpacity>
                             {
-                                item?.images.length > 1 && (
-                                    item.images[0] ? item.images.map((image, index) => (
-                                        <TouchableOpacity key={index} onPress={() => setPostActive(index)} style={{ borderBottomColor: index === postActive ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 15, paddingVertical : 0,  marginRight: 5 }}>
-                                            <Text>{` `}</Text>
+                                item.user._id !== user?._id && (
+                                    isActive === "Following" ? (
+                                        <TouchableOpacity style={styles.followingButton}>
+                                            <Text style={styles.followingText}>Following</Text>
                                         </TouchableOpacity>
+                                    ) : (
 
-                                    )) : ""
+                                        follower ? (
+                                            <TouchableOpacity style={styles.followingButton} onPress={() => UnFollowFunction(item?.user._id)}>
+                                                <Text style={styles.followingText}>Unfollow</Text>
+                                            </TouchableOpacity>
+                                        ) : (
+                                            <TouchableOpacity style={styles.followButton} onPress={() => FollowFunction(item?.user._id)}>
+                                                <Text style={styles.followText}>Follow</Text>
+                                            </TouchableOpacity>
+                                        )
+
+
+
+                                    )
                                 )
                             }
+
                         </View>
 
-                    </View>
-                </View>
-
-
-
-
-
-
-
-                {/* Post Detail With User Info */}
-                <View style={{ position: 'absolute', zIndex: 1, bottom: 0, padding: 25 }}>
-
-                    <View style={{ flex: 1, flexDirection: 'row', alignItems: "center" }}>
-
-                        <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} onPress={() => navigation.navigate("PublicProfile", { userId: item?.user?._id, authUser: user })}>
-                            {
-                                item?.user.image ? (
-                                    <Image style={styles.userImage} source={{ uri: item?.user.image }} />
-                                ) : (
-                                    <Image style={styles.userImage} source={require('../../../assets/images/placeholder.jpg')} />
-                                )
-                            }
-                            <Text style={styles.userName}>{item?.user.first_name} {item?.user.last_name}</Text>
-                        </TouchableOpacity>
-                        {
-                            item.user._id !== user?._id && (
-                                isActive === "Following" ? (
-                                    <TouchableOpacity style={styles.followingButton}>
-                                        <Text style={styles.followingText}>Following</Text>
-                                    </TouchableOpacity>
-                                ) : (
-                                    <TouchableOpacity style={styles.followButton}>
-                                        <Text style={styles.followText}>Follow</Text>
-                                    </TouchableOpacity>
-
-                                )
-                            )
-                        }
-
-                    </View>
-
-                    <View>
-                        <Text style={styles.postTitle}>{item?.caption.length > 40 ? item?.caption.substring(0, 40) + "..." : item?.caption}</Text>
-                        <TouchableOpacity onPress={() => dispatch(OpenSheetAction(true, item, 1))} >
-                            <Text style={styles.readMore}>Read More</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-
-
-
-
-                {/* Main Image */}
-                <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item.images[postActive].image }} />
-
-                {/* Right Side Icons */}
-                <View style={styles.rightContainer}>
-                    <View style={{ flexGrow: 1, alignItems: "center", justifyContent: "center" }}>
-                        <TouchableOpacity>
-                            <View style={{ alignItems: 'center' }}>
-                                <IconSimpleLineIcons name='eye' size={23} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
-                                <Text style={styles.actionText}>{item?.views?.length}</Text>
-                            </View>
-                        </TouchableOpacity>
-
-                        {
-                            currentLike.state === true ? (
-                                <TouchableOpacity onPress={() => unlikeHandel(currentLike.state)}>
-                                    <View style={{ alignItems: 'center' }}>
-                                        <IconFontAwesome name='heart' size={21} color={"#FF2727"} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
-                                        <Text style={styles.actionText}>{currentLike.counter}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            ) : (
-                                <TouchableOpacity onPress={() => likeHandel(currentLike.state)}>
-                                    <View style={{ alignItems: 'center' }}>
-                                        <IconFontAwesome name='heart-o' size={21} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
-                                        <Text style={styles.actionText}>{currentLike.counter}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            )
-                        }
-
-
-                        <TouchableOpacity onPress={() => dispatch(OpenSheetAction(true, item, 0))} style={{marginBottom : -7}}>
-                            <View style={{ alignItems: 'center' }}>
-                                <IconAntDesign name='message1' size={21} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -2 }} />
-                                <Text style={styles.actionText}>{item?.comments.length}</Text>
-                            </View>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={toggleRewardModal}>
-                            <View style={{ alignItems: 'center' }}>
-                                <SVGClockPlusFinal style={[styles.actionButton, { width: 29, height: 29, marginBottom: 2, }]} />
-                                <Text style={styles.actionText}>{allDiamonds}</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={sharePost} >
-                            <View style={{ alignItems: 'center' }}>
-                                <SVGShare color={Colors.primary} style={{ padding: 10, marginTop: 20, marginBottom: 2 }} />
-                                <Text style={styles.actionText}>{shares}</Text>
-                            </View>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={toggleModal} >
-                            <View style={{ alignItems: 'center' }}>
-                                <IconEntypo name='dots-three-horizontal' size={23} color={Colors.white} style={{ padding: 5, marginTop: 10 }} />
-                            </View>
-                        </TouchableOpacity>
+                        <View>
+                            <Text style={styles.postTitle}>{item?.caption.length > 40 ? item?.caption.substring(0, 40) + "..." : item?.caption}</Text>
+                            <TouchableOpacity onPress={() => dispatch(OpenSheetAction(true, item, 1))} >
+                                <Text style={styles.readMore}>Read More</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
 
 
-                </View>
 
-                {/* Liked Notification */}
-                {
-                    show ? (
-                        <Animated.View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-60%', opacity: fadeAnim, }}>
-                            <Image style={{ width: "100%" }} resizeMode='contain' source={require('../../../assets/images/like-animation.gif')} />
-                            <TouchableOpacity style={{ width: 134, height: 42, borderRadius: 20, backgroundColor: Colors.likeButtonBackground, marginTop: -120 }}>
-                                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                    <IconFeather name='clock' size={20} color={Colors.dark} style={{ marginBottom: 3, marginRight: 3 }} />
-                                    <Text style={{ color: Colors.dark, fontFamily: Fonts.primary, fontSize: 16, fontWeight: '700', marginTop: -3, marginLeft: 2 }}>10 Sec</Text>
+
+
+                    {/* Main Image */}
+                    <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item.images[postActive].image }} />
+
+                    {/* Right Side Icons */}
+                    <View style={styles.rightContainer}>
+                        <View style={{ flexGrow: 1, alignItems: "center", justifyContent: "center" }}>
+                            <TouchableOpacity>
+                                <View style={{ alignItems: 'center' }}>
+                                    <IconSimpleLineIcons name='eye' size={23} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
+                                    <Text style={styles.actionText}>{item?.views?.length}</Text>
                                 </View>
                             </TouchableOpacity>
-                        </Animated.View>
-                    )
-                        :
-                        null
-                }
+
+                            {
+                                currentLike.state === true ? (
+                                    <TouchableOpacity onPress={() => unlikeHandel(currentLike.state)}>
+                                        <View style={{ alignItems: 'center' }}>
+                                            <IconFontAwesome name='heart' size={21} color={"#FF2727"} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
+                                            <Text style={styles.actionText}>{currentLike.counter}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity onPress={() => likeHandel(currentLike.state)}>
+                                        <View style={{ alignItems: 'center' }}>
+                                            <IconFontAwesome name='heart-o' size={21} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -3 }} />
+                                            <Text style={styles.actionText}>{currentLike.counter}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            }
+
+
+                            <TouchableOpacity onPress={() => dispatch(OpenSheetAction(true, item, 0))} style={{ marginBottom: -7 }}>
+                                <View style={{ alignItems: 'center' }}>
+                                    <IconAntDesign name='message1' size={21} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -2 }} />
+                                    <Text style={styles.actionText}>{item?.comments.length}</Text>
+                                </View>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={toggleRewardModal}>
+                                <View style={{ alignItems: 'center' }}>
+                                    <SVGClockPlusFinal style={[styles.actionButton, { width: 29, height: 29, marginBottom: 2, }]} />
+                                    <Text style={styles.actionText}>{allDiamonds}</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={sharePost} >
+                                <View style={{ alignItems: 'center' }}>
+                                    <SVGShare color={Colors.primary} style={{ padding: 10, marginTop: 20, marginBottom: 2 }} />
+                                    <Text style={styles.actionText}>{shares}</Text>
+                                </View>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={toggleModal} >
+                                <View style={{ alignItems: 'center' }}>
+                                    <IconEntypo name='dots-three-horizontal' size={23} color={Colors.white} style={{ padding: 5, marginTop: 10 }} />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+
+                    </View>
+
+                    {/* Liked Notification */}
+                    {
+                        show ? (
+                            <Animated.View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', zIndex: 999, top: '-65%', opacity: fadeAnim, }}>
+                                <Image style={{ width: "30%" }} resizeMode='contain' source={require('../../../assets/images/like-animation.gif')} />
+                                <TouchableOpacity style={{ width: 134, height: 42, borderRadius: 20, backgroundColor: Colors.likeButtonBackground, marginTop: -180 }}>
+                                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                                        <IconFeather name='clock' size={20} color={Colors.dark} style={{ marginBottom: 3, marginRight: 3 }} />
+                                        <Text style={{ color: Colors.dark, fontFamily: Fonts.primary, fontSize: 16, fontWeight: '700', marginTop: -3, marginLeft: 2 }}>10 Sec</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </Animated.View>
+                        )
+                            :
+                            null
+                    }
 
 
 
 
-            </View>
-        </SafeAreaView >
+                </View>
+            </SafeAreaView >
     )
 }
 

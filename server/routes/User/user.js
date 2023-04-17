@@ -30,7 +30,7 @@ const user = require("../../middleware/user")
 
 // Model 
 const User = require("../../models/User")
-const Tag = require("../../models/Badge")
+const Badge = require("../../models/Badge")
 const Diamond = require("../../models/Diamond")
 const Notification = require("../../models/Notification")
 const Reaction = require("../../models/Reaction")
@@ -39,10 +39,72 @@ const Post = require("../../models/Post")
 
 
 
-
 router.get("/profile", auth, user, async (request, response) => {
     try {
         const _id = request.user.id;
+        const tags = await Badge.find({ user: _id });
+        const user = await User.findById(_id).select('-password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ").populate('badges.badge', 'type name icon color');
+
+        const activePosts = await Post.find({ status: "Active", user: _id }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes", "first_name last_name image");
+
+        // const profilePostYouLikes = await Post.find({ likes: { $in: request.user.id }}).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
+        const profilePostYouLikes = await Post.find({
+            "$or": [
+                { "likes": { $in: request.user.id } }, 
+                { "shares.user": { $in: request.user.id } },
+                { "comments.user": { $in: request.user.id } },
+            ]
+        }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
+
+        const profilePostLikes = await Post.find({ user: _id, numbersOfLikes: { $gt: 0 }, status: "InActive" }).sort({ numbersOfLikes: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
+        ;
+        const diamonds = await Diamond.find({ user: _id }).sort({ createAt: -1 }).populate("transactions.user", "first_name last_name image");
+
+        const notifications = await Notification.find({ user_id: _id, status: "Show", user_id: { $ne: request.user.id } }).populate("user", "first_name last_name image").populate("post", "first_name last_name image");
+        const reactions = await Reaction.find({ user: _id }).populate("reaction_user", "first_name last_name image");
+
+        response.status(200).json({
+            profilePostYouLikes: profilePostYouLikes.length,
+            status: 200,
+            user: user,
+            tags: tags,
+            diamonds: diamonds && diamonds[0],
+            notifications: notifications,
+            reactions: reactions,
+            activePosts: activePosts,
+            profilePostLikes: profilePostLikes,
+            profilePostYouLikes: profilePostYouLikes,
+            authToken: _id,
+        });
+    }
+    catch (error) {
+        response.status(500).json({
+            status: 500,
+            message: error.message
+        });
+    }
+})
+
+// router.get("/profile", auth, user, async (request, response) => {
+//     try {
+//         const _id = request.user.id;
+//         const user = await User.findById(_id);
+//         response.status(200).json({
+//             status: 200,
+//             user: user,
+//         });
+//     }
+//     catch (error) {
+//         response.status(500).json({
+//             status: 500,
+//             message: error.message
+//         });
+//     }
+// })
+
+router.get("/single/:id", auth, user, async (request, response) => {
+    try {
+        const _id = request.params.id;
         const tags = await Tag.find({ user: _id });
         const user = await User.findById(_id).select('-password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ").populate('badges.badge', 'type name icon color');
 
@@ -50,11 +112,11 @@ router.get("/profile", auth, user, async (request, response) => {
 
         const profilePostYouLikes = await Post.find({ likes: { $in: request.user.id } }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
 
-        const profilePostLikes = await Post.find({ user: _id, numbersOfLikes: { $gt: 0 } }).sort({ numbersOfLikes: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
+        const profilePostLikes = await Post.find({ user: _id, numbersOfLikes: { $gt: 0 }, status: "InActive" }).sort({ numbersOfLikes: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
         ;
         const diamonds = await Diamond.find({ user: _id }).sort({ createAt: -1 }).populate("transactions.user", "first_name last_name image");
 
-        const notifications = await Notification.find({ user_id: _id, status: "Show" }).populate("user", "first_name last_name image").populate("post", "first_name last_name image");
+        const notifications = await Notification.find({ user_id: _id, status: "Show", user_id: { $ne: request.user.id } }).populate("user", "first_name last_name image").populate("post", "first_name last_name image");
         const reactions = await Reaction.find({ user: _id }).populate("reaction_user", "first_name last_name image");
 
         response.status(200).json({
@@ -78,23 +140,15 @@ router.get("/profile", auth, user, async (request, response) => {
     }
 })
 
-router.get("/single/:id", auth, user, async (request, response) => {
+router.put("/update/fcm/token", auth, user, async (request, response) => {
+
     try {
-        const _id = request.params.id;
-        const user = await User.findById(_id).select('-password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ");;
-
-        const activePosts = await Post.find({ status: "Active", user: _id }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes", "first_name last_name image");
-        const profilePostYouLikes = await Post.find({ likes: { $in: _id } }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
-        const profilePostLikes = await Post.find({ user: _id, numbersOfLikes: { $gt: 0 } }).sort({ numbersOfLikes: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
-        const reactions = await Reaction.find({ user: _id }).populate("reaction_user", "first_name last_name image");
-
+        const _id = request.user.id;
+        console.log(request.body.fcm_token)
+        await User.findByIdAndUpdate(_id, request.body, { new: true });
         response.status(200).json({
             status: 200,
-            user: user,
-            reactions: reactions,
-            activePosts: activePosts,
-            profilePostLikes: profilePostLikes,
-            profilePostYouLikes: profilePostYouLikes
+            message: "FCM Token Updated Successfully..."
         });
     }
     catch (error) {
@@ -103,7 +157,8 @@ router.get("/single/:id", auth, user, async (request, response) => {
             message: error.message
         });
     }
-})
+
+});
 
 router.put("/account/update", auth, user, async (request, response) => {
 
@@ -200,32 +255,55 @@ router.put("/profile", auth, user, async (request, response) => {
 
     try {
         const _id = request.user.id;
-        const { image, fileName } = request.body;        
+        const { image, fileName } = request.body;
         const user = await User.findById(_id);
 
-        await User.findByIdAndUpdate({ _id }, { $pull: { badges: {} } }, { new: true });
+        const userNameCheck = await User.find({ username: request.body.username, role: "User" });
 
-        if (image) {
-            if (user.image && user.image.length > 0) {
-                const oldImage = `users${user.image.split("/users")[1]}`
-                fs.unlinkSync(path.join(__dirname, "../../public/" + oldImage))
+        if (user?.new_user === true) {
+            if (userNameCheck.length > 0) {
+                response.status(200).json({
+                    status: 500,
+                    message: "Username is already taken..."
+                });
             }
 
-            let filePath = `../../public/users/profile/${fileName}`;
-            let buffer = Buffer.from(image.split(",")[1], 'base64');
-            fs.writeFileSync(path.join(__dirname, filePath), buffer);
-            request.body.image = `${request.protocol}://${request.get('host')}/users/profile/${fileName}`;
-
         } else {
-            request.body.image = user.image
+            if (request?.body?.username !== user?.username) {
+                if (userNameCheck.length > 0) {
+                    response.status(200).json({
+                        status: 500,
+                        message: "Username is already taken..."
+                    });
+                }
+            }
+            else {
+                await User.findByIdAndUpdate({ _id }, { $pull: { badges: {} } }, { new: true });
+                if (image) {
+                    if (user.image && user.image.length > 0) {
+                        const oldImage = `users${user.image.split("/users")[1]}`
+                        fs.unlinkSync(path.join(__dirname, "../../public/" + oldImage))
+                    }
+
+                    let filePath = `../../public/users/profile/${fileName}`;
+                    let buffer = Buffer.from(image.split(",")[1], 'base64');
+                    fs.writeFileSync(path.join(__dirname, filePath), buffer);
+                    request.body.image = `${request.protocol}://${request.get('host')}/users/profile/${fileName}`;
+
+                } else {
+                    request.body.image = user.image
+                }
+
+                request.body.new_user = false;
+                await User.findByIdAndUpdate(_id, request.body, { new: true });
+                response.status(200).json({
+                    status: 200,
+                    message: "Profile Updated Successfully..."
+                });
+            }
         }
 
 
-        await User.findByIdAndUpdate(_id, request.body, { new: true });
-        response.status(200).json({
-            status: 200,
-            message: "Profile Updated Successfully..."
-        });
     }
     catch (error) {
         console.log(error)
@@ -267,12 +345,11 @@ router.put("/follow", auth, user, async (request, response) => {
 });
 
 
-
 router.put("/unfollow", auth, user, async (request, response) => {
 
     try {
         const user_id = request.user.id;
-        console.log(request.body.unfollow_user_id)
+        // console.log(request.body.unfollow_user_id)
         await User.findByIdAndUpdate({ _id: request.body.unfollow_user_id }, {
             $pull: { followers: { user: user_id } }
         }, { new: true });
@@ -283,7 +360,7 @@ router.put("/unfollow", auth, user, async (request, response) => {
 
         response.status(200).json({
             status: 230,
-            message: "UnFollow Successfully..."
+            message: "Unfollow Successfully..."
         });
     }
     catch (error) {
@@ -300,8 +377,8 @@ router.put("/unfollowFollowers", auth, user, async (request, response) => {
 
     try {
         const user_id = request.user.id;
-        console.log(user_id)
-        console.log(request.body.unfollow_user_id)
+        // console.log(user_id)
+        // console.log(request.body.unfollow_user_id)
         await User.findByIdAndUpdate({ _id: user_id }, {
             $pull: { followers: { user: request.body.unfollow_user_id } }
         });
@@ -329,7 +406,7 @@ router.get("/suggession", auth, user, async (request, response) => {
 
     try {
         const user_id = request.user.id;
-        const users = await User.find().select('-password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ");
+        const users = await User.find({ role: "User" }).select('-password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ");
 
         response.status(200).json({
             status: 200,

@@ -5,6 +5,7 @@ import Colors from '../../../constants/Colors'
 import Loading from '../../components/Loading'
 import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
+import SuggestedList from '../Profile/SuggestedList'
 
 const SearchUser = ({ users, start }) => {
     const navigation = useNavigation();
@@ -18,35 +19,39 @@ const SearchUser = ({ users, start }) => {
                     {
                         start === false ?
                             users?.length > 0 ?
-                                users?.map((user) => (
-                                    <View key={user?._id} style={[styles.userList, { marginTop: 10 }]}>
-                                        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate("PublicProfile", { userId: user?._id, authUser: authUser })}>
-                                            {
-                                                user?.image ? (
-                                                    <Image style={styles.userImage} source={{ uri: user?.image }} />
-                                                ) : (
-                                                    <Image style={styles.userImage} source={require('../../../assets/images/placeholder.jpg')} />
-                                                )
-                                            }
+                                users?.map((user, index) => (
+                                    // console.log(data)
+                                    user?._id !== authUser?._id && (
+                                        <SuggestedList key={index} user0={user} />
+                                    )
+                                    // <View key={user?._id} style={[styles.userList, { marginTop: 10 }]}>
+                                    //     <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate("PublicProfile", { userId: user?._id, authUser: authUser })}>
+                                    //         {
+                                    //             user?.image ? (
+                                    //                 <Image style={styles.userImage} source={{ uri: user?.image }} />
+                                    //             ) : (
+                                    //                 <Image style={styles.userImage} source={require('../../../assets/images/placeholder.jpg')} />
+                                    //             )
+                                    //         }
 
-                                            <View style={styles.notificationMainTitles}>
-                                                <Text style={styles.userTitle}>{user?.first_name} {user?.last_name}</Text>
-                                                <Text style={styles.userName}>{user?.username}</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                        <View style={styles.contentRight}>
-                                            {
-                                                user._id !== authUser?._id && (
-                                                    <TouchableOpacity style={styles.buttonLight}>
-                                                        <Text style={styles.buttonLightText}>Follow</Text>
-                                                    </TouchableOpacity>
-                                                )
-                                            }
+                                    //         <View style={styles.notificationMainTitles}>
+                                    //             <Text style={styles.userTitle}>{user?.first_name} {user?.last_name}</Text>
+                                    //             <Text style={styles.userName}>{user?.username}</Text>
+                                    //         </View>
+                                    //     </TouchableOpacity>
+                                    //     <View style={styles.contentRight}>
+                                    //         {
+                                    //             user._id !== authUser?._id && (
+                                    //                 <TouchableOpacity style={styles.buttonLight}>
+                                    //                     <Text style={styles.buttonLightText}>Follow</Text>
+                                    //                 </TouchableOpacity>
+                                    //             )
+                                    //         }
 
 
-                                        </View>
+                                    //     </View>
 
-                                    </View>
+                                    // </View>
                                 ))
                                 : (
                                     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>

@@ -154,7 +154,7 @@ const Notification = ({ navigation }) => {
 
                         )) : (
                             <View>
-                                <Text style={[styles.header, {marginTop : 3}]}>empty notifications...</Text>
+                                    <Text style={[styles.header, { marginTop: 3 }]}>You are up to date, no new notifications...</Text>
                             </View>
                         )
                     }

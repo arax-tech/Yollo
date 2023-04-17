@@ -10,8 +10,8 @@ import { Dropdown } from 'react-native-element-dropdown'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../../components/Loading'
-import { CreatePostAction } from '../../../redux/actions/PostAction'
-import { CREATE_POST_RESET } from '../../../redux/constants/PostConstant'
+import { SinglePostAction, UpdatePostAction } from '../../../redux/actions/PostAction'
+import { CREATE_POST_RESET, UPDATE_POST_RESET } from '../../../redux/constants/PostConstant'
 
 import { Dialog } from 'react-native-paper';
 
@@ -26,17 +26,52 @@ import PhotoEditor from "@baronha/react-native-photo-editor";
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 
-const CreatePost = ({ navigation }) => {
+const EditPost = ({ route, navigation }) => {
+
+    const { post_id, post } = route.params;
 
     const dispatch = useDispatch();
 
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false)
+        }, 2000)
+    }, [])
+    const { message, IsUpdated } = useSelector((state) => state.post);
 
 
-    const { loading, message, isCreated } = useSelector((state) => state.post);
+    useEffect(() => {
+        async function setData() {
+            setCaption(post?.caption)
+            setHashtag(post?.hashtag)
+            setVisibility(post?.who_can_see)
+            setComment(post?.allow_comments)
+            setQuality(post?.allow_high_quality)
+            setReaction(post?.allow_reactions)
 
-    const richText = React.useRef();
+            if (post?.images[0] && post?.images[0]) {
+                const base64String1 = await ImgToBase64.getBase64String(post?.images[0]?.image);
+                setImage1(`data:image/jpeg;base64,${base64String1}`);
+                setImage1Preview(post?.images[0]?.image);
+            }
+            if (post?.images[1] && post?.images[1]) {
+                const base64String2 = await ImgToBase64.getBase64String(post?.images[1]?.image);
+                setImage2(`data:image/jpeg;base64,${base64String2}`);
+                setImage2Preview(post?.images[1]?.image);
+            }
+            if (post?.images[2] && post?.images[2]) {
+                const base64String3 = await ImgToBase64.getBase64String(post?.images[2]?.image);
+                setImage3(`data:image/jpeg;base64,${base64String3}`);
+                setImage3Preview(post?.images[2]?.image);
+            }
+        }
 
-    const [visibility, setVisibility] = useState('Everyone');
+        setData()
+    }, [])
+
+
+    const [visibility, setVisibility] = useState();
 
     const [caption, setCaption] = useState('');
     const [hashtag, setHashtag] = useState('');
@@ -192,21 +227,22 @@ const CreatePost = ({ navigation }) => {
     image2 !== null && images.push(image2);
     image3 !== null && images.push(image3);
 
+    // console.log(image1 && image1.length)
 
-    const CreatePost = async () => {
-        if (image1 === null) {
+    const UpdatePost = async () => {
+        if (image1 && image1 === null) {
             ToastAndroid.show('Image is required...', ToastAndroid.SHORT);
         } else if (caption === null) {
             ToastAndroid.show('Caption is required...', ToastAndroid.SHORT);
         } else {
-            await dispatch(CreatePostAction(caption, hashtag, images, visibility, comment, reaction, quality));
+            await dispatch(UpdatePostAction(caption, hashtag, images, visibility, comment, reaction, quality, post_id));
         }
     }
 
     useEffect(() => {
-        if (isCreated && isCreated === true) {
-            dispatch({ type: CREATE_POST_RESET });
-            navigation.navigate('PostCreateSuccess')
+        if (IsUpdated && IsUpdated === true) {
+            dispatch({ type: UPDATE_POST_RESET });
+            navigation.navigate('Profile')
             setCaption('');
 
             setImage1(null)
@@ -219,7 +255,7 @@ const CreatePost = ({ navigation }) => {
             setImage3Preview(null)
         }
 
-    }, [dispatch, navigation, isCreated, message])
+    }, [dispatch, navigation, IsUpdated, message])
 
 
     return (
@@ -230,10 +266,10 @@ const CreatePost = ({ navigation }) => {
                 <ScrollView>
                     <View style={styles.postHeaderContainer}>
 
-                        <TouchableOpacity style={styles.postBackButton} onPress={() => navigation.navigate('Home')}>
+                        <TouchableOpacity style={styles.postBackButton} onPress={() => navigation.goBack()}>
                             <IconAntDesign name='arrowleft' size={23} color={Colors.dark} />
                         </TouchableOpacity>
-                        <Text style={styles.postTitle}>Share Post</Text>
+                        <Text style={styles.postTitle}>Edit Post</Text>
 
                     </View>
 
@@ -385,7 +421,7 @@ const CreatePost = ({ navigation }) => {
 
 
 
-                        <PrimaryButton title='Post' margintop={50} marginbottom={50} onPress={CreatePost} />
+                        <PrimaryButton title='Update Post' margintop={50} marginbottom={50} onPress={UpdatePost} />
 
 
                     </View>
@@ -417,7 +453,7 @@ const CreatePost = ({ navigation }) => {
     )
 }
 
-export default CreatePost
+export default EditPost
 
 const styles = StyleSheet.create({
     postContainer: { padding: 20, },

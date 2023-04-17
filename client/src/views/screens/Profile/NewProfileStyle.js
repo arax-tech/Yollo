@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         color: "#939393",
         alignItems: "center",
         justifyContent: "center",
-        fontSize: 10,
+        fontSize: 12,
         textAlign: "center",
         fontFamily: FontFamily.poppinsRegular,
     },
@@ -65,6 +65,9 @@ const styles = StyleSheet.create({
 
     buttonInfo: { backgroundColor: Colors.buttonInfo, paddingVertical: 8, paddingHorizontal: 20, margin: 5, borderRadius: 20, zIndex: 1 },
     buttonInfoText: { fontFamily: Fonts.primary, fontSize: 13, color: Colors.white, textAlign: 'center', fontWeight: '700' },
+
+    followingButton: { backgroundColor: Colors.primary, paddingVertical: 8, paddingHorizontal: 20, margin: 5, borderRadius: 20, zIndex: 1 },
+    followingText: { fontFamily: Fonts.primary, fontSize: 13, fontWeight: '700', color: "#000080", textAlign: 'center' },
 
     tabContainer: { width: "100%", alignItems: "center", justifyContent: "center" },
     tabBtn: { width: deviceWidth / 3, flexDirection: 'row', padding: 15, justifyContent: 'center' },

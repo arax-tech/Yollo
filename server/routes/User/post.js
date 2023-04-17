@@ -1,5 +1,8 @@
 const express = require("express")
-const cloudinary = require("cloudinary")
+
+const axios = require("axios")
+
+
 
 const fs = require("fs")
 const path = require("path")
@@ -12,12 +15,43 @@ const user = require("../../middleware/user")
 
 
 // Model 
+const User = require("../../models/User")
 const Post = require("../../models/Post")
 const Notification = require("../../models/Notification")
 const Reaction = require("../../models/Reaction")
 const PostReport = require("../../models/PostReport")
 const Diamond = require("../../models/Diamond")
 
+
+
+const SendPostPushNotification = async (post_id, name, title) => {
+
+    post = await Post.findById(post_id);
+    post_owner = await User.findById(post.user.toString());
+
+    const fcm_token = post_owner?.fcm_token;
+    const url = `https://fcm.googleapis.com/fcm/send`;
+    // console.log(fcm_token)
+    const body = {
+        to: fcm_token,
+        notification: {
+            title: name,
+            body: title,
+        },
+    }
+    try {
+        const token = "Bearer AAAARhKdOl0:APA91bGOsRKmedUSBCjmpRwL_en35boFnzwyIZuI1qaqGpviCaex4svPXgO7QnizzDRoFMeKzEgKC4wipU5A-QQDbNuxryPQApiIiJQwWlg6CJhFegLuYdUeSAaVT05YzUjC3iyLa3ds";
+        const { data } = await axios.post(url, body, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            }
+        });
+        console.log(data)
+    } catch (error) {
+        console.log(error.message)
+    }
+}
 
 // All Posts
 router.get("/", auth, user, async (request, response) => {
@@ -75,8 +109,7 @@ router.get("/my-following-posts", auth, user, async (request, response) => {
 })
 
 
-
-router.post("/store", auth, user,async (request, response) => {
+router.post("/store", auth, user, async (request, response) => {
     try {
         const { images } = request.body;
 
@@ -123,8 +156,48 @@ router.post("/store", auth, user,async (request, response) => {
 })
 
 
+router.put("/update/:id", auth, user, async (request, response) => {
+    try {
+        const _id = request.params.id;
+
+        const post = await Post.findById(_id);
+        for (let img = 0; img < post?.images?.length; img++) {
+            const oldImage = `images/posts${post?.images[img]?.image.split("/posts")[1]}`
+            fs.unlinkSync(path.join(__dirname, "../../public/" + oldImage))
+        }
 
 
+        const { images } = request.body;
+        const imagesLinks = [];
+        for (let i = 0; i < images.length; i++) {
+            const fileName = `${Date.now()}.jpg`;
+            let filePath = `../../public/images/posts/${fileName}`;
+            let buffer = Buffer.from(images[i].split(",")[1], 'base64');
+            fs.writeFileSync(path.join(__dirname, filePath), buffer);
+            imagesLinks.push({
+                image: `${request.protocol}://${request.get('host')}/images/posts/${fileName}`
+            });
+        }
+
+        request.body.images = imagesLinks;
+        request.body.user = request.user.id;
+        await Post.findByIdAndUpdate(_id, request.body, {
+            new: true,
+            useFindAndModify: false
+        });
+
+        response.status(200).json({
+            status: 200,
+            message: "Post Update Successfully..."
+        });
+    }
+    catch (error) {
+        response.status(500).json({
+            status: 500,
+            message: error.message
+        });
+    }
+})
 
 
 router.post("/remove/diamonds", auth, user, async (request, response) => {
@@ -229,6 +302,8 @@ router.post("/report/:post_id", auth, user, async (request, response) => {
 
 router.put("/comment/store/:post_id", auth, user, async (request, response) => {
     try {
+
+        await SendPostPushNotification(request.params.post_id, `${request.user?.first_name} ${request.user?.last_name}`, `Comment on your post...`);
 
         const { comment } = request.body;
 
@@ -338,7 +413,7 @@ router.put("/comment/unlike/:post_id/:comment_id", auth, user, async (request, r
             { _id: post_id, "comments._id": comment_id },
             { $pull: { "comments.$.likes": request.user._id } });
         const newPost = await Post.findById(post_id).populate("comments.user", "first_name last_name image");
-        
+
         // Diamonds
         const post = await Post.findById(post_id);
         await Post.findByIdAndUpdate(request.params.post_id, {
@@ -347,7 +422,7 @@ router.put("/comment/unlike/:post_id/:comment_id", auth, user, async (request, r
                 tranding_diamonds: post.tranding_diamonds > 0 ? post.tranding_diamonds - .17 : 0,
             }
         })
-        
+
         response.status(200).json({
             status: 200,
             updatedComments: newPost.comments,
@@ -367,6 +442,7 @@ router.put("/comment/unlike/:post_id/:comment_id", auth, user, async (request, r
 router.delete("/comment/delete/:post_id/:comment_id", auth, async (request, response) => {
     try {
 
+
         const { post_id, comment_id } = request.params;
         const post = await Post.findById({ _id: post_id });
 
@@ -377,7 +453,7 @@ router.delete("/comment/delete/:post_id/:comment_id", auth, async (request, resp
         const newPost = await Post.findById(request.params.post_id).populate("comments.user", "first_name last_name image");
 
         // Diamonds
-        if (request.user?._id.toString() !== post?.user?._id.toString()){
+        if (request.user?._id.toString() !== post?.user?._id.toString()) {
             await Post.findByIdAndUpdate(request.params.post_id, {
                 $set: {
                     post_diamonds: post.post_diamonds > 0 ? post.post_diamonds - .17 : 0,
@@ -467,6 +543,13 @@ router.put("/view/:post_id", auth, user, async (request, response) => {
 router.put("/like/:post_id", auth, user, async (request, response) => {
     try {
 
+
+
+
+        await SendPostPushNotification(request.params.post_id, `${request.user?.first_name} ${request.user?.last_name}`, "Liked your post...")
+
+
+
         const post = await Post.findByIdAndUpdate(request.params.post_id, {
             $push: { likes: request.user._id },
         });
@@ -517,7 +600,7 @@ router.put("/like/:post_id", auth, user, async (request, response) => {
 router.put("/unlike/:post_id", auth, user, async (request, response) => {
     try {
 
-
+        await SendPostPushNotification(request.params.post_id, `${request.user?.first_name} ${request.user?.last_name}`, `UnLiked your post...`);
         const post = await Post.findByIdAndUpdate(request.params.post_id, {
             $pull: { likes: request.user._id }
         });
@@ -556,6 +639,7 @@ router.put("/unlike/:post_id", auth, user, async (request, response) => {
 router.put("/diamond/:post_id", auth, user, async (request, response) => {
     try {
 
+        await SendPostPushNotification(request.params.post_id, `${request.user?.first_name} ${request.user?.last_name}`, `Send you ${request.body.post_diamonds} diamonds...`);
 
         // Tranactions
         const sender_id = request.user.id;
@@ -669,6 +753,7 @@ router.put("/share/:post_id", auth, user, async (request, response) => {
     try {
 
 
+        await SendPostPushNotification(request.params.post_id, `${request.user?.first_name} ${request.user?.last_name}`, `Stared your post...`);
         const post = await Post.findById(request.params.post_id);
         post.shares.push({
             user: request.user.id,

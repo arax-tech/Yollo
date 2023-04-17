@@ -49,14 +49,15 @@ import Referral from './src/views/screens/Settings/Referral';
 import MemoriesTimeline from './src/views/screens/Memories/MemoriesTimeline';
 import CreatePost from './src/views/screens/Post/CreatePost';
 import ProfileActivePostTimeline from './src/views/screens/Profile/ProfileActivePostTimeline';
-import ProfileReactedPostTimeline from './src/views/screens/Profile/ProfileReactedPostTimeline';
 import ProfileInActivePostTimeline from './src/views/screens/Profile/ProfileInActivePostTimeline';
 import InActiveSignlePost from './src/views/screens/Profile/InActiveSignlePost';
 import Prompts from './src/views/components/Prompts';
 import Suggested from './src/views/screens/Profile/Suggested';
 
+import EditPost from './src/views/screens/Post/EditPost';
 
 import { requestUserPermission, NotificationListner } from "./src/utils/PushNotificationHelpers";
+import { Alert, BackHandler } from 'react-native';
 
 
 const Stack = createNativeStackNavigator();
@@ -86,6 +87,31 @@ const App = () => {
         NotificationListner();
     }, [])
 
+    useEffect(() => {
+        const backAction = () => {
+            Alert.alert("Hold On!", "Are you sure to exit App ?", [
+                {
+                    text: "Cancel",
+                    onPress: () => null,
+                    style: "cancel"
+                }, {
+                    text: "Yes",
+                    onPress: () => BackHandler.exitApp()
+                }
+            ]);
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+        );
+
+        return () => backHandler.remove();
+    }, [])
+
+
+
 
     return (
         <Provider store={Store}>
@@ -95,7 +121,7 @@ const App = () => {
                     {show ? <Stack.Screen options={{ headerShown: false }} name="Splash" component={Splash} /> : null}
                     <Stack.Screen options={{ headerShown: false }} name="Check" component={Check} />
                     <Stack.Screen options={{ headerShown: false }} name="AuthWelcome" component={AuthWelcome} />
-                    <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
+                    <Stack.Screen options={{ headerShown: false, headerBackVisible: false }} name="Login" component={Login} />
                     <Stack.Screen options={{ headerTitle: "" }} name="OTPVerification" component={OTPVerification} />
 
                     <Stack.Screen options={{ headerShown: false }} name="HomeNavigation" component={BottomNavigation} />
@@ -112,6 +138,7 @@ const App = () => {
 
 
                     <Stack.Screen options={{ headerShown: false }} name="Add" component={CreatePost} />
+                    <Stack.Screen options={{ headerShown: false }} name="EditPost" component={EditPost} />
                     <Stack.Screen options={{ headerShown: false }} name="CreateSuccess" component={CreateSuccess} />
                     <Stack.Screen options={{ headerShown: false }} name="PostCreateSuccess" component={PostCreateSuccess} />
 
@@ -120,7 +147,6 @@ const App = () => {
                     <Stack.Screen options={{ headerShown: false }} name="ProfileInActivePostTimeline" component={ProfileInActivePostTimeline} />
                     <Stack.Screen options={{ headerShown: false }} name="SignlePost" component={SignlePost} />
                     <Stack.Screen options={{ headerShown: false }} name="InActiveSignlePost" component={InActiveSignlePost} />
-                    <Stack.Screen options={{ headerShown: false }} name="PublicProfile" component={PublicProfile} />
                     <Stack.Screen options={{ headerShown: false }} name="ProfileTabs" component={ProfileTabs} />
                     <Stack.Screen options={{ headerShown: false }} name="Suggested" component={Suggested} />
                     <Stack.Screen options={{ headerShown: false }} name="ProfileEdit" component={ProfileEdit} />

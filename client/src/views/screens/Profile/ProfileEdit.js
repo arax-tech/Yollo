@@ -13,8 +13,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Dialog } from 'react-native-paper';
 import { Dropdown } from 'react-native-element-dropdown';
 
-import { launchImageLibrary } from 'react-native-image-picker';
-import { IconFontisto, IconIonicons, IconFeather, IconSimpleLineIcons, IconAntDesign, IconFontAwesome, IconFontAwesome5, IconEntypo, IconOcticons, IconMaterialIcons, IconMaterialCommunityIcons, IconEvilIcons, IconFoundation, IconZocial } from '../../components/Icons'
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { IconAntDesign } from '../../components/Icons'
 import { SearchAction } from '../../../redux/actions/SearchAction'
 import { OpenPromptAction } from '../../../redux/actions/YelloAction'
 import IcomComponent from './IcomComponent'
@@ -22,14 +22,20 @@ import IcomComponent from './IcomComponent'
 
 import ImgToBase64 from 'react-native-image-base64';
 
+import CountryPicker from 'react-native-country-picker-modal';
 
 import PhotoEditor from "@baronha/react-native-photo-editor";
+import { useNavigation } from '@react-navigation/native'
 
-const ProfileEdit = ({ navigation }) => {
+const ProfileEdit = () => {
 
+    const navigation = useNavigation();
     const dispatch = useDispatch();
+
+    
+
     const { loading, user } = useSelector((state) => state.auth);
-    const { loading: updateLoading, message, isUpdated, isCreated } = useSelector((state) => state.updateProfile);
+    const { loading: updateLoading, message, isUpdated, isCreated, status } = useSelector((state) => state.updateProfile);
     const { loading: badgesLoading, badges } = useSelector((state) => state.search);
 
 
@@ -42,46 +48,61 @@ const ProfileEdit = ({ navigation }) => {
         return getBadges;
     }, [dispatch, navigation])
 
-
+    const [model1, setModel1] = useState(false);
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [fileName, setFileName] = useState('');
-    const launchImagePicker = async () => {
-        const result = await launchImageLibrary({ mediaType: "photo", includeBase64: true });
-        // setFileName(result.assets[0].fileName.split("_lib_temp_")[1])
-        // setImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
-        // setImagePreview(result.assets[0].uri);
-        showPhotoEditor(result.assets[0].uri)
-    }
 
-    const requestPermission = async () => {
-        try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.CAMERA, {
-                title: "Yello App Camera Permission",
-                message: "Yello App take access to your pictures so you can select awesome pictures.",
-                buttonNeutral: "Ask Me Later",
-                buttonNegative: "Cancel",
-                buttonPositive: "Okay"
-            },);
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                launchImagePicker();
-            } else {
-                ToastAndroid.show("Camera permission denied", ToastAndroid.SHORT);
+
+
+
+    const requestCameraPermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.CAMERA,
+                    {
+                        title: 'Camera Permission',
+                        message: 'App needs camera permission',
+                    },
+                );
+                // If CAMERA Permission is granted
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } catch (err) {
+                console.warn(err);
+                return false;
             }
-        } catch (error) {
-            console.log(error)
-        }
-    }
+        } else return true;
+    };
 
-   
+    const requestExternalWritePermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: 'External Storage Write Permission',
+                        message: 'App needs write permission',
+                    },
+                );
+                // If WRITE_EXTERNAL_STORAGE Permission is granted
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } catch (err) {
+                console.warn(err);
+                alert('Write permission err', err);
+            }
+            return false;
+        } else return true;
+    };
+
+
     const showPhotoEditor = async (image) => {
         try {
             const Options = {
                 path: image,
             }
             const result = await PhotoEditor.open(Options);
-            if (result !== null) {                
+            if (result !== null) {
                 const base64String1 = await ImgToBase64.getBase64String(result);
                 console.log(result.split("/Pictures/")[1])
                 setImage(`data:image/jpeg;base64,${base64String1}`);
@@ -95,6 +116,53 @@ const ProfileEdit = ({ navigation }) => {
             console.log(error);
         }
     }
+
+    const captureImage = async (type) => {
+        let options = { mediaType: type };
+        let isCameraPermitted = await requestCameraPermission();
+        let isStoragePermitted = await requestExternalWritePermission();
+        if (isCameraPermitted && isStoragePermitted) {
+            launchCamera(options, (response) => {
+                setModel1(false);
+                if (response.didCancel) {
+                    console.log('User cancelled camera picker');
+                    return;
+                } else if (response.errorCode == 'camera_unavailable') {
+                    console.log('Camera not available on device');
+                    return;
+                } else if (response.errorCode == 'permission') {
+                    console.log('Permission not satisfied');
+                    return;
+                } else if (response.errorCode == 'others') {
+                    console.log(response.errorMessage)
+                    return;
+                }
+                showPhotoEditor(response.assets[0].uri);
+
+            });
+        }
+    };
+
+    const chooseFile = (type) => {
+        let options = { mediaType: type };
+        launchImageLibrary(options, (response) => {
+            setModel1(false);
+            if (response.didCancel) {
+                console.log('User cancelled camera picker');
+                return;
+            } else if (response.errorCode == 'camera_unavailable') {
+                console.log('Camera not available on device');
+                return;
+            } else if (response.errorCode == 'permission') {
+                console.log('Permission not satisfied');
+                return;
+            } else if (response.errorCode == 'others') {
+                console.log(response.errorMessage);
+                return;
+            }
+            showPhotoEditor(response.assets[0].uri);
+        });
+    };
 
     const [birthday, setBirthDay] = useState(user?.birthday);
 
@@ -145,7 +213,6 @@ const ProfileEdit = ({ navigation }) => {
         country: user?.country ? user?.country : null,
         city: user?.city ? user?.city : null,
         bio: user?.bio ? user?.bio : null,
-        new_user: false,
     });
 
     const InpChnage = (text, field) => {
@@ -185,49 +252,34 @@ const ProfileEdit = ({ navigation }) => {
     const BadgeFunction = async (id) => {
 
 
-
+        // Items
         let newItems = [...items];
         let index = newItems.findIndex(item => item?.badge === id);
-
-        // console.log(index)
         if (newItems[index]?.badge === id) {
-            newItems.filter(item => item?.badge === id);
+            newItems.splice(index, 1);
         } else {
             newItems[index] = { ...newItems.push({ badge: id }) };
-
         }
         setItems(newItems);
 
 
 
         // Pices
-
-
         let newPices = [...pices];
         let index1 = newPices.findIndex(pice => pice === id);
-        // console.log(index1)
-        if (index1 === 0) {
-            newPices.filter(pice => pice === id);
+        if (newPices[index1] === id) {
+            newPices.splice(index1, 1);
         } else {
             newPices[index1] = { ...newPices.push(id) };
-
         }
         setPices(newPices);
-
-        // let index0 = pices.indexOf(id);
-        // // console.log(id)
-        // console.log(index0)
-        // if (index0 === -1) {
-        //     // setPices([...items.slice(0, index), ...items.slice(index, items.length - 1)]);
-        //     // setPices(...pices.splice(setPices, 1))
-        //     setPices([...pices => pices.splice(index0, 1)]);
-        // } else {
-        //     setPices([...pices, id]);
-        // }
     }
 
     // console.log(items)
     // console.log(pices)
+    // console.log(`Items ${items.length}`)
+    // console.log(`Pices ${pices.length}`)
+
     const BadgeItem = ({ badge, index }) => {
         const isSelected = pices.includes(index)
 
@@ -260,14 +312,16 @@ const ProfileEdit = ({ navigation }) => {
         } else if (data.bio === null) {
             ToastAndroid.show('Bio is required...', ToastAndroid.SHORT);
         } else {
-            await dispatch(ProfileUpdateAction(data.first_name, data.last_name, data.username, data.email, data.phone, gender, birthday, data.country, data.city, data.bio, data.new_user, image, fileName, items));
+            await dispatch(ProfileUpdateAction(data.first_name, data.last_name, data.username, data.email, data.phone, gender, birthday, data.country, data.city, data.bio, image, fileName, items));
 
         }
     }
 
 
+    // console.log(status)
+
     useEffect(() => {
-        if (isUpdated && isUpdated === true) {
+        if (status && status === 200) {
             // ToastAndroid.show(message, ToastAndroid.SHORT);
             dispatch(OpenPromptAction(true, 'Success', message && message))
             dispatch({ type: UPDATE_PROFILE_RESET });
@@ -275,12 +329,16 @@ const ProfileEdit = ({ navigation }) => {
             navigation.navigate("Profile")
 
         }
+        if (status && status === 500) {
+            dispatch(OpenPromptAction(true, 'Opps', message && message))
+            dispatch({ type: UPDATE_PROFILE_RESET });
+        }
         if (isCreated && isCreated === true) {
             ToastAndroid.show(message && message, ToastAndroid.SHORT);
             dispatch({ type: CREATE_TAG_RESET });
 
         }
-    }, [dispatch, navigation, isUpdated, isCreated, message])
+    }, [dispatch, navigation, status, isCreated, message])
     return (
         loading || badgesLoading || updateLoading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
@@ -322,7 +380,7 @@ const ProfileEdit = ({ navigation }) => {
 
                         </View>
                         <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                            <TouchableOpacity onPress={requestPermission}>
+                            <TouchableOpacity onPress={() => setModel1(true)}>
                                 <Text style={styles.chnageProfileTxt}>Change Profile</Text>
                             </TouchableOpacity>
                         </View>
@@ -405,11 +463,22 @@ const ProfileEdit = ({ navigation }) => {
 
 
                         <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
-
                             <View style={[styles.inputGroup, { width: '49%' }]}>
                                 <Text style={styles.formLabel}>Country</Text>
-                                <TextInput style={styles.formInput} value={data.country} onChangeText={(text) => InpChnage(text, 'country')} />
+                                <CountryPicker
+                                    theme={{ fontSize: 14 }}
+                                    containerButtonStyle={[styles.formInput, { padding: 15, fontSize: 10 }]}
+                                    withFilter
+                                    withEmoji
+                                    onSelect={(country) => InpChnage(country?.name, 'country')}
+                                    value={data.country}
+                                    placeholder={data.country}
+                                />
                             </View>
+                            {/* <View style={[styles.inputGroup, { width: '49%' }]}>
+                                <Text style={styles.formLabel}>Country</Text>
+                                <TextInput style={styles.formInput} value={data.country} onChangeText={(text) => InpChnage(text, 'country')} />
+                            </View> */}
                             <View style={[styles.inputGroup, { width: '49%' }]}>
                                 <Text style={styles.formLabel}>City</Text>
                                 <TextInput style={styles.formInput} value={data.city} onChangeText={(text) => InpChnage(text, 'city')} />
@@ -467,6 +536,27 @@ const ProfileEdit = ({ navigation }) => {
 
                 </ScrollView>
 
+                <Dialog visible={model1} style={{ backgroundColor: "#fff" }} onDismiss={() => setModel1(false)}>
+                    <Dialog.Content>
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                            <View>
+                                <Text style={{ fontSize: 20, fontWeight: '700', color: Colors.dark }}>Choose...</Text>
+                            </View>
+                            <TouchableOpacity onPress={() => setModel1(false)}>
+                                <IconAntDesign name='close' size={22} color={Colors.dark} style={{ marginBottom: 0 }} />
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity style={styles.chooseType} onPress={() => chooseFile('photo')}>
+                            <Text style={styles.chooseTypeText}>From Gallery</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.chooseType} onPress={() => captureImage('photo')}>
+                            <Text style={styles.chooseTypeText}>From Camera </Text>
+                        </TouchableOpacity>
+
+                    </Dialog.Content>
+
+                </Dialog>
 
                 <Dialog visible={model} style={{ backgroundColor: "#fff" }} onDismiss={() => setModel(false)}>
                     <Dialog.Content>
@@ -540,6 +630,8 @@ const styles = StyleSheet.create({
     selectedTextStyle: { fontFamily: Fonts.primary, fontSize: 14, color: Colors.dark, },
 
 
-    tagList: { width: '100%', flexDirection: 'row', alignItems: 'center' }
+    tagList: { width: '100%', flexDirection: 'row', alignItems: 'center' },
+    chooseType: { backgroundColor: "#f2f2f2", padding: 15, marginBottom: 3, borderRadius: 20 },
+    chooseTypeText: { fontFamily: Fonts.primary, fontSize: 14, color: Colors.dark, },
 
 })

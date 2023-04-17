@@ -101,24 +101,30 @@ export const VerificationAction = (otp, email, phone, type, code) => async (disp
     }
 }
 
-
 export const AuthUserAction = () => async (dispatch) => {
     try {
         dispatch({ type: AUTH_USER_REQUEST });
 
-        const { data } = await axios.get(`${APP_URL}/user/profile`);
+        const { data } = await axios.get(`${APP_URL}/user/profile`, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
         dispatch({
             type: AUTH_USER_SUCCESS,
             payload: data
-        })
-
+        });
     } catch (error) {
         dispatch({
             type: AUTH_USER_FAIL,
-            payload: error.response.data
+            payload: error.response.data,
         })
+
     }
 }
+
+
+
 
 export const GetUserAction = (id) => async (dispatch) => {
     try {
@@ -212,12 +218,12 @@ export const CreatetagAction = (name) => async (dispatch) => {
 }
 
 
-export const ProfileUpdateAction = (first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user, image = null, fileName = null, badges) => async (dispatch) => {
+export const ProfileUpdateAction = (first_name, last_name, username, email, phone, gender, birthday, country, city, bio, image = null, fileName = null, badges) => async (dispatch) => {
     try {
         dispatch({ type: UPDATE_PROFILE_REQUEST });
 
         const { data } = await axios.put(`${APP_URL}/user/profile`, {
-            first_name, last_name, username, email, phone, gender, birthday, country, city, bio, new_user, image, fileName, badges
+            first_name, last_name, username, email, phone, gender, birthday, country, city, bio, image, fileName, badges
         });
         dispatch({
             type: UPDATE_PROFILE_SUCCESS,

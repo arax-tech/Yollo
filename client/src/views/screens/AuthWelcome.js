@@ -19,7 +19,8 @@ const AuthWelcome = ({ navigation }) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
             <View style={styles.container}>
                 <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
-                <Image style={styles.logo} source={require('../../assets/logo.png')} />
+                {/* <Image style={styles.logo} source={require('../../assets/logo.png')} /> */}
+                <Image style={[styles.logo, { width: 130, height: 130 }]} source={require('../../assets/logo0.png')} />
                 <Text style={styles.title}>
                     Welcome back to <Text style={{ color: Colors.primary }}>YOLLO</Text> to see the latest and trendy moments from your friends and <Text style={{ color: Colors.primary }}>YOLLO</Text>ers
                 </Text>

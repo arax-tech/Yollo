@@ -18,6 +18,9 @@ import {
     SINGLE_POST_SUCCESS,
     SINGLE_POST_FAIL,
 
+    UPDATE_POST_REQUEST,
+    UPDATE_POST_SUCCESS,
+    UPDATE_POST_FAIL,
 
     DELETE_POST_REQUEST,
     DELETE_POST_SUCCESS,
@@ -135,6 +138,30 @@ export const CreatePostAction = (caption, hashtag, images, who_can_see, allow_co
     } catch (error) {
         dispatch({
             type: CREATE_POST_FAIL,
+            payload: error.response.data,
+        })
+
+    }
+}
+
+
+export const UpdatePostAction = (caption, hashtag, images, who_can_see, allow_comments, allow_reactions, allow_high_quality, post_id) => async (dispatch) => {
+    try {
+        dispatch({ type: UPDATE_POST_REQUEST });
+
+        const { data } = await axios.put(`${APP_URL}/user/post/update/${post_id}`, {
+            caption, hashtag, images, who_can_see, allow_comments, allow_reactions, allow_high_quality,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        dispatch({
+            type: UPDATE_POST_SUCCESS,
+            payload: data
+        });
+    } catch (error) {
+        dispatch({
+            type: UPDATE_POST_FAIL,
             payload: error.response.data,
         })
 

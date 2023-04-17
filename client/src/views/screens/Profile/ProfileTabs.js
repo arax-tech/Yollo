@@ -1,4 +1,4 @@
-import { StatusBar, StyleSheet, TouchableOpacity, Text, View, SafeAreaView, Dimensions } from 'react-native'
+import { StatusBar, StyleSheet, TouchableOpacity, Text, View, SafeAreaView } from 'react-native'
 
 import Followers from './Followers'
 import Following from './Following'
@@ -10,14 +10,25 @@ import Colors from '../../../constants/Colors';
 import Loading from '../../components/Loading';
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { IconAntDesign } from '../../components/Icons';
+import { AllSuggessionAction } from '../../../redux/actions/YelloAction';
+import { useNavigation } from '@react-navigation/native';
+import { useEffect } from 'react';
 const Tab = createMaterialTopTabNavigator();
 
 
-const ProfileTabs = ({ navigation }) => {
+const ProfileTabs = () => {
 
     const { loading, user } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
+    useEffect(() => {
+        const getSuggestion = navigation.addListener('focus', async () => {
+            dispatch(AllSuggessionAction());
+        });
+        return getSuggestion
+    }, [navigation, dispatch])
 
 
     return (
@@ -71,7 +82,7 @@ const ProfileTabs = ({ navigation }) => {
                         name="Following"
                         options={{
                             tabBarIcon: ({ focused }) => (
-                                <Text style={{ fontSize: 14, color: focused ? Colors.dark : Colors.darkLight, fontWeight: focused ? '600' : '500', marginLeft: -20, marginRight: -20 }}>Following</Text>
+                                <Text style={{ fontSize: 14, color: focused ? Colors.dark : Colors.darkLight, fontWeight: focused ? '600' : '500', marginLeft: -20, marginRight: -20 }}>following</Text>
                             )
                         }}
                         component={Following} />
@@ -81,7 +92,7 @@ const ProfileTabs = ({ navigation }) => {
                         name="Suggested"
                         options={{
                             tabBarIcon: ({ focused }) => (
-                                <Text style={{ fontSize: 14, color: focused ? Colors.dark : Colors.darkLight, fontWeight: focused ? '600' : '500', marginLeft: -25, marginRight: -22 }}>Suggested</Text>
+                                <Text style={{ fontSize: 14, color: focused ? Colors.dark : Colors.darkLight, fontWeight: focused ? '600' : '500', marginLeft: -25, marginRight: -22 }}>suggeste</Text>
                             )
                         }}
                         component={Suggested} />

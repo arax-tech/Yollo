@@ -63,7 +63,7 @@ const OTPVerification = ({ navigation }) => {
 
     useEffect(() => {
         if (isAuthenticated && isAuthenticated === true) {
-            navigation.navigate("HomeNavigation");
+            navigation.navigate("Profile");
         }
         if (status && status === 202) {
             ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -79,7 +79,7 @@ const OTPVerification = ({ navigation }) => {
             dispatch({ type: CLEAR_ERRORS });
         }
 
-    }, [dispatch, navigation, isAuthenticated, status, errors, message])
+    }, [dispatch, navigation, isAuthenticated, status, errors, user, message])
 
 
     useEffect(() => {

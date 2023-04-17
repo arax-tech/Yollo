@@ -7,6 +7,8 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 
 import Colors from '../../../constants/Colors';
+import { IconAntDesign, IconEntypo, IconFeather, IconOcticons, IconSimpleLineIcons } from '../../components/Icons';
+
 
 
 import ProfileInfo from './ProfileInfo'
@@ -20,35 +22,19 @@ import { useDispatch, useSelector } from 'react-redux';
 const Tab = createMaterialTopTabNavigator();
 
 import { Avatar, Dialog } from 'react-native-paper';
-import { AuthUserAction } from '../../../redux/actions/AuthAction';
+import { AuthUserAction, GetUserAction } from '../../../redux/actions/AuthAction';
 import { SVGFollow, SVGPublicView, SVGSettings } from '../../components/Svgs';
-import styles from './NewProfileStyle';
-import IcomComponent from './IcomComponent';
 
-import { IconFontisto, IconIonicons, IconFeather, IconSimpleLineIcons, IconAntDesign, IconFontAwesome, IconFontAwesome5, IconEntypo, IconOcticons, IconMaterialIcons, IconMaterialCommunityIcons, IconEvilIcons, IconFoundation, IconZocial } from '../../components/Icons'
-import { useNavigation } from '@react-navigation/native';
+
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
 
-
-
-const Profile = () => {
+const PublicProfile = ({ route, navigation }) => {
+    const { userId, authUser } = route.params;
+    console.log(authUser?.first_name)
     const dispatch = useDispatch();
-    const navigation = useNavigation();
-
-    useEffect(() => {
-        const getUser = navigation.addListener('focus', async () => {
-            await dispatch(AuthUserAction());
-        });
-        return getUser
-    }, [navigation, dispatch])
-
-    const [model0, setModel0] = useState(false);
-    const modelHande = () => {
-        setModel0(!model0);
-    }
 
     const [model, setModel] = useState(false);
 
@@ -60,17 +46,22 @@ const Profile = () => {
 
 
     const { loading, user, reactions, activePosts, profilePostYouLikes, profilePostLikes } = useSelector((state) => state.auth);
-
-    const [isActive, setIsActive] = useState('ProfilePost')
+    const [isActive, setIsActive] = useState('ProfilePostLikes')
     const setStatusFilter = (status) => {
         setIsActive(status);
     }
 
-
+    useEffect(() => {
+        const getUser = navigation.addListener('focus', async () => {
+            await dispatch(GetUserAction(userId));
+        });
+        return getUser
+    }, [navigation, dispatch])
 
     return (
         loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
+                {/* Report Model */}
                 <Modal
                     backdropColor='rgba(0,0,0,0.7)'
                     isVisible={isModalVisible}
@@ -86,8 +77,7 @@ const Profile = () => {
                             width: 300,
                             height: 200,
                             zIndex: 999,
-                            backgroundColor: Colors.white,
-                            borderRadius: 20
+                            backgroundColor: Colors.white
                         }}>
 
 
@@ -107,10 +97,7 @@ const Profile = () => {
                                     <Text style={styles.modelTitle}>Followers</Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.modelList} onPress={() => {
-                                navigation.navigate("PublicProfile", { userId: user?._id })
-                                toggleModal()
-                            }}>
+                            <TouchableOpacity style={styles.modelList}>
                                 <View style={styles.modelInside}>
                                     <SVGPublicView style={styles.modelImage} />
                                     {/* <Image source={require('../../../assets/images/icons/public-view.png')} resizeMode='contain' style={styles.modelImage} /> */}
@@ -133,72 +120,77 @@ const Profile = () => {
                     </View>
 
                 </Modal>
-                <ScrollView>
+
+
+
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
 
 
-                    <View style={[styles.container, { borderBottomColor: "#dee1e3", borderBottomWidth: 1 }]}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: -14 }}>
-                            <Image style={{ width: 30, height: 30 }} resizeMode='contain' source={require('../../../assets/logo0.png')} />
-                            <View style={{ flexDirection: "row" , marginRight:-10}}>
-                                <TouchableOpacity style={{ width: 30 }} onPress={() => navigation.navigate("FindFirends")}>
-                                    <IconAntDesign name='adduser' size={20} color={Colors.dark} />
+
+
+
+
+
+
+                    <View style={styles.container}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: -55, marginBottom: -30 }}>
+                            <TouchableOpacity style={styles.postBackButton} onPress={() => navigation.goBack()}>
+                                <IconAntDesign name='arrowleft' size={23} color={Colors.dark} />
+                            </TouchableOpacity>
+
+                            <Image style={{ width: 80 }} resizeMode='contain' source={require('../../../assets/logo.png')} />
+                            <View style={{ flexDirection: "row" }}>
+                                <TouchableOpacity style={{ marginRight: 15, marginLeft: -15 }}>
+                                    <IconSimpleLineIcons name='bell' size={20} color={Colors.dark} />
                                 </TouchableOpacity>
-                                
-                                <TouchableOpacity style={{ width: 30 }} onPress={toggleModal}>
+                                <TouchableOpacity>
                                     <IconEntypo name='dots-three-vertical' size={20} color={Colors.dark} />
                                 </TouchableOpacity>
                             </View>
                         </View>
 
-                        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 10, marginBottom: 5 }}>
-                            <View />
-                            <TouchableOpacity style={{ alignItems: "center" }} onPress={() => navigation.navigate("ProfileTabs")}>
-                                <Text style={[styles.figures, { fontWeight: "900" }]}>{user?.followers.length}</Text>
-                                <Text style={[styles.reactions, { color: "#939393" }]}>Followers</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
+                            <TouchableOpacity style={{ flexDirection: 'column' }}>
+                                <Text style={[styles.text, { fontSize: 25, fontWeight: 'bold' }]}>{user?.followers.length}</Text>
+                                <Text style={styles.text}>Followers</Text>
                             </TouchableOpacity>
-                            <View />
-
                             {
                                 user?.image ? (
-                                    <Image style={styles.userImage} resizeMode="cover" source={{ uri: user?.image }} />
+                                    <Image style={{ width: 102, height: 104, borderRadius: 7 }} resizeMode='contain' source={{ uri: user?.image.url }} />
                                 ) : (
-                                    <Image style={styles.userImage} resizeMode="cover" source={require('../../../assets/images/profile-placeholder.png')} />
+                                    <Image style={{ width: 120, height: 120, borderRadius: 7 }} resizeMode='contain' source={require('../../../assets/images/profile-placeholder.png')} />
                                 )
                             }
-                            {/* <Image style={styles.userImage} resizeMode="cover"
-                                source={require("./assets/rectangle-6586.png")}
-                            /> */}
-                            <View />
-                            <View style={{ alignItems: "center" }}>
-                                <Text style={[styles.k, styles.figures, { fontWeight: "900" }]}>{reactions?.length}</Text>
-                                <Text style={[styles.reactions, { color: "#939393" }]}>{`Reactions `}</Text>
+                            <View style={{ flexDirection: 'column' }}>
+                                <Text style={[styles.text, { fontSize: 25, fontWeight: 'bold' }]}>{reactions?.length}</Text>
+                                <Text style={styles.text}>Reactions</Text>
                             </View>
-                            <View />
                         </View>
-                        <Text style={styles.username}>{user?.first_name} {user?.last_name}</Text>
-
-
-                        <Text style={styles.userName1}>@{user?.username}</Text>
                         <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                            <TouchableOpacity style={styles.buttonInfo} onPress={() => navigation.navigate('ProfileEdit')}>
-                                <Text style={styles.buttonInfoText}>Edit Profile</Text>
-                            </TouchableOpacity>
+                            <Text style={[styles.text, { fontSize: 16, fontWeight: '900', marginTop: 10 }]}>{user?.first_name} {user?.last_name}</Text>
+                            <Text style={[styles.text, { fontSize: 16, fontWeight: '600' }]}>{user?.username}</Text>
+                            {
+                                authUser?._id === userId ? (
+                                    <TouchableOpacity style={styles.buttonInfo}>
+                                        <Text style={styles.buttonInfoText}>Public View</Text>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity style={styles.buttonInfo}>
+                                        <Text style={styles.buttonInfoText}>Follow</Text>
+                                    </TouchableOpacity>
+                                )
+                            }
+
                         </View>
-                        <Text style={[styles.description]}>{user?.bio}</Text>
+
 
 
                     </View>
 
-                    {
-                        user?.badges?.length > 0 && (
-                            <View style={{ borderBottomColor: "#dee1e3", borderBottomWidth: 1, paddingVertical: 10, backgroundColor: Colors.white }}>
-                                <ProfileInfo modelHande={modelHande} />
-                            </View>
-                        )
-                    }
 
 
+                    <ProfileInfo />
                     <View style={styles.tabContainer}>
                         <View style={{ flexDirection: "row", backgroundColor: "#fff", padding: 0 }}>
                             <TouchableOpacity style={[styles.tabBtn, isActive === "ProfilePost" && styles.tabBtnActive]} onPress={() => setStatusFilter("ProfilePost")}>
@@ -229,57 +221,27 @@ const Profile = () => {
 
                     {isActive === "ProfilePostYouReacted" && <ProfilePostYouReacted posts={profilePostYouLikes} />}
 
+
                 </ScrollView>
-
-                <Dialog visible={model0} style={{ backgroundColor: "#fff" }} onDismiss={() => modelHande()}>
-                    <Dialog.Content style={{ maxHeight: deviceHeight - 150 }}>
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 10, marginTop: -8 }}>
-                            <View>
-                                <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.dark }}>More Badges...</Text>
-                            </View>
-
-                            <TouchableOpacity onPress={() => modelHande()}>
-                                <IconAntDesign name='close' size={22} color={Colors.dark} style={{ marginBottom: 0 }} />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ marginHorizontal: -24, borderBottomWidth: 1, borderBottomColor: '#D9D9D9' }} />
-                        <ScrollView showsVerticalScrollIndicator={false}>
-
-
-                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', padding: 0, alignItems: 'center', justifyContent: 'center', marginTop: 10, }}>
-
-                                {
-                                    user?.badges?.slice(6, user?.badges?.length).map((bad) => (
-                                        <View key={bad?._id} style={styles.tagButton}>
-                                            <IcomComponent type={`Icon${bad?.badge?.type}`} name={bad?.badge?.icon} size={15} color={bad?.badge?.color} />
-                                            <Text style={styles.tagButtonText}>{bad?.badge?.name}</Text>
-                                        </View>
-                                    ))
-                                }
-
-
-
-
-
-                                <TouchableOpacity onPress={() => modelHande()} style={[styles.tagButton, { backgroundColor: Colors.lightGray }]}>
-                                    <Text style={styles.tagButtonText}>Show Less</Text>
-                                </TouchableOpacity>
-
-
-
-
-
-
-
-                            </View>
-                        </ScrollView>
-
-                    </Dialog.Content>
-
-                </Dialog>
-            </SafeAreaView>
+            </SafeAreaView >
     )
 }
 
-export default Profile
+export default PublicProfile
 
+const styles = StyleSheet.create({
+    container: { padding: 20 },
+    text: { fontFamily: Fonts.primary, fontSize: 14, color: Colors.dark, textAlign: 'center' },
+
+    modelList: { flex: 1, flexDirection: 'row', alignItems: "center", borderBottomWidth: 2, borderBottomColor: Colors.borderGray },
+    modelInside: { flex: 1, flexDirection: 'row', alignItems: "center", paddingLeft: 20 },
+    modelImage: { height: 20, width: 20, marginRight: 10 },
+    modelTitle: { fontFamily: Fonts.primary, fontSize: 14, color: Colors.dark, },
+
+    buttonInfo: { backgroundColor: Colors.buttonInfo, paddingVertical: 10, paddingHorizontal: 20, margin: 10, borderRadius: 20, zIndex: 1 },
+    buttonInfoText: { fontFamily: Fonts.primary, fontSize: 14, color: Colors.white, textAlign: 'center', fontWeight: '700' },
+
+    tabContainer: { width: "100%", alignItems: "center", justifyContent: "center" },
+    tabBtn: { width: deviceWidth / 3, flexDirection: 'row', padding: 15, justifyContent: 'center' },
+    tabBtnActive: { borderBottomWidth: 2, borderColor: "#262626" }
+})

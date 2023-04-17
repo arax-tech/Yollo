@@ -26,7 +26,8 @@ const Check = ({ navigation, }) => {
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
                 <View style={styles.container}>
                     <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
-                    <Image style={styles.logo} source={require('../../assets/logo.png')} />
+                    <Image style={[styles.logo, { width: 130, height: 130 }]} source={require('../../assets/logo0.png')} />
+                    {/* <Image style={styles.logo} source={require('../../assets/logo.png')} /> */}
 
                     <Text style={styles.title}>
                         You must be 13 to use this app

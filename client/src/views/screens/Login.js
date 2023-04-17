@@ -66,9 +66,10 @@ const Login = ({ navigation }) => {
                 <SafeAreaView >
                     <View style={styles.container}>
                         <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
-                        <View style={{ flex: 1, flexDirection: 'row', alignItems: "center" }}>
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent:"center", alignItems: "center", marginBottom:30 }}>
                             <Text style={styles.heading}>Welcome to </Text>
-                            <Image style={styles.logo} source={require('../../assets/logo.png')} />
+                            <Image style={[styles.logo, {width:40, height:40,marginBottom:-10}]} source={require('../../assets/logo0.png')} />
+                            {/* <Image style={styles.logo} source={require('../../assets/logo.png')} /> */}
                         </View>
                         <Text style={styles.title}>OTP Verification</Text>
                         <Text style={styles.subtitle}>We will send  you a one time password to your {type == 'phone' ? 'mobile number' : 'email address'}</Text>

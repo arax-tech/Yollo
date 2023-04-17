@@ -139,59 +139,6 @@ const Comment = ({ onCloseFunction, post }) => {
 
                                 comments?.map((comment) => (
                                     <View key={comment?._id} style={styles.userCommentContainer}>
-                                        {/* <Modal
-                                            backdropColor='rgba(0,0,0,0.7)'
-                                            isVisible={isModalVisible}
-                                            deviceWidth={deviceWidth}
-                                            deviceHeight={deviceHeight}
-                                            animationType={"slide"}
-                                            coverScreen={false}
-                                            transparent={true}>
-
-                                            <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                                                <View style={{
-                                                    width: 300,
-                                                    height: 140,
-                                                    backgroundColor: Colors.lightGray,
-                                                    borderRadius: 20
-                                                }}>
-
-
-                                                    <TouchableOpacity onPress={toggleModal} style={{ flex: 1, alignItems: 'flex-end', padding: 15 }}>
-                                                        <IconAntDesign name='close' size={22} color={Colors.dark} style={{ marginBottom: 3 }} />
-
-                                                    </TouchableOpacity>
-
-
-                                                    <TouchableOpacity style={[styles.modelList, { marginTop: -40 }]} >
-                                                        <View style={styles.modelInside}>
-                                                            <IconAntDesign name='exclamationcircleo' size={23} color={Colors.primary} style={{ marginRight: 10 }} />
-                                                            <Text style={styles.modelTitle}>Report</Text>
-                                                        </View>
-                                                    </TouchableOpacity>
-
-
-                                                    {
-                                                        post?.user._id === user?._id || user?._id === authToken ? (
-                                                            // <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingRight: 10 }} onPress={() => DeleteCommentFunction(comment?._id)}>
-                                                            //     <IconAntDesign name={'delete'} size={16} color={Colors.dark} />
-                                                            // </TouchableOpacity>
-                                                            <TouchableOpacity style={[styles.modelList, { borderBottomColor: 'transparent' }]} onPress={() => DeleteCommentFunction(comment?._id)}>
-                                                                <View style={styles.modelInside}>
-                                                                    <IconIonicons name='trash-outline' size={23} color={"#FF375F"} style={{ marginRight: 10 }} />
-                                                                    <Text style={styles.modelTitle}>Delete Comment</Text>
-                                                                </View>
-                                                            </TouchableOpacity>
-                                                        ) : ""
-                                                    }
-
-
-
-
-                                                </View>
-                                            </View>
-
-                                        </Modal> */}
 
                                         <TouchableOpacity onLongPress={() => {
                                             setDeleteId(comment?._id)

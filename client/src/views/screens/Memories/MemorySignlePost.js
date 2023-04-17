@@ -22,11 +22,11 @@ const MemorySignlePost = ({ item }) => {
                 <View style={{ position: 'absolute', zIndex: 1, top: 0, paddingHorizontal: 25, paddingVertical: 20, width: Dimensions.get('window').width }}>
 
                     <View style={{ flex: 1, flexDirection: 'row', alignItems: "center", justifyContent: 'space-between' }}>
-                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Memories')}>
                             <IconAntDesign name='arrowleft' size={23} color={Colors.white} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "flex-end", flexDirection: "row", }} onPress={() => navigation.goBack()}>
+                        <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "flex-end", flexDirection: "row", }}>
                             <IconAntDesign name='heart' size={18} color={Colors.white} />
                             <Text style={{ color: "#fff", fontSize: 16, marginLeft: 3, marginTop: -2 }}> {item?.likes.length + item?.shares.length + item?.comments.length}</Text>
                         </TouchableOpacity>

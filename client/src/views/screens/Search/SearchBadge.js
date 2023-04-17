@@ -9,13 +9,13 @@ const components = {
 }
 function IcomComponent({ type, name, size, color }) {
     const SpecificIcon = components[type]
-    return <SpecificIcon name={name} size={size} color={color} style={{marginRight:3}}/>
+    return <SpecificIcon name={name} size={size} color={color} style={{ marginRight: 3 }} />
 }
 
 const SearchBadge = ({ badges, start }) => {
-    
+
     return (
-        
+
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', }}>
             {
                 start === false ?
@@ -23,8 +23,8 @@ const SearchBadge = ({ badges, start }) => {
                         badges?.map((badge) => (
                             <View key={badge?._id} style={styles.tagList}>
                                 <TouchableOpacity style={[styles.tagButton, { padding: 10 }]}>
-                                    <IcomComponent type={`Icon${badge.type}`} name={badge?.icon} size={15} color={Colors.dark} />
-                                <Text style={styles.tagButtonText}>{badge?.name}</Text>
+                                    <IcomComponent type={`Icon${badge.type}`} name={badge?.icon} size={15} color={badge?.color} />
+                                    <Text style={styles.tagButtonText}>{badge?.name}</Text>
                                 </TouchableOpacity>
                                 <Text style={[styles.tagButtonText, { opacity: 0.5 }]}>1.8M people with same interest</Text>
                             </View>

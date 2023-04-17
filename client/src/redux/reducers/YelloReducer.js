@@ -19,6 +19,11 @@ import {
     HIDE_NOTIFICATION_FAIL,
     HIDE_NOTIFICATION_RESET,
 
+    UPDATE_FCM_REQUEST,
+    UPDATE_FCM_SUCCESS,
+    UPDATE_FCM_FAIL,
+    UPDATE_FCM_RESET,
+
     PROMPT_OPEN,
     PROMPT_CLOSE,
 
@@ -36,6 +41,7 @@ export const yelloReducer = (state = {}, action) => {
         case FOLLOW_REQUEST:
         case UNFOLLOW_REQUEST:
         case HIDE_NOTIFICATION_REQUEST:
+        case UPDATE_FCM_REQUEST:
             return {
                 ...state,
                 loading: true,
@@ -47,6 +53,12 @@ export const yelloReducer = (state = {}, action) => {
                 loading: false,
                 status: action.payload.status,
                 users: action.payload.users
+            };
+        case UPDATE_FCM_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                message: action.payload.message,
             };
 
         case FOLLOW_SUCCESS:
@@ -63,6 +75,7 @@ export const yelloReducer = (state = {}, action) => {
         case FOLLOW_FAIL:
         case UNFOLLOW_FAIL:
         case HIDE_NOTIFICATION_FAIL:
+        case UPDATE_FCM_FAIL:
             return {
                 ...state,
                 loading: false,
@@ -75,6 +88,7 @@ export const yelloReducer = (state = {}, action) => {
         case FOLLOW_RESET:
         case UNFOLLOW_RESET:
         case HIDE_NOTIFICATION_RESET:
+        case UPDATE_FCM_RESET:
             return {
                 ...state,
                 message: null,

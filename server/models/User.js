@@ -40,6 +40,7 @@ const userSchema = new mongoose.Schema({
     following: [{ user: { type: mongoose.Schema.ObjectId, ref: "User", required: true } }],
     resetPasswordToken: String,
     resetPasswordExpire: Date,
+    fcm_token: { type: String },
     tokens: [
         {
             token: {
