@@ -327,7 +327,7 @@ const InActiveSignlePost = ({ item }) => {
                                     </View>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity style={styles.rightSideItem} onPress={toggleRewardModal}>
+                                <TouchableOpacity style={styles.rightSideItem}>
                                     <View style={{ alignItems: 'center' }}>
                                         {/* <Image style={[styles.actionButton, { width: 25, marginBottom: 1 }]} resizeMode='contain' source={require('../../../assets/images/icons/clock-plus.png')} /> */}
                                         <SVGClockPlusFinal style={{ width: 29, height: 29, padding: 5, marginBottom: 1, }} />

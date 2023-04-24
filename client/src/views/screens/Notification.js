@@ -13,21 +13,26 @@ import { HIDE_NOTIFICATION_RESET } from '../../redux/constants/YelloConstant'
 
 const Notification = ({ navigation }) => {
     const dispatch = useDispatch();
-    const { loading, notifications } = useSelector((state) => state.auth);
-    const { loading: notificaionLoading, message, isHide } = useSelector((state) => state.yello);
-
+    
     useEffect(() => {
         const getUserNotification = navigation.addListener('focus', async () => {
             await dispatch(AuthUserAction());
         });
         return getUserNotification;
-    }, [navigation, dispatch]);
+    }, [navigation, dispatch]); 
+    
+    const { loading, notifications } = useSelector((state) => state.auth);
+    const { loading: notificaionLoading, message, isHide } = useSelector((state) => state.yello);
+
+    
 
     useEffect(() => {
         if (isHide && isHide == true) {
             dispatch({ type: HIDE_NOTIFICATION_RESET });
         }
     }, [dispatch, isHide])
+
+    // console.log(notifications)
 
 
     const HideNotification = async (id) => {

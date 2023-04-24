@@ -82,7 +82,7 @@ const ProfileTabs = () => {
                         name="Following"
                         options={{
                             tabBarIcon: ({ focused }) => (
-                                <Text style={{ fontSize: 14, color: focused ? Colors.dark : Colors.darkLight, fontWeight: focused ? '600' : '500', marginLeft: -20, marginRight: -20 }}>following</Text>
+                                <Text style={{ fontSize: 14, color: focused ? Colors.dark : Colors.darkLight, fontWeight: focused ? '600' : '500', marginLeft: -20, marginRight: -20 }}>Following</Text>
                             )
                         }}
                         component={Following} />
@@ -92,7 +92,7 @@ const ProfileTabs = () => {
                         name="Suggested"
                         options={{
                             tabBarIcon: ({ focused }) => (
-                                <Text style={{ fontSize: 14, color: focused ? Colors.dark : Colors.darkLight, fontWeight: focused ? '600' : '500', marginLeft: -25, marginRight: -22 }}>suggeste</Text>
+                                <Text style={{ fontSize: 14, color: focused ? Colors.dark : Colors.darkLight, fontWeight: focused ? '600' : '500', marginLeft: -25, marginRight: -22 }}>Suggested</Text>
                             )
                         }}
                         component={Suggested} />

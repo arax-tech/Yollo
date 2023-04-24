@@ -22,6 +22,7 @@ import SearchTimeline from '../screens/Search/SearchTimeline';
 import ProfileReactedPostTimeline from '../screens/Profile/ProfileReactedPostTimeline';
 import FindFirends from '../screens/Profile/FindFirends';
 import PublicProfile from '../screens/Profile/PublicProfile';
+import ProfileEdit from '../screens/Profile/ProfileEdit';
 
 const Tab = createBottomTabNavigator();
 
@@ -58,6 +59,7 @@ const BottomNavigation = () => {
             <Tab.Screen name="FollowingPost" options={() => ({tabBarItemStyle: { display: "none" }})} component={FollowingPost} />
             <Tab.Screen name="FindFirends" options={() => ({tabBarItemStyle: { display: "none" }})} component={FindFirends} />
             <Tab.Screen name="PublicProfile" options={() => ({tabBarItemStyle: { display: "none" }})} component={PublicProfile} />
+            <Tab.Screen name="ProfileEdit" options={() => ({tabBarItemStyle: { display: "none" }})} component={ProfileEdit} />
             
             <Tab.Screen
                 name="ProfileReactedPostTimeline"

@@ -15,7 +15,7 @@ import { useNavigation } from '@react-navigation/native'
 import { Dropdown } from 'react-native-element-dropdown'
 
 
-import { ADD_DIAMOND_INTO_POST_RESET, SHARE_POST_RESET } from '../../../redux/constants/ReactionConstant'
+import { ADD_DIAMOND_INTO_POST_RESET, LIKE_POST_RESET, SHARE_POST_RESET } from '../../../redux/constants/ReactionConstant'
 
 import Share from 'react-native-share';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -34,7 +34,7 @@ const Post = ({ item, isActive, RemoveFormTimeline }) => {
     const dispatch = useDispatch();
 
     const { user, diamonds, authToken } = useSelector((state) => state.auth);
-    const { message, status, updatedDaimonds } = useSelector((state) => state.reaction);
+    const { message, status, updatedDaimonds, IsLiked } = useSelector((state) => state.reaction);
     const { loading: yelloLoading, users, status: Fstatus, message: fmessage } = useSelector((state) => state.yello);
 
     const FollowFunction = async (follow_user_id) => {
@@ -113,11 +113,13 @@ const Post = ({ item, isActive, RemoveFormTimeline }) => {
     const [show, setShow] = useState(false);
     useEffect(() => {
         setTimeout(() => {
-            // setShow(false)
             fadeOut()
+            // setShow(false)
         }, 1000)
 
     }, [show])
+
+
 
 
     const likeHandel = async () => {
@@ -240,11 +242,13 @@ const Post = ({ item, isActive, RemoveFormTimeline }) => {
         }
 
         if (message && message === "Post Share Successfully...") {
-            // ToastAndroid.show(message, ToastAndroid.SHORT);
             dispatch({ type: SHARE_POST_RESET });
-            dispatch(AuthUserAction());
         }
 
+        if (status && status === 20111) {
+            setShow(false)
+            dispatch({ type: LIKE_POST_RESET });
+        }
         if (status && status === 2010) {
             ToastAndroid.show(message, ToastAndroid.SHORT);
             dispatch({ type: ADD_DIAMOND_INTO_POST_RESET });

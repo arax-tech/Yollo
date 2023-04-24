@@ -38,12 +38,12 @@ const Profile = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    useEffect(() => {
-        const getUser = navigation.addListener('focus', async () => {
-            await dispatch(AuthUserAction());
-        });
-        return getUser
-    }, [navigation, dispatch])
+    // useEffect(() => {
+    //     const getUser = navigation.addListener('focus', async () => {
+    //         await dispatch(AuthUserAction());
+    //     });
+    //     return getUser
+    // }, [navigation, dispatch])
 
     const [model0, setModel0] = useState(false);
     const modelHande = () => {
@@ -61,7 +61,7 @@ const Profile = () => {
 
     const { loading, user, reactions, activePosts, profilePostYouLikes, profilePostLikes } = useSelector((state) => state.auth);
 
-    const [isActive, setIsActive] = useState('ProfilePost')
+    const [isActive, setIsActive] = useState('ProfilePostLikes')
     const setStatusFilter = (status) => {
         setIsActive(status);
     }

@@ -105,7 +105,6 @@ export const reactionReducer = (state = {}, action) => {
             };
 
         case CREATE_COMMENT_SUCCESS:
-        case LIKE_COMMENT_SUCCESS:
         case UNLIKE_COMMENT_SUCCESS:
         case DELETE_COMMENT_SUCCESS:
             return {
@@ -113,6 +112,14 @@ export const reactionReducer = (state = {}, action) => {
                 status: action.payload.status,
                 message: action.payload.message,
                 updatedComments: action.payload.updatedComments,
+            };
+        case LIKE_COMMENT_SUCCESS:
+            return {
+                ...state,
+                status: action.payload.status,
+                message: action.payload.message,
+                updatedComments: action.payload.updatedComments,
+                IsLiked:true,
             };
 
         case VIEW_POST_FAIL:
@@ -128,6 +135,7 @@ export const reactionReducer = (state = {}, action) => {
             return {
                 ...state,
                 loading: false,
+                IsLiked: false,
                 message: action.payload.message,
                 status: action.payload.status,
                 errors: action.payload,

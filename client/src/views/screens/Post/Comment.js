@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     userName: { fontFamily: Fonts.primary, fontSize: 13, fontWeight: '500', color: Colors.dark },
 
     userCommentContainer: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20, paddingBottom: 10, borderBottomWidth: 2, borderBottomColor: "#f2f2f2" },
-    userComment: { fontFamily: Fonts.primary, fontSize: 14, fontWeight: '700', color: Colors.dark },
+    userComment: { fontFamily: Fonts.primary, fontSize: 14, color: Colors.dark },
     userCommentTime: { fontFamily: Fonts.primary, fontSize: 12, fontWeight: '100', color: Colors.dark },
 
     modelList: { flex: 1, flexDirection: 'row', alignItems: "center", borderBottomWidth: 1, borderBottomColor: '#f2f2f2' },

@@ -18,40 +18,37 @@ const PublicProfilePost = ({ posts }) => {
                         <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', padding: 5 }}>
                             {
                                 posts?.map((post, index) => (
-                                    // <ProfileSinglePost key={index} post={post} navigate={"ProfileActivePostTimeline"} />
-                                    <>
-                                        <TouchableOpacity key={index} style={styles.imageContainer}>
+                                    <TouchableOpacity key={index} style={styles.imageContainer}>
 
-                                            <View style={styles.iconContainer}>
+                                        <View style={styles.iconContainer}>
 
-                                                <View style={styles.actionButton}>
-                                                    <IconIonicons name='eye-outline' size={19} color={Colors.white} />
-                                                    <Text style={styles.actionText}>{post?.views.length}</Text>
-                                                </View>
-
-
-                                                <View style={styles.actionButton}>
-                                                    <IconAntDesign name='hearto' size={15} color={Colors.white} style={{ marginTop: 3 }} />
-                                                    <Text style={styles.actionText}>{post?.likes.length}</Text>
-                                                </View>
-
-
-                                                <View style={styles.actionButton}>
-                                                    <IconAntDesign name='message1' size={15} color={Colors.white} style={{ marginTop: 3 }} />
-                                                    <Text style={styles.actionText}>{post?.comments.length}</Text>
-                                                </View>
+                                            <View style={styles.actionButton}>
+                                                <IconIonicons name='eye-outline' size={19} color={Colors.white} />
+                                                <Text style={styles.actionText}>{post?.views.length}</Text>
                                             </View>
 
-                                            <Image style={styles.mainImage} source={{ uri: post.images[0] ? post.images[0].image : "" }} resizeMode='contain' />
-                                        </TouchableOpacity>
-                                    </>
+
+                                            <View style={styles.actionButton}>
+                                                <IconAntDesign name='hearto' size={15} color={Colors.white} style={{ marginTop: 3 }} />
+                                                <Text style={styles.actionText}>{post?.likes.length}</Text>
+                                            </View>
+
+
+                                            <View style={styles.actionButton}>
+                                                <IconAntDesign name='message1' size={15} color={Colors.white} style={{ marginTop: 3 }} />
+                                                <Text style={styles.actionText}>{post?.comments.length}</Text>
+                                            </View>
+                                        </View>
+
+                                        <Image style={styles.mainImage} source={{ uri: post.images[0] ? post.images[0].image : "" }} resizeMode='contain' />
+                                    </TouchableOpacity>
                                 ))
 
                             }
                         </View>
                     ) : (
                         <View style={{ padding: 30 }}>
-                            <Text style={{ color: "#000", textAlign: "center" }}>User has not posted anything yet</Text>
+                            <Text style={{ color: "#000", textAlign: "center" }}>Record not found...</Text>
                         </View>
                     )
                 }

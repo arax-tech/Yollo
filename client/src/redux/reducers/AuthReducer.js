@@ -48,15 +48,19 @@ import {
 
 } from "../constants/AuthConstant";
 
-export const AuthReducer = (state = { user: {} }, action) => {
+export const AuthReducer = (state = {}, action) => {
+    // console.log(action.type)
     switch (action.type) {
         case LOGIN_REQUEST:
         case VERIFY_REQUEST:
+            return {
+                loading: true,
+                isAuthenticated: false
+            };
         case AUTH_USER_REQUEST:
         case GET_USER_REQUEST:
             return {
                 loading: true,
-                isAuthenticated: false
             };
         case LOGIN_SUCCESS:
             return {
@@ -69,14 +73,20 @@ export const AuthReducer = (state = { user: {} }, action) => {
                 email: action.payload.email,
                 code: action.payload.code,
             };
-        case AUTH_USER_SUCCESS:
         case VERIFY_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                isAuthenticated: true,
                 message: action.payload.message,
                 status: action.payload.status,
+                user: action.payload.user,
+            };
+        case AUTH_USER_SUCCESS:
+        case GET_USER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                isAuthenticated: true,
                 user: action.payload.user,
                 tags: action.payload.tags,
                 diamonds: action.payload.diamonds,
@@ -85,23 +95,8 @@ export const AuthReducer = (state = { user: {} }, action) => {
                 activePosts: action.payload.activePosts,
                 profilePostLikes: action.payload.profilePostLikes,
                 profilePostYouLikes: action.payload.profilePostYouLikes,
-                token: action.payload.token,
                 authToken: action.payload.authToken,
             };
-
-        case GET_USER_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                message: action.payload.message,
-                status: action.payload.status,
-                user: action.payload.user,
-                reactions: action.payload.reactions,
-                activePosts: action.payload.activePosts,
-                profilePostLikes: action.payload.profilePostLikes,
-                profilePostYouLikes: action.payload.profilePostYouLikes,
-            };
-
         case AUTH_LOGOUT_SUCCESS:
         case ACCOUNT_DISABLE_SUCCESS:
         case ACCOUNT_DELETE_SUCCESS:

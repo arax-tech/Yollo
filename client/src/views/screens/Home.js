@@ -10,14 +10,22 @@ import Colors from '../../constants/Colors'
 import Post from './Post/Post'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { PostViewAction } from '../../redux/actions/ReactionAction'
-import { AuthUserAction } from '../../redux/actions/AuthAction'
+import { NotificationListner, requestUserPermission } from '../../utils/PushNotificationHelpers'
 
 const Home = ({ navigation }) => {
 
     const dispatch = useDispatch();
+
+
+    useEffect(() => {
+        requestUserPermission();
+        NotificationListner();
+    }, [])
     
+    const { loading, isAuthenticated, user } = useSelector((state) => state.auth);
 
-
+    // console.log(`new user  ${user?.new_user}`)
+    // console.log(`auth  ${isAuthenticated}`)
 
     useEffect(() => {
         navigation.addListener("focus", () => {
@@ -33,9 +41,10 @@ const Home = ({ navigation }) => {
             } else {
                 navigation.navigate("HomeNavigation");
             }
+        }else{
+            navigation.navigate("Login");
         }
         const getPosts = navigation.addListener('focus', async () => {
-            await dispatch(AuthUserAction());
             await dispatch(PostsAction());
         });
 
@@ -43,7 +52,7 @@ const Home = ({ navigation }) => {
     }, [dispatch, navigation, isAuthenticated, user])
 
 
-    const { loading, isAuthenticated, user } = useSelector((state) => state.auth);
+   
     const { loading: postLoading, posts } = useSelector((state) => state.post);
 
 
@@ -52,19 +61,18 @@ const Home = ({ navigation }) => {
         // setPosts(newPosts);
     }
 
-    // const [viewabilityConfiguration, setViewabilityConfiguration] = useState({
-    //     waitForInteraction: true,
-    //     viewAreaCoveragePercentThreshold: 40,
-    // });
+    const [viewabilityConfiguration, setViewabilityConfiguration] = useState({
+        waitForInteraction: true,
+        viewAreaCoveragePercentThreshold: 40,
+    });
 
 
-    // const onViewFunction = useCallback(async (viewableItems) => {
-    //     const { changed } = viewableItems;
-    //     await dispatch(PostViewAction(changed[0]?.key))
-    // }, [])
+    const onViewFunction = useCallback(async (viewableItems) => {
+        const { changed } = viewableItems;
+        await dispatch(PostViewAction(changed[0]?.key))
+    }, [])
 
-    // viewabilityConfig = { viewabilityConfiguration }
-    // onViewableItemsChanged = { onViewFunction }
+
 
 
 
@@ -72,14 +80,15 @@ const Home = ({ navigation }) => {
 
 
     return (
-        postLoading && loading? <Loading /> :
+        postLoading && loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }} forceInset={{ top: 'always' }}>
                 <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
                 <FlatList
                     data={posts}
                     pagingEnabled
                     keyExtractor={item => item._id.toString()}
-
+                    viewabilityConfig={viewabilityConfiguration}
+                    onViewableItemsChanged={onViewFunction}
                     renderItem={({ item }) => (
                         <Post key={item._id} item={item} isActive={"ForYou"} RemoveFormTimeline={RemoveFormTimeline} />
                     )}

@@ -241,8 +241,8 @@ const PublicProfile = ({ route, navigation }) => {
                             <View style={{ flexDirection: 'row', marginHorizontal: -24, flexWrap: 'wrap', padding: 0, alignItems: 'center', justifyContent: 'center', marginTop: 10, }}>
 
                                 {
-                                    user?.badges?.slice(6, user?.badges?.length).map((bad) => (
-                                        <View key={bad?._id} style={styles.tagButton}>
+                                    user?.badges?.slice(6, user?.badges?.length).map((bad, index) => (
+                                        <View key={index} style={styles.tagButton}>
                                             <IcomComponent type={`Icon${bad?.badge?.type}`} name={bad?.badge?.icon} size={15} color={bad.color} />
                                             <Text style={styles.tagButtonText}>{bad?.badge?.name}</Text>
                                         </View>

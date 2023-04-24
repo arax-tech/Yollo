@@ -82,10 +82,7 @@ const App = () => {
         setInterval(getReward, 60000);
     }, [Store.dispatch])
 
-    useEffect(() => {
-        requestUserPermission();
-        NotificationListner();
-    }, [])
+   
 
     useEffect(() => {
         const backAction = () => {
@@ -149,7 +146,7 @@ const App = () => {
                     <Stack.Screen options={{ headerShown: false }} name="InActiveSignlePost" component={InActiveSignlePost} />
                     <Stack.Screen options={{ headerShown: false }} name="ProfileTabs" component={ProfileTabs} />
                     <Stack.Screen options={{ headerShown: false }} name="Suggested" component={Suggested} />
-                    <Stack.Screen options={{ headerShown: false }} name="ProfileEdit" component={ProfileEdit} />
+                    {/* <Stack.Screen options={{ headerShown: false }} name="ProfileEdit" component={ProfileEdit} /> */}
 
                     <Stack.Screen options={{ headerShown: false }} name="Settings" component={Settings} />
                     <Stack.Screen options={{ headerShown: false }} name="Account" component={Account} />

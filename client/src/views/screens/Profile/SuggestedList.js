@@ -19,6 +19,7 @@ const SuggestedList = ({ user0 }) => {
     const { loading: followLoading, status, message: msg } = useSelector((state) => state.yello);
 
     const [follower, setFollower] = useState(false);
+    const [following, setFollowing] = useState(false);
 
 
     const FollowFunction = async (follow_user_id) => {
@@ -54,7 +55,7 @@ const SuggestedList = ({ user0 }) => {
 
     // console.log(user0._id)
     useEffect(() => {
-        const getFollowers = navigation.addListener('focus', async () => {
+        const getReleation = navigation.addListener('focus', async () => {
             user?.following?.map((data) => {
                 if (data?.user?._id === user0._id) {
                     setFollower(true)
@@ -62,9 +63,19 @@ const SuggestedList = ({ user0 }) => {
                     setFollower(false)
                 }
             })
+            user?.followers?.map((data) => {
+                console.log(data?.user?._id)
+                if (data?.user?._id === user0._id) {
+                    setFollowing(true)
+                } else {
+                    setFollowing(false)
+                }
+            })
         });
-        return getFollowers
+        return getReleation
     }, [navigation, dispatch])
+
+    // console.log(following)
 
     return (
         loading || followLoading ? <Loading /> :
@@ -84,7 +95,7 @@ const SuggestedList = ({ user0 }) => {
                 </TouchableOpacity>
                 <View style={styles.contentRight}>
                     {
-                        follower ? (
+                        follower || following ? (
                             <TouchableOpacity style={styles.buttonWarning} onPress={() => UnFollowFunction(user0?._id)}>
                                 <Text style={styles.buttonWarningText}>Unfollow</Text>
                             </TouchableOpacity>

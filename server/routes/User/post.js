@@ -583,7 +583,7 @@ router.put("/like/:post_id", auth, user, async (request, response) => {
 
 
         response.status(200).json({
-            status: 200,
+            status: 20111,
             message: "Like Successfully...",
         });
 

@@ -13,7 +13,8 @@ const Followers = () => {
                 <ScrollView>
                     {
                         user?.followers.map((user, index) => (
-                            <SuggestedList key={index} user0={user} />
+                            // console.log(._first_name)
+                            <SuggestedList key={index} user0={user?.user} />
                         ))
                     }
                 </ScrollView>

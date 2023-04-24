@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 // Table Schema/Migration
 const postSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.ObjectId, ref: "User", required: true },
-    caption: { type: String, required: true },
+    caption: { type: String },
     hashtag: { type: String },
     who_can_see: { type: String, required: true },
     allow_comments: { type: Boolean, required: true },

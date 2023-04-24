@@ -59,6 +59,7 @@ export const yelloReducer = (state = {}, action) => {
                 ...state,
                 loading: false,
                 message: action.payload.message,
+                IsFcmUpdated: true,
             };
 
         case FOLLOW_SUCCESS:
@@ -76,10 +77,12 @@ export const yelloReducer = (state = {}, action) => {
         case UNFOLLOW_FAIL:
         case HIDE_NOTIFICATION_FAIL:
         case UPDATE_FCM_FAIL:
+        case UPDATE_FCM_FAIL:
             return {
                 ...state,
                 loading: false,
                 isHide: false,
+                IsFcmUpdated: false,
                 message: action.payload.message,
                 status: action.payload.status,
                 errors: action.payload,

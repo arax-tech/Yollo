@@ -221,7 +221,6 @@ export const CreatetagAction = (name) => async (dispatch) => {
 export const ProfileUpdateAction = (first_name, last_name, username, email, phone, gender, birthday, country, city, bio, image = null, fileName = null, badges) => async (dispatch) => {
     try {
         dispatch({ type: UPDATE_PROFILE_REQUEST });
-
         const { data } = await axios.put(`${APP_URL}/user/profile`, {
             first_name, last_name, username, email, phone, gender, birthday, country, city, bio, image, fileName, badges
         });

@@ -5,7 +5,7 @@ import Fonts from '../../constants/Fonts'
 import { PrimaryButton } from '../components/Button'
 import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../components/Loading'
-import { LoginAction, VerificationAction } from '../../redux/actions/AuthAction'
+import { AuthUserAction, LoginAction, VerificationAction } from '../../redux/actions/AuthAction'
 import { CLEAR_ERRORS } from '../../redux/constants/AuthConstant'
 
 const OTPVerification = ({ navigation }) => {
@@ -14,10 +14,10 @@ const OTPVerification = ({ navigation }) => {
     const Pin3Ref = useRef(null);
     const Pin4Ref = useRef(null);
 
-    const [Pin1, setPin1] = useState(null);
-    const [Pin2, setPin2] = useState(null);
-    const [Pin3, setPin3] = useState(null);
-    const [Pin4, setPin4] = useState(null);
+    const [Pin1, setPin1] = useState(1);
+    const [Pin2, setPin2] = useState(7);
+    const [Pin3, setPin3] = useState(8);
+    const [Pin4, setPin4] = useState(6);
 
 
     const [timerCount, setTimer] = useState(30)
@@ -62,10 +62,8 @@ const OTPVerification = ({ navigation }) => {
 
 
     useEffect(() => {
-        if (isAuthenticated && isAuthenticated === true) {
-            navigation.navigate("Profile");
-        }
         if (status && status === 202) {
+            dispatch(AuthUserAction());
             ToastAndroid.show(message, ToastAndroid.SHORT);
             if (user?.new_user === true) {
                 navigation.navigate("ProfileEdit");

@@ -25,6 +25,7 @@ router.post('/login', async (request, response) => {
     try {
 
         const { phone, email, type, code } = request.body;
+        console.log(code)
 
         // Phone Registration
         if (type == "phone") {
@@ -61,57 +62,95 @@ router.post('/login', async (request, response) => {
                 });
             }
         } else {
-
-            const message = `Your account verification OTP  is 👇 \n\n${otp}\n\n\nIf you have not requested this email then, please ignore this email... \n\n\nRegard Yello`;
-            // await sendEmail({
-            //     email: email,
-            //     subject: "Yello - OTP Verification",
-            //     message
-            // });
-
-
             // Email Registration
             const user = await User.findOne({ email: email });
 
+            let message = '';
+            let subject = '';
 
             if (user) {
                 // Update Existing OTP
+                message = `Dear ${user.first_name} ${user.last_name},<br/><br/>Welcome back to the world of YOLLO,<br/><br/>To ensure the security of your account, we require you to verify your Email. Please enter the following OTP (One-Time Password) in the verification screen to confirm your account:<br/><br/>OTP Code: <span style='font-weight:bold;'>${otp}</span><br/><br/>Please note that this OTP is valid for only 10 minutes. If you do not verify your account within this time frame, you will need to request a new OTP.<br/><br/>If you did not sign up for YOLLO, please ignore this email.<br/><br/>Best regards,<br/>The YOLLO Team.`;
+                subject = "Your YOLLO Verification Code";
                 const _id = user.id;
                 await User.findByIdAndUpdate(_id, { otp: otp, status: 'Active' });
-
-                response.status(200).json({
-                    status: 200,
-                    email: email,
-                    phone: null,
-                    type: type,
-                    code: code,
-                    message: "OTP Send Successfully...",
-                });
             } else {
                 // Save new User Email
                 await User.create({ email: request.body.email, otp: otp, status: 'Active' });
 
-                const user = await User.findOne({ email: email });
-                await Diamond.create({
-                    user: user._id,
-                    diamonds: 1000,
-                    transactions: {
-                        user: user._id,
-                        diamonds: "1000",
-                        type: "Reciver",
-                        tranAt: new Date(Date.now()),
-                    }
-                });
+                subject = "Your YOLLO Login Verification Code";
+                message = `Thank you for joining YOLLO, the new social media app that connects you with friends, family, and like-minded individuals from all around the world.<br/><br/>To ensure the security of your account, we require you to verify your Email. Please enter the following OTP (One-Time Password) in the verification screen to confirm your account:<br/><br/>OTP Code: <span style='font-weight:bold;'>${otp}</span><br/><br/>Please note that this OTP is valid for only 10 minutes. If you do not verify your account within this time frame, you will need to request a new OTP.<br/><br/>We're excited to have you as part of the YOLLO community and can't wait to see what you'll share with us.<br/><br/>If you did not sign up for YOLLO, please ignore this email.<br/><br/>Best regards,<br/>The YOLLO Team.`;
 
-                response.status(200).json({
-                    status: 200,
-                    email: email,
-                    phone: null,
-                    type: type,
-                    code: code,
-                    message: "OTP Send Successfully...",
-                });
+                if (code){
+                    const codeUser = await User.findById(code);
+                    const user = await User.findOne({ email: email });
+                    console.log(user._id)
+                    // Reffered User Reward
+                    await Diamond.create({
+                        user: user._id,
+                        diamonds: 500,
+                        transactions: {
+                            user: user._id,
+                            diamonds: "500",
+                            type: "Sender",
+                            tranAt: new Date(Date.now()),
+                        }
+                    });
+
+
+                    // SignUp Reward
+                    await Diamond.create({
+                        user: user._id,
+                        diamonds: 1000,
+                        transactions: {
+                            user: user._id,
+                            diamonds: "1000",
+                            type: "Reciver",
+                            tranAt: new Date(Date.now()),
+                        }
+                    });
+                    
+                    // Referral Reward
+                    await Diamond.create({
+                        user: codeUser._id,
+                        diamonds: 500,
+                        transactions: {
+                            user: codeUser._id,
+                            diamonds: "500",
+                            type: "Sender",
+                            tranAt: new Date(Date.now()),
+                        }
+                    });
+
+                }else{
+                    // SignUp Reward
+                    const user = await User.findOne({ email: email });
+                    await Diamond.create({
+                        user: user._id,
+                        diamonds: 1000,
+                        transactions: {
+                            user: user._id,
+                            diamonds: "1000",
+                            type: "Reciver",
+                            tranAt: new DatOTPe(Date.now()),
+                        }
+                    });
+                }
             }
+            // await sendEmail({
+            //     email: email,
+            //     subject: subject,
+            //     message
+            // });
+
+            response.status(200).json({
+                status: 200,
+                email: email,
+                phone: null,
+                type: type,
+                code: code,
+                message: "OTP Send Successfully...",
+            });
         }
 
 
@@ -156,6 +195,7 @@ router.post('/verify', async (request, response) => {
             response.status(200).json({
                 status: 202,
                 message: "Login Successfully...",
+                user: loginUser,
                 token: token,
             })
         }

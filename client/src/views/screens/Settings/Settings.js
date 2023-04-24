@@ -108,7 +108,7 @@ const Settings = ({ navigation }) => {
 
                     <TouchableOpacity style={[styles.settingList, { marginTop: 5 }]}>
                         <SVGSettingTerms />
-                        <Text style={styles.settingListTitle}>Terms & Condition </Text>
+                        <Text style={styles.settingListTitle}>Terms and Conditions </Text>
                         <View style={styles.contentRight}>
                             <IconFontAwesome5 name='chevron-right' size={20} color='#6C63FF' />
                         </View>

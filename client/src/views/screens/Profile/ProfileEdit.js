@@ -32,7 +32,7 @@ const ProfileEdit = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    
+
 
     const { loading, user } = useSelector((state) => state.auth);
     const { loading: updateLoading, message, isUpdated, isCreated, status } = useSelector((state) => state.updateProfile);

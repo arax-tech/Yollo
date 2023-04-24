@@ -15,7 +15,7 @@ const Login = ({ navigation }) => {
 
     const [type, setType] = useState('email')
     const [phone, setPhone] = useState(null);
-    const [email, setEmail] = useState('arham@info.com');
+    const [email, setEmail] = useState(null);
     const [code, setCode] = useState(null);
     const [show, setShow] = useState(false);
 
