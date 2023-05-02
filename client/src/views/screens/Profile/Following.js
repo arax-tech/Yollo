@@ -6,7 +6,7 @@ import Loading from '../../components/Loading'
 import SuggestedList from './SuggestedList'
 
 const Following = () => {
-    const { loading, user } = useSelector((state) => state.auth);
+    const { loading, user } = useSelector((state) => state.user);
     return (
         loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, padding: 10, backgroundColor: Colors.white }}>

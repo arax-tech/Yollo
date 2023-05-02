@@ -33,8 +33,7 @@ const Search = ({ route, navigation }) => {
 
     const { HashTag } = route.params;
 
-    const { loading: searchLoading, users, badges } = useSelector((state) => state.search);
-    const { loading: postLoading, posts } = useSelector((state) => state.post);
+    const { loading, posts, users, badges } = useSelector((state) => state.search);
 
     const [searchPosts, setSearchPosts] = useState(posts);
     const [searchUsers, setSearchUsers] = useState(users);
@@ -123,7 +122,7 @@ const Search = ({ route, navigation }) => {
 
 
     return (
-        searchLoading && postLoading ? <Loading /> :
+        loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
 
 
@@ -183,7 +182,7 @@ const Search = ({ route, navigation }) => {
 
                         </View>
                     </View>
-                    {isActive === "Top" && <SearchTop posts={searchPosts} />}
+                    {isActive === "Top" && <SearchTop posts={posts} />}
                     {isActive === "Hashtag" && <SearchHashtag posts={searchHashtags} start={start} text={search} />}
                     {/* {isActive === "NearYou" && <SearchNearYou />} */}
                     {isActive === "User" && <SearchUser users={searchUsers} start={start} />}

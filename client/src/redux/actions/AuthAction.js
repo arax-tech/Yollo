@@ -101,25 +101,46 @@ export const VerificationAction = (otp, email, phone, type, code) => async (disp
     }
 }
 
+// export const AuthUserAction = () => async (dispatch) => {
+//     try {
+//         dispatch({ type: AUTH_USER_REQUEST });
+
+//         const { data } = await axios.get(`${APP_URL}/user/profile`, {
+//             headers: {
+//                 "Content-Type": "application/json",
+//             }
+//         });
+//         dispatch({
+//             type: AUTH_USER_SUCCESS,
+//             payload: data
+//         });
+//     } catch (error) {
+//         console.log(error)
+
+//         // dispatch({
+//         //     type: AUTH_USER_FAIL,
+//         //     payload: error.response.data,
+//         // })
+
+//     }
+// }
+
 export const AuthUserAction = () => async (dispatch) => {
     try {
         dispatch({ type: AUTH_USER_REQUEST });
 
-        const { data } = await axios.get(`${APP_URL}/user/profile`, {
-            headers: {
-                "Content-Type": "application/json",
-            }
-        });
+        const { data } = await axios.get(`${APP_URL}/user/profile`);
         dispatch({
             type: AUTH_USER_SUCCESS,
             payload: data
-        });
-    } catch (error) {
-        dispatch({
-            type: AUTH_USER_FAIL,
-            payload: error.response.data,
         })
 
+    } catch (error) {
+        console.log(error)
+        dispatch({
+            type: AUTH_USER_FAIL,
+            payload: error
+        })
     }
 }
 

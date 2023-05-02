@@ -42,10 +42,16 @@ const SearchTop = ({ posts }) => {
                         <View />
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
                             {
-                                post?.likes?.length > 0 && (
+                                post?.numbersOfLikes > 0 ? (
                                     <>
                                         <IconAntDesign name={'heart'} color='#FF2727' size={15} />
-                                        <Text style={styles.userName}> {post?.likes?.length}</Text>
+                                        <Text style={styles.userName}> {post?.numbersOfLikes}</Text>
+                                    </>
+                                ) : (
+                                    <>
+                                        <IconAntDesign name={'heart'} color='#fff' size={15} />
+                                        <Text style={[styles.userName, { color: "#fff" }]}> 0</Text>
+
                                     </>
                                 )
                             }

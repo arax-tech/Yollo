@@ -20,7 +20,7 @@ const Tab = createMaterialTopTabNavigator();
 
 const ProfileTabs = () => {
 
-    const { loading, user } = useSelector((state) => state.auth);
+    const { loading, user } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const navigation = useNavigation();
     useEffect(() => {

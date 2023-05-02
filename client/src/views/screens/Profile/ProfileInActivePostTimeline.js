@@ -6,7 +6,7 @@ import Colors from '../../../constants/Colors'
 import InActiveSignlePost from './InActiveSignlePost'
 
 const ProfileInActivePostTimeline = () => {
-    const { loading, profilePostLikes } = useSelector((state) => state.auth);
+    const { loading, profilePostLikes } = useSelector((state) => state.user);
     return (
         loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }} forceInset={{ top: 'always' }}>

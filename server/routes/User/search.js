@@ -15,9 +15,34 @@ const Tag = require("../../models/Badge")
 // All Posts
 router.get("/", auth, user, async (request, response) => {
     try {
-        const posts = await Post.find({ status: "Active"}).sort({ createAt: -1 }).populate("user", "first_name last_name username image").populate("comments.user", "first_name last_name image").populate("likes.user", "first_name last_name image");
+        const posts = await Post.find({ numbersOfLikes: { $gt: 0 }, status: "Active" }).populate("user", "first_name last_name username image").limit(12);
         const users = await User.find({ role: "User" }).select('-password -tokens -resetPasswordExpire -notification_settings -role -otp -following -followers -resetPasswordToken').populate('following.user', "image username last_name first_name ");
-        const badges = await Tag.find();
+        // const badges = await Tag.find();
+
+        const badges = await Tag.aggregate(
+            [
+                {
+                    $lookup:
+                    {
+                        from: 'users',
+                        localField: "_id",
+                        foreignField: "badges.badge",
+                        as: 'badges'
+                    }
+                },
+                {
+                    $project:
+                    {
+                        _id: 1,
+                        name: 1,
+                        used: { $size: "$badges" }
+                    }
+                }
+            ],
+            function (err, result) {
+                if (err) throw err;
+                // console.log(result);
+            });
         response.status(200).json({
             status: 200,
             posts: posts,

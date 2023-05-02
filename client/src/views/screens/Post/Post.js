@@ -1,4 +1,4 @@
-import { Dimensions, Image, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View, Animated } from 'react-native'
+import { Dimensions, Image, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View, Animated, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Colors from '../../../constants/Colors'
@@ -24,6 +24,7 @@ import { AuthUserAction } from '../../../redux/actions/AuthAction'
 import { FollowAction, OpenPromptAction, UnFollowAction } from '../../../redux/actions/YelloAction'
 import { FOLLOW_RESET, UNFOLLOW_RESET } from '../../../redux/constants/YelloConstant'
 import Loading from '../../components/Loading'
+import { ScrollView } from 'react-native-gesture-handler'
 
 
 
@@ -33,7 +34,7 @@ const Post = ({ item, isActive, RemoveFormTimeline }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    const { user, diamonds, authToken } = useSelector((state) => state.auth);
+    const { user, diamonds, authToken } = useSelector((state) => state.user);
     const { message, status, updatedDaimonds, IsLiked } = useSelector((state) => state.reaction);
     const { loading: yelloLoading, users, status: Fstatus, message: fmessage } = useSelector((state) => state.yello);
 
@@ -140,11 +141,6 @@ const Post = ({ item, isActive, RemoveFormTimeline }) => {
             counter: currentLike.counter + (currentLike.state ? -1 : 1)
         })
     }
-
-
-
-
-
 
 
 
@@ -256,11 +252,10 @@ const Post = ({ item, isActive, RemoveFormTimeline }) => {
         }
     }, [dispatch, updatedDaimonds, message, status])
 
+    const { height, width } = Dimensions.get('window');
 
-
-
-
-
+    
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     return (
         yelloLoading ? <Loading /> :
@@ -406,12 +401,12 @@ const Post = ({ item, isActive, RemoveFormTimeline }) => {
                             <View style={{ flex: 2, flexDirection: "row", justifyContent: "flex-end" }}>
                                 {
                                     item?.images.length > 1 && (
-                                        item.images[0] ? item.images.map((image, index) => (
-                                            <TouchableOpacity key={index} onPress={() => setPostActive(index)} style={{ borderBottomColor: index === postActive ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 15, paddingVertical: 0, marginRight: 5 }}>
+                                        item.images.map((image, index) => (
+                                            <View key={index} style={{ borderBottomColor: currentIndex == index ? Colors.primary : Colors.white, borderBottomWidth: 2, width: 15, paddingVertical: 0, marginRight: 5 }}>
                                                 <Text>{` `}</Text>
-                                            </TouchableOpacity>
+                                            </View>
 
-                                        )) : ""
+                                        ))
                                     )
                                 }
                             </View>
@@ -465,13 +460,17 @@ const Post = ({ item, isActive, RemoveFormTimeline }) => {
                             }
 
                         </View>
+                        {
+                            item?.caption.length > 0 && (
+                                <View>
+                                    <Text style={styles.postTitle}>{item?.caption.length > 40 ? item?.caption.substring(0, 40) + "..." : item?.caption}</Text>
+                                    <TouchableOpacity onPress={() => dispatch(OpenSheetAction(true, item, 1))} >
+                                        <Text style={styles.readMore}>Read More</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )
+                        }
 
-                        <View>
-                            <Text style={styles.postTitle}>{item?.caption.length > 40 ? item?.caption.substring(0, 40) + "..." : item?.caption}</Text>
-                            <TouchableOpacity onPress={() => dispatch(OpenSheetAction(true, item, 1))} >
-                                <Text style={styles.readMore}>Read More</Text>
-                            </TouchableOpacity>
-                        </View>
                     </View>
 
 
@@ -479,7 +478,34 @@ const Post = ({ item, isActive, RemoveFormTimeline }) => {
 
 
                     {/* Main Image */}
+                    {/* <View >
+                        <FlatList
+                            data={item?.images}
+                            showsHorizontalScrollIndicator={false}
+                            pagingEnabled
+                            onScroll={e => {
+                                const x = e.nativeEvent.contentOffset.x;
+                                setCurrentIndex((x / width).toFixed(0));
+                            }}
+                            horizontal
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            width: width,
+                                            height: height - 53,
+                                        }}>
+                                        <Image key={index} style={styles.mainImage} resizeMode="cover" source={{ uri: item?.image }} />
+                                    </View>
+                                );
+                            }}
+                        />
+                    </View> */}
+
                     <Image resizeMode="cover" style={styles.mainImage} source={{ uri: item.images[postActive].image }} />
+
+
 
                     {/* Right Side Icons */}
                     <View style={styles.rightContainer}>
@@ -510,7 +536,7 @@ const Post = ({ item, isActive, RemoveFormTimeline }) => {
                             }
 
 
-                            <TouchableOpacity onPress={() => dispatch(OpenSheetAction(true, item, 0))} style={{ marginBottom: -7 }}>
+                            <TouchableOpacity onPress={() => dispatch(OpenSheetAction(true, item, 0, true))} style={{ marginBottom: -7 }}>
                                 <View style={{ alignItems: 'center' }}>
                                     <IconAntDesign name='message1' size={21} color={Colors.white} style={{ padding: 5, marginTop: 10, marginBottom: -2 }} />
                                     <Text style={styles.actionText}>{item?.comments.length}</Text>

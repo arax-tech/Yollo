@@ -43,24 +43,24 @@ router.get("/profile", auth, user, async (request, response) => {
     try {
         const _id = request.user.id;
         const tags = await Badge.find({ user: _id });
+
         const user = await User.findById(_id).select('-password -tokens -resetPasswordExpire -resetPasswordToken').populate('following.user', "image username last_name first_name ").populate('followers.user', "image username last_name first_name ").populate('badges.badge', 'type name icon color');
 
-        const activePosts = await Post.find({ status: "Active", user: _id }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes", "first_name last_name image");
+        const activePosts = await Post.find({ status: "Active", user: _id }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image");        
 
-        // const profilePostYouLikes = await Post.find({ likes: { $in: request.user.id }}).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
         const profilePostYouLikes = await Post.find({
             "$or": [
-                { "likes": { $in: request.user.id } },
-                { "shares.user": { $in: request.user.id } },
-                { "comments.user": { $in: request.user.id } },
+                { "likes": { $in: _id } },
+                { "shares.user": { $in: _id } },
+                { "comments.user": { $in: _id } },
             ]
-        }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
+        }).sort({ createAt: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image");
 
-        const profilePostLikes = await Post.find({ user: _id, numbersOfLikes: { $gt: 0 }, status: "InActive" }).sort({ numbersOfLikes: -1 }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image").populate("likes.", "first_name last_name image").populate("likes", "first_name last_name image");
-        ;
+        const profilePostLikes = await Post.find({ user: _id, numbersOfLikes: { $gt: 0 }, status: "InActive" }).populate("user", "first_name last_name image").populate("comments.user", "first_name last_name image");
+
         const diamonds = await Diamond.find({ user: _id }).sort({ createAt: -1 }).populate("transactions.user", "first_name last_name image");
 
-        const notifications = await Notification.find({ user_id: _id, status: "Show", user_id: { $ne: request.user.id } }).populate("user", "first_name last_name image").populate("post", "first_name last_name image");
+        const notifications = await Notification.find({ user_id: _id, status: "Show" }).populate("user", "first_name last_name image").populate("post", "first_name last_name image");
         const reactions = await Reaction.find({ user: _id }).populate("reaction_user", "first_name last_name image");
 
         response.status(200).json({

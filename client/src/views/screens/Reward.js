@@ -13,7 +13,7 @@ const Reward = ({ navigation }) => {
 
     const dispatch = useDispatch();
 
-    const { loading, diamonds } = useSelector((state) => state.auth);
+    const { loading, diamonds } = useSelector((state) => state.user);
     useEffect(() => {
         const getUserDiamonds = navigation.addListener('focus', async () => {
             await dispatch(AuthUserAction());

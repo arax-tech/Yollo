@@ -8,21 +8,21 @@ import Video from 'react-native-video';
 
 const Loading = () => {
     return (
+        // <View style={styles.container}>
+        //     <Image style={{ width: 150 }} resizeMode='contain' source={require('../../assets/images/icons/svg/loading.gif')} />
+        //     <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
+        // </View>
+
+
+
+
+
         <View style={styles.container}>
-            <Image style={{ width: 150 }} resizeMode='contain' source={require('../../assets/images/icons/svg/loading.gif')} />
             <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
+            <ActivityIndicator size="large" color={Colors.primary} />
+            {/* <Text style={styles.loadingText}>Loading...</Text> */}
         </View>
 
-
-
-        /* 
-        
-            <View style={styles.container}>
-                <StatusBar backgroundColor={Colors.white} barStyle={'dark-content'} />
-                <ActivityIndicator size="large" color={Colors.primary} />
-                <Text style={styles.loadingText}>Loading...</Text>
-            </View>
-        */
     )
 }
 

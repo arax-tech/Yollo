@@ -13,11 +13,12 @@ import Loading from '../components/Loading'
 const Check = ({ navigation, }) => {
     const [Checked, setChecked] = useState(false);
 
-    const { loading, isAuthenticated } = useSelector((state) => state.auth);
+    const { loading, isAuthenticated } = useSelector((state) => state.user);
+    console.log(isAuthenticated)
 
     useEffect(() => {
         if (isAuthenticated && isAuthenticated === true) {
-            navigation.navigate("HomeNavigation");
+            navigation.navigate("Home");
         }
     }, [navigation, isAuthenticated])
 

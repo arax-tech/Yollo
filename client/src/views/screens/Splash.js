@@ -4,9 +4,12 @@ import Colors from '../../constants/Colors'
 import Fonts from '../../constants/Fonts'
 import { useSelector } from 'react-redux'
 import Loading from '../components/Loading'
+import { useNavigation } from '@react-navigation/native'
 
-const Splash = ({ navigation }) => {
-    const { loading, isAuthenticated } = useSelector((state) => state.auth);
+const Splash = () => {
+    const navigation = useNavigation();
+    
+    const { loading, isAuthenticated } = useSelector((state) => state.user);
     useEffect(() => {
         if (isAuthenticated && isAuthenticated === true) {
             navigation.navigate("AuthWelcome");

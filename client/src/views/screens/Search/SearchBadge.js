@@ -26,7 +26,7 @@ const SearchBadge = ({ badges, start }) => {
                                     <IcomComponent type={`Icon${badge.type}`} name={badge?.icon} size={15} color={badge?.color} />
                                     <Text style={styles.tagButtonText}>{badge?.name}</Text>
                                 </TouchableOpacity>
-                                <Text style={[styles.tagButtonText, { opacity: 0.5 }]}>1.8M people with same interest</Text>
+                                <Text style={[styles.tagButtonText, { opacity: 0.5 }]}>{badge?.used} people with same interest</Text>
                             </View>
                         ))
                         : (

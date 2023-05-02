@@ -85,6 +85,8 @@ export const postReducer = (state = {}, action) => {
                 ...state,
                 loading: false,
                 posts: action.payload.posts,
+                totalPages: action.payload.totalPages,
+                currentPage: action.payload.currentPage,
             };
 
         case SINGLE_POST_SUCCESS:

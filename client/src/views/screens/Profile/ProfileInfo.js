@@ -12,7 +12,7 @@ import IcomComponent from './IcomComponent'
 
 
 const ProfileInfo = ({ modelHande }) => {
-    const { loading, user } = useSelector((state) => state.auth);
+    const { loading, user } = useSelector((state) => state.user);
 
     return (
         loading ? <Loading /> :

@@ -69,7 +69,7 @@ cron.schedule('0 */1 * * * *', async () => {
     // Update Post Status According to Diamonds
     const PostsNotifications = await Post.find();
     PostsNotifications?.map(async (post) => (
-        post?.post_diamonds < 60 && (
+        post?.post_diamonds === 60 && (
             await Notification.create({
                 user_id: post?.user.toString(),
                 user: post?.user.toString(),

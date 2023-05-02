@@ -192,23 +192,27 @@ export const reactionReducer = (state = {}, action) => {
 
 const initialState = {
     open: false,
+    isReact: true,
     post: null,
     modelType: -1
 }
 export const commentModeReducer = (state = initialState, action) => {
     switch (action.type) {
+        
         case SHEET_OPEN:
             return {
                 ...state,
                 open: action.open,
                 post: action.post,
                 modelType: action.modelType,
+                isReact: action.isReact,
             };
 
         case SHEET_CLOSE:
             return {
                 ...state,
                 open: false,
+                isReact: true,
                 post: null,
                 modelType: -1
             };

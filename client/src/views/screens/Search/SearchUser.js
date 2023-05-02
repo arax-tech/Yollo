@@ -10,7 +10,7 @@ import SuggestedList from '../Profile/SuggestedList'
 const SearchUser = ({ users, start }) => {
     const navigation = useNavigation();
 
-    const { loading, user: authUser } = useSelector((state) => state.auth);
+    const { loading, user: authUser } = useSelector((state) => state.user);
     return (
         loading ? <Loading /> :
             <SafeAreaView style={{ flex: 1, padding: 10, backgroundColor: Colors.white }}>

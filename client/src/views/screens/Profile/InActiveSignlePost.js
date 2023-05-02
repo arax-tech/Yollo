@@ -22,7 +22,7 @@ const InActiveSignlePost = ({ item }) => {
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const { loading, user, diamonds } = useSelector((state) => state.auth);
+    const { loading, user, diamonds } = useSelector((state) => state.user);
     const { loading: postLoading, IsDeleted, message: msg } = useSelector((state) => state.post);
     const { message, status, updatedDaimonds } = useSelector((state) => state.reaction);
 
@@ -320,7 +320,7 @@ const InActiveSignlePost = ({ item }) => {
                                     </View>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity style={styles.rightSideItem} onPress={() => dispatch(OpenSheetAction(true, item, 0))} >
+                                <TouchableOpacity style={styles.rightSideItem} onPress={() => dispatch(OpenSheetAction(true, item, 0, false))} >
                                     <View style={{ alignItems: 'center' }}>
                                         <IconAntDesign name='message1' size={21} color={Colors.white} style={{ padding: 5, marginBottom: 1 }} />
                                         <Text style={styles.actionText}>{item?.comments.length}</Text>

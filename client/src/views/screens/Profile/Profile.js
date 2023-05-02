@@ -38,12 +38,15 @@ const Profile = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    // useEffect(() => {
-    //     const getUser = navigation.addListener('focus', async () => {
-    //         await dispatch(AuthUserAction());
-    //     });
-    //     return getUser
-    // }, [navigation, dispatch])
+    useEffect(() => {
+        const getUser = navigation.addListener('focus', async () => {
+            await dispatch(AuthUserAction());
+        });
+        return getUser
+    }, [navigation, dispatch])
+
+
+
 
     const [model0, setModel0] = useState(false);
     const modelHande = () => {
@@ -59,7 +62,11 @@ const Profile = () => {
     };
 
 
-    const { loading, user, reactions, activePosts, profilePostYouLikes, profilePostLikes } = useSelector((state) => state.auth);
+    const { loading, user, reactions, activePosts, isAuthenticated, profilePostYouLikes, profilePostLikes } = useSelector((state) => state.user);
+
+
+   
+    
 
     const [isActive, setIsActive] = useState('ProfilePostLikes')
     const setStatusFilter = (status) => {
@@ -140,11 +147,11 @@ const Profile = () => {
                     <View style={[styles.container, { borderBottomColor: "#dee1e3", borderBottomWidth: 1 }]}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: -14 }}>
                             <Image style={{ width: 30, height: 30 }} resizeMode='contain' source={require('../../../assets/logo0.png')} />
-                            <View style={{ flexDirection: "row" , marginRight:-10}}>
+                            <View style={{ flexDirection: "row", marginRight: -10 }}>
                                 <TouchableOpacity style={{ width: 30 }} onPress={() => navigation.navigate("FindFirends")}>
                                     <IconAntDesign name='adduser' size={20} color={Colors.dark} />
                                 </TouchableOpacity>
-                                
+
                                 <TouchableOpacity style={{ width: 30 }} onPress={toggleModal}>
                                     <IconEntypo name='dots-three-vertical' size={20} color={Colors.dark} />
                                 </TouchableOpacity>

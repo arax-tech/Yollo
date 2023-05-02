@@ -7,7 +7,7 @@ import Loading from '../../components/Loading'
 import SuggestedList from './SuggestedList'
 
 const Suggested = () => {
-    const { loading, user } = useSelector((state) => state.auth);
+    const { loading, user } = useSelector((state) => state.user);
     const { loading: yelloLoading, users } = useSelector((state) => state.yello);
 
     return (

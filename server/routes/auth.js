@@ -12,8 +12,12 @@ const router = express.Router()
 const auth = require("../middleware/auth")
 
 // Models 
-const Diamond = require("../models/Diamond");
-const User = require("../models/User");
+const User = require("../models/User")
+const Diamond = require("../models/Diamond")
+const Badge = require("../models/Badge")
+const Notification = require("../models/Notification")
+const Reaction = require("../models/Reaction")
+const Post = require("../models/Post")
 
 
 
@@ -81,61 +85,7 @@ router.post('/login', async (request, response) => {
                 subject = "Your YOLLO Login Verification Code";
                 message = `Thank you for joining YOLLO, the new social media app that connects you with friends, family, and like-minded individuals from all around the world.<br/><br/>To ensure the security of your account, we require you to verify your Email. Please enter the following OTP (One-Time Password) in the verification screen to confirm your account:<br/><br/>OTP Code: <span style='font-weight:bold;'>${otp}</span><br/><br/>Please note that this OTP is valid for only 10 minutes. If you do not verify your account within this time frame, you will need to request a new OTP.<br/><br/>We're excited to have you as part of the YOLLO community and can't wait to see what you'll share with us.<br/><br/>If you did not sign up for YOLLO, please ignore this email.<br/><br/>Best regards,<br/>The YOLLO Team.`;
 
-                if (code){
-                    const codeUser = await User.findById(code);
-                    const user = await User.findOne({ email: email });
-                    console.log(user._id)
-                    // Reffered User Reward
-                    await Diamond.create({
-                        user: user._id,
-                        diamonds: 500,
-                        transactions: {
-                            user: user._id,
-                            diamonds: "500",
-                            type: "Sender",
-                            tranAt: new Date(Date.now()),
-                        }
-                    });
 
-
-                    // SignUp Reward
-                    await Diamond.create({
-                        user: user._id,
-                        diamonds: 1000,
-                        transactions: {
-                            user: user._id,
-                            diamonds: "1000",
-                            type: "Reciver",
-                            tranAt: new Date(Date.now()),
-                        }
-                    });
-                    
-                    // Referral Reward
-                    await Diamond.create({
-                        user: codeUser._id,
-                        diamonds: 500,
-                        transactions: {
-                            user: codeUser._id,
-                            diamonds: "500",
-                            type: "Sender",
-                            tranAt: new Date(Date.now()),
-                        }
-                    });
-
-                }else{
-                    // SignUp Reward
-                    const user = await User.findOne({ email: email });
-                    await Diamond.create({
-                        user: user._id,
-                        diamonds: 1000,
-                        transactions: {
-                            user: user._id,
-                            diamonds: "1000",
-                            type: "Reciver",
-                            tranAt: new DatOTPe(Date.now()),
-                        }
-                    });
-                }
             }
             // await sendEmail({
             //     email: email,
@@ -143,10 +93,14 @@ router.post('/login', async (request, response) => {
             //     message
             // });
 
+
+
+
+
             response.status(200).json({
                 status: 200,
                 email: email,
-                phone: null,
+                phone: otp,
                 type: type,
                 code: code,
                 message: "OTP Send Successfully...",
@@ -170,9 +124,10 @@ router.post('/verify', async (request, response) => {
 
         const { otp, email, phone, type, code } = request.body;
         const loginUser = await User.findOne({ otp: otp });
-
-
+        
+        
         if (loginUser) {
+            
 
             const token = await loginUser.generateAuthToken();
 
@@ -183,20 +138,68 @@ router.post('/verify', async (request, response) => {
 
 
             // Add Ref Diamonds
-            if (code && code !== null) {
-                const diamond = await Diamond.findOne({ user: code });
+            if (code) {
+                const codeUser = await User.findById(code);
+                const user = await User.findOne({ email: email });
+                console.log(user._id)
+                // Reffered User Reward
+                await Diamond.create({
+                    user: user._id,
+                    diamonds: 500,
+                    transactions: {
+                        user: user._id,
+                        diamonds: "500",
+                        type: "Sender",
+                        tranAt: new Date(Date.now()),
+                    }
+                });
 
-                await Diamond.findByIdAndUpdate(diamond._id, {
-                    $set: {
-                        diamonds: diamond.diamonds + 1000
+
+                // SignUp Reward
+                await Diamond.create({
+                    user: user._id,
+                    diamonds: 1000,
+                    transactions: {
+                        user: user._id,
+                        diamonds: "1000",
+                        type: "Reciver",
+                        tranAt: new Date(Date.now()),
+                    }
+                });
+
+                // Referral Reward
+                await Diamond.create({
+                    user: codeUser._id,
+                    diamonds: 500,
+                    transactions: {
+                        user: codeUser._id,
+                        diamonds: "500",
+                        type: "Sender",
+                        tranAt: new Date(Date.now()),
+                    }
+                });
+
+            } else {
+                // SignUp Reward
+                const user = await User.findOne({ otp: otp });
+                // console.log(user)
+                await Diamond.create({
+                    user: user._id,
+                    diamonds: 1000,
+                    transactions: {
+                        user: user._id,
+                        diamonds: "1000",
+                        type: "Reciver",
+                        tranAt: new Date(Date.now()),
                     }
                 });
             }
+
+
+            
             response.status(200).json({
                 status: 202,
                 message: "Login Successfully...",
-                user: loginUser,
-                token: token,
             })
         }
         else {
@@ -211,9 +214,10 @@ router.post('/verify', async (request, response) => {
 
     }
     catch (error) {
+        console.log(error)
         response.status(500).json({
             status: 500,
-            message: error.message
+            message: error
         })
     }
 })

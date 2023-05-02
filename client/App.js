@@ -84,32 +84,32 @@ const App = () => {
 
    
 
-    useEffect(() => {
-        const backAction = () => {
-            Alert.alert("Hold On!", "Are you sure to exit App ?", [
-                {
-                    text: "Cancel",
-                    onPress: () => null,
-                    style: "cancel"
-                }, {
-                    text: "Yes",
-                    onPress: () => BackHandler.exitApp()
-                }
-            ]);
-            return true;
-        };
+    // useEffect(() => {
+    //     const backAction = () => {
+    //         Alert.alert("Hold On!", "Are you sure to exit App ?", [
+    //             {
+    //                 text: "Cancel",
+    //                 onPress: () => null,
+    //                 style: "cancel"
+    //             }, {
+    //                 text: "Yes",
+    //                 onPress: () => BackHandler.exitApp()
+    //             }
+    //         ]);
+    //         return true;
+    //     };
 
-        const backHandler = BackHandler.addEventListener(
-            "hardwareBackPress",
-            backAction
-        );
+    //     const backHandler = BackHandler.addEventListener(
+    //         "hardwareBackPress",
+    //         backAction
+    //     );
 
-        return () => backHandler.remove();
-    }, [])
-
-
+    //     return () => backHandler.remove();
+    // }, [])
 
 
+
+    // const { isAuthenticated } = Store.getState().auth;
     return (
         <Provider store={Store}>
             <NavigationContainer>

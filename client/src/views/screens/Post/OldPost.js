@@ -22,7 +22,7 @@ const Post = ({ item }) => {
 
     const dispatch = useDispatch();
 
-    const { user } = useSelector((state) => state.auth);
+    const { user } = useSelector((state) => state.user);
 
 
     // Likes  & Unlikes Actions

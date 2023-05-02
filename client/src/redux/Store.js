@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
-import { AuthReducer, updateProfileReducer } from './reducers/AuthReducer';
+import { AuthReducer, UserReducer, updateProfileReducer } from './reducers/AuthReducer';
 import { memoriesReducer } from './reducers/MemoriesReducer';
 import { postReducer } from './reducers/PostReducer';
 import { commentModeReducer, reactionReducer } from './reducers/ReactionReducer';
@@ -14,6 +14,7 @@ import { promptsReducer, yelloReducer } from './reducers/YelloReducer';
 
 const reducer = combineReducers({
     auth: AuthReducer,
+    user: UserReducer,
     updateProfile: updateProfileReducer,
     support: supportReducer,
     yello: yelloReducer,

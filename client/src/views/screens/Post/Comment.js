@@ -16,9 +16,11 @@ import { useNavigation } from '@react-navigation/native';
 const Comment = ({ onCloseFunction, post }) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const { loading, user, authToken } = useSelector((state) => state.auth);
+    const { loading, user, authToken } = useSelector((state) => state.user);
     // console.log(user?._id)
     const { message, updatedComments } = useSelector((state) => state.reaction);
+    const { isReact } = useSelector((state) => state.commentModel);
+    // console.log(isReact)
 
 
     const [comments, setComments] = useState(post?.comments);
@@ -164,27 +166,29 @@ const Comment = ({ onCloseFunction, post }) => {
 
 
                                             {
-                                                comment.likes && comment.likes[0] === user?._id ? (
+                                                isReact === true && (
+                                                    comment.likes && comment.likes[0] === user?._id ? (
 
-                                                    <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingRight: 10 }} onPress={() => UnLikeCommentFunction(comment?._id)}>
-                                                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                                            <IconAntDesign name={'heart'} size={16} color={"#FF2727"} />
-                                                            {
-                                                                comment?.likes.length > 0 && (
-                                                                    <Text style={styles.userComment}> {comment?.likes.length}</Text>
+                                                        <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingRight: 10 }} onPress={() => UnLikeCommentFunction(comment?._id)}>
+                                                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                                                <IconAntDesign name={'heart'} size={16} color={"#FF2727"} />
+                                                                {
+                                                                    comment?.likes.length > 0 && (
+                                                                        <Text style={styles.userComment}> {comment?.likes.length}</Text>
 
-                                                                )
-                                                            }
-                                                        </View>
-                                                    </TouchableOpacity>
+                                                                    )
+                                                                }
+                                                            </View>
+                                                        </TouchableOpacity>
 
-                                                ) : (
-                                                    <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingRight: 10 }} onPress={() => LikeCommentFunction(comment?._id)}>
-                                                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                                            <IconAntDesign name={'hearto'} size={16} color={Colors.dark} />
-                                                            {/* <Text style={styles.userComment}> {comment?.likes.length}</Text> */}
-                                                        </View>
-                                                    </TouchableOpacity>
+                                                    ) : (
+                                                        <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingRight: 10 }} onPress={() => LikeCommentFunction(comment?._id)}>
+                                                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                                                <IconAntDesign name={'hearto'} size={16} color={Colors.dark} />
+                                                                {/* <Text style={styles.userComment}> {comment?.likes.length}</Text> */}
+                                                            </View>
+                                                        </TouchableOpacity>
+                                                    )
                                                 )
                                             }
 

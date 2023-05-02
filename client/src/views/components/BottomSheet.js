@@ -14,7 +14,8 @@ const CommentSheet = () => {
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const { open, post, modelType } = useSelector((state) => state.commentModel);
+    const { open, post, modelType, isReact } = useSelector((state) => state.commentModel);
+    // console.log(isReact)
 
 
 

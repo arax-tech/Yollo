@@ -12,7 +12,7 @@ import { DELETE_COMMENT_RESET, LIKE_COMMENT_RESET, UNLIKE_COMMENT_RESET } from '
 const SingleComment = ({ post, comment }) => {
 
     const dispatch = useDispatch();
-    const { loading, user, authToken } = useSelector((state) => state.auth);
+    const { loading, user, authToken } = useSelector((state) => state.user);
     // console.log(user?._id)
     const { message, updatedComments } = useSelector((state) => state.reaction);
 

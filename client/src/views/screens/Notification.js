@@ -10,6 +10,7 @@ import moment from 'moment';
 import { AuthUserAction } from '../../redux/actions/AuthAction'
 import { HideNotificationAction } from '../../redux/actions/YelloAction'
 import { HIDE_NOTIFICATION_RESET } from '../../redux/constants/YelloConstant'
+import { useState } from 'react'
 
 const Notification = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -21,11 +22,11 @@ const Notification = ({ navigation }) => {
         return getUserNotification;
     }, [navigation, dispatch]); 
     
-    const { loading, notifications } = useSelector((state) => state.auth);
+    const { loading, notifications: noti } = useSelector((state) => state.user);
     const { loading: notificaionLoading, message, isHide } = useSelector((state) => state.yello);
 
     
-
+    const [notifications, setNotifications] = useState(noti);
     useEffect(() => {
         if (isHide && isHide == true) {
             dispatch({ type: HIDE_NOTIFICATION_RESET });
@@ -36,8 +37,16 @@ const Notification = ({ navigation }) => {
 
 
     const HideNotification = async (id) => {
-        await dispatch(HideNotificationAction(id));
-        await dispatch(AuthUserAction());
+        // await dispatch(HideNotificationAction(id));
+        // await dispatch(AuthUserAction());
+
+        let newNotifications = [...notifications];
+        let index = newNotifications.findIndex(notification => notification?._id === id);
+        if (newNotifications[index]?._id === id) {
+            newNotifications.splice(index, 1);
+        }
+        setNotifications(newNotifications);
+        dispatch(HideNotificationAction(id));
     }
 
 

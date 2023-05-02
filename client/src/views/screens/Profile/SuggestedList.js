@@ -15,7 +15,7 @@ const SuggestedList = ({ user0 }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    const { loading, user } = useSelector((state) => state.auth);
+    const { loading, user } = useSelector((state) => state.user);
     const { loading: followLoading, status, message: msg } = useSelector((state) => state.yello);
 
     const [follower, setFollower] = useState(false);

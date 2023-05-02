@@ -14,7 +14,7 @@ import { IconAntDesign, IconFeather, IconMaterialIcons } from '../../components/
 const SupportAndHelp = ({ navigation }) => {
 
     const dispatch = useDispatch();
-    const { loading, user } = useSelector((state) => state.auth);
+    const { loading, user } = useSelector((state) => state.user);
     const { loading: createLoading, message, isCreated } = useSelector((state) => state.support);
 
 

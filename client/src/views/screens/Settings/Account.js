@@ -15,7 +15,7 @@ import { IconAntDesign, IconFeather, IconFontAwesome5, IconIonicons } from '../.
 
 const Account = ({ navigation }) => {
 
-    const { loading, user } = useSelector((state) => state.auth);
+    const { loading, user } = useSelector((state) => state.user);
     const { loading: updateLoading, message, isUpdated } = useSelector((state) => state.updateProfile);
     const dispatch = useDispatch();
 

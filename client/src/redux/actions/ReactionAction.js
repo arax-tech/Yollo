@@ -127,11 +127,12 @@ export const PostUnLikeAction = (post_id) => async (dispatch) => {
 
 
 
-export const OpenSheetAction = (open, post, modelType) => (dispatch) => {
+export const OpenSheetAction = (open, post, modelType, isReact) => (dispatch) => {
     dispatch({
         open,
         post,
         modelType,
+        isReact,
         type: SHEET_OPEN,
     });
 }

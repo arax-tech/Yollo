@@ -12,7 +12,7 @@ const NotificationSettings = ({ navigation }) => {
 
     const dispatch = useDispatch();
 
-    const { loading, user } = useSelector((state) => state.auth);
+    const { loading, user } = useSelector((state) => state.user);
     const { loading: updateLoading, message, isUpdated } = useSelector((state) => state.updateProfile);
 
     const [items, setItems] = useState([

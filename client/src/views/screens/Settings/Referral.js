@@ -10,7 +10,7 @@ import { IconAntDesign } from '../../components/Icons';
 
 const Referral = ({ navigation }) => {
 
-    const { loading, user } = useSelector((state) => state.auth);
+    const { loading, user } = useSelector((state) => state.user);
 
     const CopyReferralCode = (code) => {
         Clipboard.setString(code);

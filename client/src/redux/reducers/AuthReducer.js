@@ -47,39 +47,13 @@ import {
     CLEAR_ERRORS,
 
 } from "../constants/AuthConstant";
-
-export const AuthReducer = (state = {}, action) => {
+export const UserReducer = (state = {}, action) => {
     // console.log(action.type)
     switch (action.type) {
-        case LOGIN_REQUEST:
-        case VERIFY_REQUEST:
-            return {
-                loading: true,
-                isAuthenticated: false
-            };
         case AUTH_USER_REQUEST:
         case GET_USER_REQUEST:
             return {
                 loading: true,
-            };
-        case LOGIN_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                message: action.payload.message,
-                status: action.payload.status,
-                type: action.payload.type,
-                phone: action.payload.phone,
-                email: action.payload.email,
-                code: action.payload.code,
-            };
-        case VERIFY_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                message: action.payload.message,
-                status: action.payload.status,
-                user: action.payload.user,
             };
         case AUTH_USER_SUCCESS:
         case GET_USER_SUCCESS:
@@ -97,16 +71,62 @@ export const AuthReducer = (state = {}, action) => {
                 profilePostYouLikes: action.payload.profilePostYouLikes,
                 authToken: action.payload.authToken,
             };
-        case AUTH_LOGOUT_SUCCESS:
-        case ACCOUNT_DISABLE_SUCCESS:
-        case ACCOUNT_DELETE_SUCCESS:
+
+        case AUTH_USER_FAIL:
+        case GET_USER_FAIL:
             return {
                 loading: false,
-                isAuthenticated: false,
+                user: null,
+                errors: action.payload,
+            };
+
+            return {
+                ...state,
+                loading: false,
                 message: action.payload.message,
                 status: action.payload.status,
-                user: null,
+                errors: action.payload,
             };
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                errors: null,
+            }
+
+        default:
+            return state;
+    }
+}
+
+
+export const AuthReducer = (state = {}, action) => {
+    // console.log(action.type)
+    switch (action.type) {
+        case LOGIN_REQUEST:
+        case VERIFY_REQUEST:
+            return {
+                loading: true,
+            };
+
+        case LOGIN_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                message: action.payload.message,
+                status: action.payload.status,
+                type: action.payload.type,
+                phone: action.payload.phone,
+                email: action.payload.email,
+                code: action.payload.code,
+            };
+        case VERIFY_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                isAuthenticated: true,
+                message: action.payload.message,
+            };
+
         case LOGIN_FAIL:
         case VERIFY_FAIL:
             return {
@@ -121,17 +141,22 @@ export const AuthReducer = (state = {}, action) => {
                 email: action.payload.email,
             };
 
-        case AUTH_USER_FAIL:
+
+        case AUTH_LOGOUT_SUCCESS:
+        case ACCOUNT_DISABLE_SUCCESS:
+        case ACCOUNT_DELETE_SUCCESS:
             return {
                 loading: false,
                 isAuthenticated: false,
-                user: null,
-                errors: action.payload,
+                message: action.payload.message,
+                status: action.payload.status,
             };
+
+
+
         case AUTH_LOGOUT_FAIL:
         case ACCOUNT_DISABLE_FAIL:
         case ACCOUNT_DELETE_FAIL:
-        case GET_USER_FAIL:
             return {
                 ...state,
                 loading: false,

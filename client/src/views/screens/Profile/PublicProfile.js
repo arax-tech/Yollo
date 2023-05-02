@@ -52,7 +52,7 @@ const PublicProfile = ({ route, navigation }) => {
     };
 
 
-    const { loading, user, reactions, activePosts, profilePostYouLikes, profilePostLikes } = useSelector((state) => state.auth);
+    const { loading, user, reactions, activePosts, profilePostYouLikes, profilePostLikes } = useSelector((state) => state.user);
     const { loading: yelloLoading, status: Fstatus, message: fmessage } = useSelector((state) => state.yello);
 
     const [isActive, setIsActive] = useState('ProfilePostLikes')

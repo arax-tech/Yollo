@@ -56,10 +56,21 @@ const SendPostPushNotification = async (post_id, name, title) => {
 // All Posts
 router.get("/", auth, user, async (request, response) => {
     try {
-        const posts = await Post.find({ status: "Active" }).sort({ createAt: -1 }).populate("user", "first_name last_name username image").populate("comments.user", "first_name last_name image").populate("likes.user", "first_name last_name image");
+
+        const { page = 1, limit = 2 } = request.query;
+
+        const posts = await Post.find({ status: "Active" }).sort({ createAt: -1 }).populate("user", "first_name last_name username image").populate("comments.user", "first_name last_name image").populate("likes.user", "first_name last_name image")
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec();
+
+        const count = await Post.countDocuments({ status: "Active" });
+        // console.log(count)
         response.status(200).json({
             status: 200,
-            posts: posts
+            posts: posts,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
         });
     }
     catch (error) {

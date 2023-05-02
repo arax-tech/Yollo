@@ -32,11 +32,11 @@ import {
 } from "../constants/PostConstant";
 
 
-export const PostsAction = () => async (dispatch) => {
+export const PostsAction = (page) => async (dispatch) => {
     try {
         dispatch({ type: POSTS_REQUEST });
 
-        const { data } = await axios.get(`${APP_URL}/user/post`, {
+        const { data } = await axios.get(`${APP_URL}/user/post?page=${page}`, {
             headers: {
                 "Content-Type": "application/json",
             }

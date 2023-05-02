@@ -19,6 +19,7 @@ import ImgToBase64 from 'react-native-image-base64';
 
 
 import PhotoEditor from "@baronha/react-native-photo-editor";
+import { AuthUserAction } from '../../../redux/actions/AuthAction'
 
 
 
@@ -242,9 +243,8 @@ const EditPost = ({ route, navigation }) => {
     useEffect(() => {
         if (IsUpdated && IsUpdated === true) {
             dispatch({ type: UPDATE_POST_RESET });
-            navigation.navigate('Profile')
             setCaption('');
-
+            
             setImage1(null)
             setImage1Preview(null)
 
@@ -253,6 +253,8 @@ const EditPost = ({ route, navigation }) => {
 
             setImage3(null)
             setImage3Preview(null)
+            dispatch(AuthUserAction());
+            navigation.navigate('Profile')
         }
 
     }, [dispatch, navigation, IsUpdated, message])

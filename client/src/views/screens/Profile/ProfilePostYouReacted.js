@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux'
 
 const ProfilePostYouReacted = ({ posts }) => {
 
-    const { loading, user, authToken } = useSelector((state) => state.auth);
+    const { loading, user, authToken } = useSelector((state) => state.user);
     return (
         loading ? <Loading /> :
             <SafeAreaView style={{ backgroundColor: Colors.white }}>

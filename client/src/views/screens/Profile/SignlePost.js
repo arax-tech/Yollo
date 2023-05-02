@@ -22,7 +22,7 @@ const SignlePost = ({ item }) => {
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const { loading, user, diamonds } = useSelector((state) => state.auth);
+    const { loading, user, diamonds } = useSelector((state) => state.user);
     const { loading: postLoading, IsDeleted, message: msg } = useSelector((state) => state.post);
     const { message, status, updatedDaimonds } = useSelector((state) => state.reaction);
 

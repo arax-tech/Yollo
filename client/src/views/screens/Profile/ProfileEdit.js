@@ -34,7 +34,7 @@ const ProfileEdit = () => {
 
 
 
-    const { loading, user } = useSelector((state) => state.auth);
+    const { loading, user } = useSelector((state) => state.user);
     const { loading: updateLoading, message, isUpdated, isCreated, status } = useSelector((state) => state.updateProfile);
     const { loading: badgesLoading, badges } = useSelector((state) => state.search);
 

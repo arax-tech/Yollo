@@ -43,7 +43,7 @@ const Profile = ({ navigation }) => {
     };
 
 
-    const { loading, user, reactions, activePosts, profilePostYouLikes, profilePostLikes } = useSelector((state) => state.auth);
+    const { loading, user, reactions, activePosts, profilePostYouLikes, profilePostLikes } = useSelector((state) => state.user);
 
     const [isActive, setIsActive] = useState('ProfilePostLikes')
     const setStatusFilter = (status) => {
